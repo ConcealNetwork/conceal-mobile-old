@@ -19,26 +19,21 @@ import {
 } from "react-native";
 
 @observer
-export default class WalletsScreen extends React.Component {
+export default class AddressBookScreen extends React.Component {
   constructor(props) {
     super(props);
   }
 
-  onCreateWallet = () => {
+  onCreateAddress = () => {
 
   }
 
-  onDeleteWallet = () => {
+  onDeleteAddress = () => {
 
   }
 
-  onExportWallet = () => {
+  onCopyAddress = () => {
 
-  }
-
-  onSelectWallet = (wallet) => {
-    const { navigate } = this.props.navigation;
-    navigate("Wallet", wallet);
   }
 
   onGoBack = () => {
@@ -52,9 +47,9 @@ export default class WalletsScreen extends React.Component {
         <Appbar.Header style={styles.appHeader}>
           <Appbar.BackAction onPress={() => this.onGoBack()} />
           <Appbar.Content
-            title="Wallets"
+            title="Address Book"
           />
-          <Appbar.Action icon="add-circle-outline" size={36} onPress={() => this.onCreateWallet()} />
+          <Appbar.Action icon="add-circle-outline" size={36} onPress={() => this.onCreateAddress()} />
         </Appbar.Header>
         <View style={styles.walletsWrapper}>
           <FlatList
@@ -67,17 +62,12 @@ export default class WalletsScreen extends React.Component {
                   <Text style={styles.data}>Balance: {item.total} CCX</Text>
                   <Text style={styles.data}>Locked: {item.locked} CCX</Text>
                   <Text style={styles.data}>{item.status}</Text>
-                  <View style={styles.buttonsWrapper}>
-                    <ConcealFAB
-                      onPress={() => this.onSelectWallet(item)}
-                    />
-                  </View>
                 </View>
                 <View style={styles.walletFooter}>
-                  <Button style={[styles.footerBtn, styles.footerBtnLeft]} onPress={this.onDeleteWallet()}>
+                  <Button style={[styles.footerBtn, styles.footerBtnLeft]} onPress={this.onDeleteAddress()}>
                     <Text style={styles.buttonText}>DELETE</Text>
                   </Button>
-                  <Button style={[styles.footerBtn, styles.footerBtnRight]} onPress={this.onExportWallet()}>
+                  <Button style={[styles.footerBtn, styles.footerBtnRight]} onPress={this.onCopyAddress()}>
                     <Text style={styles.buttonText}>EXPORT</Text>
                   </Button>
                 </View>

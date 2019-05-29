@@ -1,4 +1,4 @@
-import { Dialog, Paragraph, Portal, Avatar, IconButton, Colors } from 'react-native-paper';
+import { Appbar, Dialog, Paragraph, Portal, Avatar, IconButton, Colors } from 'react-native-paper';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { faPlay } from '@fortawesome/free-solid-svg-icons';
 import ConcealTextInput from '../components/ccxTextInput';
@@ -50,7 +50,22 @@ export default class WalletScreen extends React.Component {
 
   onShowSettings = () => {
     const { navigate } = this.props.navigation;
+    navigate("Settings", {})
+  };
+
+  onShowWallets = () => {
+    const { navigate } = this.props.navigation;
     navigate("Wallets", {})
+  };
+
+  onShowAddressBook = () => {
+    const { navigate } = this.props.navigation;
+    navigate("AddressBook", {})
+  };
+
+  onShowMarkets = () => {
+    const { navigate } = this.props.navigation;
+    navigate("Markets", {})
   };
 
   _showDialog = () => {
@@ -66,17 +81,43 @@ export default class WalletScreen extends React.Component {
   render() {
     return (
       <PaperProvider>
+        <Appbar.Header style={styles.appHeader}>
+          <Appbar.Content
+            title="Default Wallet"
+          />
+          <Avatar.Image style={styles.Avatar} size={36} source={require('../assets/taegus.png')} />
+        </Appbar.Header>
         <View style={styles.accountOverview}>
           <Text style={styles.worthDollars}>$ 65.22</Text>
-          <Text style={styles.ammountCCX}>{this.data.balance} CCX</Text>
+          <Text style={styles.ammountCCX}>{this.data.balance.toFixed(2)} CCX</Text>
           <Text style={styles.worthBTC}>{'\u20BF'} 0.002345678</Text>
-          <Avatar.Image style={styles.Avatar} size={52} source={require('../assets/taegus.png')} />
           <IconButton
-            size={42}
-            icon="more-horiz"
+            size={36}
+            icon="settings"
             color={Colors.white}
-            style={styles.iconSettings}
+            style={[styles.iconGeneral, styles.iconSettings]}
             onPress={() => this.onShowSettings()}
+          />
+          <IconButton
+            size={36}
+            icon="account-balance-wallet"
+            color={Colors.white}
+            style={[styles.iconGeneral, styles.iconWallets]}
+            onPress={() => this.onShowWallets()}
+          />
+          <IconButton
+            size={36}
+            icon="library-books"
+            color={Colors.white}
+            style={[styles.iconGeneral, styles.iconAddressBook]}
+            onPress={() => this.onShowAddressBook()}
+          />
+          <IconButton
+            size={36}
+            icon="show-chart"
+            color={Colors.white}
+            style={[styles.iconGeneral, styles.iconMarkets]}
+            onPress={() => this.onShowMarkets()}
           />
         </View>
         <Text style={styles.txsText}>Transactions</Text>
@@ -87,7 +128,7 @@ export default class WalletScreen extends React.Component {
             renderItem={({ item }) =>
               <View style={styles.flatview}>
                 <Text style={styles.dataTimestamp}>{Moment(item.timestamp).format('LLLL')}</Text>
-                <Text style={styles.dataAmmount}>{item.amount} CCX (fee: {item.fee})</Text>
+                <Text style={styles.dataAmmount}>{item.amount.toFixed(2)} CCX (fee: {item.fee})</Text>
                 <Text style={styles.dataAddress}>{maskAddress(item.address)}</Text>
 
                 <IconButton
@@ -170,6 +211,11 @@ export default class WalletScreen extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  appHeader: {
+    borderBottomWidth: 1,
+    backgroundColor: '#212529',
+    borderBottomColor: "#343a40"
+  },
   flatview: {
     backgroundColor: "#212529",
     justifyContent: 'center',
@@ -192,10 +238,12 @@ const styles = StyleSheet.create({
     fontSize: 14
   },
   accountOverview: {
-    margin: 20,
+    top: 5,
+    margin: 10,
     padding: 25,
     height: 125,
-    top: 20,
+    marginLeft: 20,
+    marginRight: 20,
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
@@ -224,14 +272,29 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 10
   },
-  iconSettings: {
+  iconGeneral: {
     position: 'absolute',
-    width: 42,
-    height: 42,
-    left: 10
+    width: 36,
+    height: 36,
+  },
+  iconSettings: {
+    left: 10,
+    top: 10
+  },
+  iconWallets: {
+    left: 10,
+    top: 65
+  },
+  iconAddressBook: {
+    right: 10,
+    top: 10
+  },
+  iconMarkets: {
+    right: 10,
+    top: 65
   },
   transactionsWrapper: {
-    top: 215,
+    top: 260,
     left: 20,
     right: 20,
     bottom: 70,
@@ -253,7 +316,11 @@ const styles = StyleSheet.create({
   txsText: {
     color: "#FFFFFF",
     fontSize: 18,
-    margin: 20
+    marginTop: 5,
+    marginLeft: 20,
+    paddingLeft: 10,
+    borderLeftWidth: 4,
+    borderColor: "#FFA500"
   },
   txDirection: {
     position: 'absolute',

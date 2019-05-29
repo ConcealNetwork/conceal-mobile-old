@@ -6,6 +6,7 @@ import SendScreen from "./pages/send.js";
 import LoginScreen from "./pages/login.js";
 import WalletScreen from "./pages/wallet.js";
 import WalletsScreen from "./pages/wallets.js";
+import AddressBookScreen from "./pages/addressBook.js";
 
 const AppNavigator = createStackNavigator(
   {
@@ -29,6 +30,12 @@ const AppNavigator = createStackNavigator(
     },
     Send: {
       screen: SendScreen,
+      navigationOptions: {
+        header: null
+      }
+    },
+    AddressBook: {
+      screen: AddressBookScreen,
       navigationOptions: {
         header: null
       }
