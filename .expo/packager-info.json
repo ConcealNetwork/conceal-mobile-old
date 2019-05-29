@@ -1,0 +1,9 @@
+{
+  "expoServerPort": 19000,
+  "expoServerNgrokUrl": "https://52-p3e.anonymous.conceal-mobile.exp.direct",
+  "packagerNgrokUrl": "https://packager.52-p3e.anonymous.conceal-mobile.exp.direct",
+  "ngrokPid": 3532,
+  "packagerPort": 19001,
+  "packagerPid": 29140,
+  "devToolsPort": 19002
+}
