@@ -20,7 +20,7 @@ export default class LoginScreen extends React.Component {
       if (success) {
         appData.dataWallets.fetchWallets(function (success) {
           if (success) {
-            navigate("Wallet", {});
+            navigate("Wallet", appData.dataWallets.getDefaultWallet());
           }
         });
       } else {

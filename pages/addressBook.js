@@ -53,14 +53,14 @@ export default class AddressBookScreen extends React.Component {
         </Appbar.Header>
         <View style={styles.walletsWrapper}>
           <FlatList
-            data={appData.dataWallets.getWallets()}
+            data={appData.dataUser.getAddressBook()}
             showsVerticalScrollIndicator={false}
             renderItem={({ item }) =>
               <View style={styles.flatview}>
                 <View>
-                  <Text style={styles.address}>{maskAddress(item.address)}</Text>
-                  <Text style={styles.data}>Balance: {item.total} CCX</Text>
-                  <Text style={styles.data}>Locked: {item.locked} CCX</Text>
+                  <Text style={styles.addressLabel}>{item.label}</Text>
+                  <Text style={styles.address}>Address: {maskAddress(item.address)}</Text>
+                  <Text style={styles.data}>Payment ID: {item.paymentID}</Text>
                   <Text style={styles.data}>{item.status}</Text>
                 </View>
                 <View style={styles.walletFooter}>
@@ -68,12 +68,12 @@ export default class AddressBookScreen extends React.Component {
                     <Text style={styles.buttonText}>DELETE</Text>
                   </Button>
                   <Button style={[styles.footerBtn, styles.footerBtnRight]} onPress={this.onCopyAddress()}>
-                    <Text style={styles.buttonText}>EXPORT</Text>
+                    <Text style={styles.buttonText}>COPY</Text>
                   </Button>
                 </View>
               </View>
             }
-            keyExtractor={item => item.address}
+            keyExtractor={item => item.entryID.toString()}
           />
         </View>
       </View>
@@ -103,9 +103,12 @@ const styles = StyleSheet.create({
     marginTop: 5,
     padding: 20,
   },
-  address: {
+  addressLabel: {
     color: "#FFFFFF",
     fontSize: 18
+  },
+  address: {
+    color: "#FFA500"
   },
   data: {
     color: "#AAAAAA"

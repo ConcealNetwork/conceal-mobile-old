@@ -64,7 +64,7 @@ export default class WalletsScreen extends React.Component {
               <View style={styles.flatview}>
                 <View>
                   <Text style={styles.address}>{maskAddress(item.address)}</Text>
-                  <Text style={styles.data}>Balance: {item.total} CCX</Text>
+                  <Text style={styles.balance}>Balance: {item.total} CCX</Text>
                   <Text style={styles.data}>Locked: {item.locked} CCX</Text>
                   <Text style={styles.data}>{item.status}</Text>
                   <View style={styles.buttonsWrapper}>
@@ -99,7 +99,8 @@ const styles = StyleSheet.create({
   },
   buttonsWrapper: {
     position: 'absolute',
-    right: 20
+    right: 20,
+    top: 15
   },
   icon: {
     color: "orange"
@@ -116,6 +117,9 @@ const styles = StyleSheet.create({
   address: {
     color: "#FFFFFF",
     fontSize: 18
+  },
+  balance: {
+    color: "#FFA500",
   },
   data: {
     color: "#AAAAAA"

@@ -2,6 +2,34 @@ import { observable, action, autorun } from 'mobx';
 import AuthHelper from '../src/helpers/AuthHelper.js';
 import Api from '../src/helpers/Api.js';
 
+class dataUser {
+  @observable addressBook = [];
+
+  constructor(Auth, Api) {
+    this.Auth = Auth;
+    this.Api = Api;
+  }
+
+  fetchUserData(callback) {
+    this.Api.getUser().then(res => {
+      if ((res.result) && (res.result == "success")) {
+        if ((res.message) && (res.message.addressBook)) {
+          this.addressBook = res.message.addressBook;
+          callback(true);
+        }
+      } else {
+        callback(false);
+      }
+    }).catch(err => {
+      callback(false);
+    });
+  };
+
+  getAddressBook() {
+    return this.addressBook;
+  }
+}
+
 class dataWallets {
   @observable wallets = {};
 
@@ -42,8 +70,6 @@ class dataWallets {
       });
     }).catch(err => {
       callback(false);
-    }).finally(() => {
-      // do nothing
     });
   }
 
@@ -54,6 +80,16 @@ class dataWallets {
     }
     return walletsArray;
   }
+
+  getDefaultWallet() {
+    var wallets = this.getWallets();
+
+    if (wallets.length > 0) {      
+      return wallets[0];
+    } else {
+      return null;
+    }
+  }
 }
 
 class appData {
@@ -61,6 +97,7 @@ class appData {
     this.Auth = new AuthHelper();
     this.Api = new Api({ auth: this.Auth });
 
+    this.dataUser = new dataUser(this.Auth, this.Api);
     this.dataWallets = new dataWallets(this.Auth, this.Api);
   }
 

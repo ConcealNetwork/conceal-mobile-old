@@ -32,14 +32,6 @@ export default class WalletScreen extends React.Component {
   constructor(props) {
     super(props);
 
-    this.data = {};
-    this.wallets = appData.dataWallets.getWallets();
-
-    if (this.wallets.length > 0) {
-      this.data = this.wallets[0];
-      console.log(this.data);
-    }
-
     this.state = { dialogVisible: false };
   }
 
@@ -60,7 +52,12 @@ export default class WalletScreen extends React.Component {
 
   onShowAddressBook = () => {
     const { navigate } = this.props.navigation;
-    navigate("AddressBook", {})
+
+    appData.dataUser.fetchUserData(function (success) {
+      if (success) {
+        navigate("AddressBook", {})
+      }
+    });
   };
 
   onShowMarkets = () => {
@@ -79,6 +76,7 @@ export default class WalletScreen extends React.Component {
   };
 
   render() {
+    var currWallet = this.props.navigation.state.params;
     return (
       <PaperProvider>
         <Appbar.Header style={styles.appHeader}>
@@ -89,7 +87,7 @@ export default class WalletScreen extends React.Component {
         </Appbar.Header>
         <View style={styles.accountOverview}>
           <Text style={styles.worthDollars}>$ 65.22</Text>
-          <Text style={styles.ammountCCX}>{this.data.balance.toFixed(2)} CCX</Text>
+          <Text style={styles.ammountCCX}>{currWallet.balance.toFixed(2)} CCX</Text>
           <Text style={styles.worthBTC}>{'\u20BF'} 0.002345678</Text>
           <IconButton
             size={36}
@@ -123,7 +121,7 @@ export default class WalletScreen extends React.Component {
         <Text style={styles.txsText}>Transactions</Text>
         <View style={styles.transactionsWrapper}>
           <FlatList
-            data={this.data.transactions}
+            data={currWallet.transactions}
             showsVerticalScrollIndicator={false}
             renderItem={({ item }) =>
               <View style={styles.flatview}>
@@ -151,7 +149,7 @@ export default class WalletScreen extends React.Component {
           <Dialog visible={this.state.dialogVisible} onDismiss={this._hideDialog} style={styles.sendDialog}>
             <View style={styles.content}>
               <Formik
-                initialValues={{ fromAddress: this.data.address }}
+                initialValues={{ fromAddress: currWallet.address }}
                 onSubmit={values => {
                   Alert.alert(JSON.stringify(values, null, 2));
                   Keyboard.dismiss();
