@@ -1,4 +1,3 @@
-import {AsyncStorage} from 'react-native';
 import SyncStorage from 'sync-storage';
 import decode from 'jwt-decode';
 
@@ -13,7 +12,7 @@ export default class AuthHelper {
       password,
       rememberme: false,
     };
-    if (twoFACode && twoFACode !== '') body.code = twoFACode;
+    if (twoFACode) body.code = twoFACode;
     return this.fetch(`${this.domain}/auth`, { method: 'POST', body: JSON.stringify(body) })
       .then(res => {
         if (res.message.token) {

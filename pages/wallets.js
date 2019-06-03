@@ -1,7 +1,4 @@
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
-import { faPlay } from '@fortawesome/free-solid-svg-icons';
 import { maskAddress } from '../src/helpers/utils';
-import ConcealButton from '../components/ccxButton';
 import { Appbar, Button } from 'react-native-paper';
 import ConcealFAB from '../components/ccxFAB';
 import appData from '../modules/appdata';
@@ -10,12 +7,8 @@ import React from "react";
 import {
   Text,
   View,
-  Alert,
   FlatList,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-  TouchableHighlight
+  StyleSheet
 } from "react-native";
 
 @observer

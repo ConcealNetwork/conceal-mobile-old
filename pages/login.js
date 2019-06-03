@@ -1,29 +1,38 @@
 import React from "react";
 import appData from '../modules/appdata';
 import { Appbar } from 'react-native-paper';
+import ConcealLoader from '../components/ccxLoader';
 import ConcealButton from '../components/ccxButton';
 import { StyleSheet, Text, View, TextInput, TouchableHighlight, Alert } from "react-native";
 
 export default class LoginScreen extends React.Component {
   constructor(props) {
     super(props);
-    state = {
+
+    this.state = {
       email: "",
-      password: ""
+      password: "",
+      loggingIn: false
     };
   }
 
   onAuthenticate = () => {
     const { navigate } = this.props.navigation;
+    this.setState({ loggingIn: true });
+    var selfPointer = this;
 
-    appData.login("", "", null, function (success) {
+    appData.login("taegus.cromis@gmail.com", "philosophem", null, function (success) {
       if (success) {
         appData.dataWallets.fetchWallets(function (success) {
+          selfPointer.setState({ loggingIn: false });
+
           if (success) {
             navigate("Wallet", appData.dataWallets.getDefaultWallet());
           }
         });
       } else {
+        selfPointer.setState({ loggingIn: false });
+
         Alert.alert(
           'Alert Title',
           'We failed!!!',
@@ -45,6 +54,7 @@ export default class LoginScreen extends React.Component {
           />
         </Appbar.Header>
         <View style={styles.container}>
+          <ConcealLoader loading={this.state.loggingIn} />
           <View style={styles.textHeader}>
             <Text style={styles.header}>Conceal Mobile</Text>
             <Text style={styles.welcomeBack}>Welcome back!</Text>

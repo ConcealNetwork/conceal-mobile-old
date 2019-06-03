@@ -98,8 +98,8 @@ export default class Api {
       paymentID,
       wallet,  // origin
     };
-    if (twoFACode && twoFACode !== '') body.code = twoFACode;
-    if (password && password !== '') body.password = password;
+    if (twoFACode) body.code = twoFACode;
+    if (password) body.password = password;
     return this.fetch(`${this.apiURL}/wallet`, { method: 'PUT', body: JSON.stringify(body) })
       .then(res => Promise.resolve(res));
   };
@@ -128,7 +128,7 @@ export default class Api {
     };
     if (this.auth.loggedIn()) {
       headers.token = this.auth.getToken();
-    } 
+    }
 
     return fetch(url, { headers, ...options })
       .then(this._checkStatus)

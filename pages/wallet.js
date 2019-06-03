@@ -1,6 +1,5 @@
-import { Appbar, Dialog, Paragraph, Portal, Avatar, IconButton, Colors } from 'react-native-paper';
+import { Appbar, Dialog, Portal, Avatar, IconButton, Colors } from 'react-native-paper';
 import { Provider as PaperProvider } from 'react-native-paper';
-import { faPlay } from '@fortawesome/free-solid-svg-icons';
 import ConcealTextInput from '../components/ccxTextInput';
 import { maskAddress } from '../src/helpers/utils';
 import ConcealButton from '../components/ccxButton';
@@ -13,11 +12,9 @@ import {
   Text,
   View,
   Alert,
+  Picker,
   FlatList,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-  TouchableHighlight
+  StyleSheet
 } from "react-native";
 
 const dialogTheme = {
@@ -32,7 +29,7 @@ export default class WalletScreen extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { dialogVisible: false };
+    this.state = { sendDialogVisible: false };
   }
 
   onGoBack = () => {
@@ -65,14 +62,17 @@ export default class WalletScreen extends React.Component {
     navigate("Markets", {})
   };
 
-  _showDialog = () => {
-    console.log("show");
-    this.setState({ dialogVisible: true });
+  showSendDialog = () => {
+    var stateObject = this;
+    appData.dataUser.fetchUserData(function (success) {
+      if (success) {
+        stateObject.setState({ sendDialogVisible: true });
+      }
+    });
   };
 
-  _hideDialog = () => {
-    console.log("hide");
-    this.setState({ dialogVisible: false });
+  hideSendDialog = () => {
+    this.setState({ sendDialogVisible: false });
   };
 
   render() {
@@ -142,11 +142,11 @@ export default class WalletScreen extends React.Component {
           />
         </View>
         <View style={styles.footer}>
-          <ConcealButton style={[styles.footerBtn, styles.footerBtnLeft]} onPress={() => this._showDialog()} text="SEND" />
+          <ConcealButton style={[styles.footerBtn, styles.footerBtnLeft]} onPress={() => this.showSendDialog()} text="SEND" />
           <ConcealButton style={[styles.footerBtn, styles.footerBtnRight]} onPress={() => console.log('Pressed')} text="RECEIVE" />
         </View>
         <Portal>
-          <Dialog visible={this.state.dialogVisible} onDismiss={this._hideDialog} style={styles.sendDialog}>
+          <Dialog visible={this.state.sendDialogVisible} onDismiss={this.hideSendDialog} style={styles.sendDialog}>
             <View style={styles.content}>
               <Formik
                 initialValues={{ fromAddress: currWallet.address }}
@@ -158,14 +158,19 @@ export default class WalletScreen extends React.Component {
                 {({ handleChange, handleSubmit, values }) => (
                   <View>
                     <View style={styles.form}>
-                      <ConcealTextInput
-                        onChangeText={handleChange('toAddress')}
-                        value={values.toAddress}
-                        label="To"
-                        placeholder="Address"
-                      />
+                      <Picker
+                        style={styles.toAddress}
+                        selectedValue={this.state.toAddress}
+                        onValueChange={(itemValue, itemIndex) =>
+                          this.setState({ toAddress: itemValue })
+                        }>
+                        {appData.dataUser.getAddressBook().map((item) => {
+                          return <Picker.Item label={item.label} value={item.entryID.toString()} />
+                        })}
+                      </Picker>
                       <ConcealTextInput
                         onChangeText={handleChange('ammount')}
+                        style={styles.ammount}
                         value={values.ammount}
                         label="Amount"
                         placeholder="Amount"
@@ -333,5 +338,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 1,
     padding: 10
+  },
+  toAddress: {
+    width: "100%",
+    color: "#FFA500",
+    backgroundColor: "#212529",
+  },
+  ammount: {
+    borderTopWidth: 1,
+    borderColor: "#212529"
   }
 });

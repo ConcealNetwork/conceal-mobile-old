@@ -1,5 +1,5 @@
 import React from "react";
-import { BottomNavigation, Text } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import { createStackNavigator, createAppContainer } from "react-navigation";
 
 import SendScreen from "./pages/send.js";

@@ -1,4 +1,4 @@
-import { observable, action, autorun } from 'mobx';
+import { observable, action } from 'mobx';
 import AuthHelper from '../src/helpers/AuthHelper.js';
 import Api from '../src/helpers/Api.js';
 
@@ -84,7 +84,7 @@ class dataWallets {
   getDefaultWallet() {
     var wallets = this.getWallets();
 
-    if (wallets.length > 0) {      
+    if (wallets.length > 0) {
       return wallets[0];
     } else {
       return null;
