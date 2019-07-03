@@ -37,7 +37,6 @@ const Login = () => {
         {...bindEmail}
         style={[styles.inputField, styles.textLarge]}
         placeholder="E-mail"
-        defaultValue="taegus.cromis@gmail.com"
         placeholderTextColor={colors.placeholderTextColor}
         keyboardType="email-address"
       />
@@ -46,7 +45,6 @@ const Login = () => {
         secureTextEntry={true}
         style={[styles.inputField, styles.textLarge]}
         placeholder="Password"
-        defaultValue=""
         placeholderTextColor={colors.placeholderTextColor}
       />
       <TextInput
@@ -57,6 +55,7 @@ const Login = () => {
       />
 
       <Button
+        //onPress={() => loginUser({ email, password, twoFACode, id: 'loginForm' })}
         onPress={() => loginUser({ email, password, twoFACode, id: 'loginForm' })}
         title={formSubmitted ? '' : 'Sign In'}
         accessibilityLabel="Log In Button"

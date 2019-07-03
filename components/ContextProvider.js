@@ -20,7 +20,8 @@ const AppContextProvider = props => {
     Auth.login(options)
       .then(res => {
         if (res.result === 'success') {
-          dispatch({ type: 'USER_LOGGED_IN' });
+          logger.log('USER_LOGGED_IN...');
+          dispatch({ type: 'USER_LOGGED_IN', password: options.password });
         } else {
           dispatch({ type: 'DISPLAY_MESSAGE', message: res.message, id });
         }
@@ -178,8 +179,14 @@ const AppContextProvider = props => {
 
   const sendPayment = (wallet, address, paymentID, amount) => {
     logger.log('SENDING PAYMENT...');
-    Api.sendTx(wallet, address, paymentID, amount, '', null, 'password')
-      .then(res => console.log(res))
+    Api.sendTx(wallet, address, paymentID, amount, '', null, state.user.password)
+      .then(res => {
+        if (res.result === 'success') {
+          dispatch({ type: 'PAYMENT_SENT', res })
+        } else {
+          dispatch({ type: 'PAYMENT_FAILED', res })
+        }
+      })
       .catch(e => console.error(e));
   };
 

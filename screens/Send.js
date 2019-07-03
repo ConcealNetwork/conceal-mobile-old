@@ -35,6 +35,15 @@ const SendScreen = () => {
     );
   }
 
+  isFormValid = () => {
+    console.log(state.appData.sendScreen.toAddress && state.appData.sendScreen.toAmmount);
+    if (state.appData.sendScreen.toAddress && state.appData.sendScreen.toAmmount) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   readFromClipboard = async () => {
     const clipboardContent = await Clipboard.getString();
     setAppData({
@@ -103,7 +112,7 @@ const SendScreen = () => {
         isVisible={state.appData.sendScreen.addrListVisible}
         windowBackgroundColor="rgba(255, 255, 255, .5)"
         overlayBackgroundColor={colors.concealBackground}
-        width="80%"
+        width="90%"
         height="90%"
       >
         <View style={styles.overlayWrapper}>
@@ -131,8 +140,17 @@ const SendScreen = () => {
         </View>
       </Overlay>
       <View style={styles.footer}>
-        <ConcealButton style={[styles.footerBtn, styles.footerBtnLeft]} onPress={() => this.sendPayment()} text="SEND" />
-        <ConcealButton style={[styles.footerBtn, styles.footerBtnRight]} onPress={() => console.log('Pressed')} text="SCAN QR" />
+        <ConcealButton
+          style={[styles.footerBtn, styles.footerBtnLeft]}
+          disabled={!this.isFormValid()}
+          onPress={() => this.sendPayment()}
+          text="SEND"
+        />
+        <ConcealButton
+          style={[styles.footerBtn, styles.footerBtnRight]}
+          onPress={() => console.log('Pressed')}
+          text="SCAN QR"
+        />
       </View>
     </PaperProvider>
   )
@@ -208,7 +226,7 @@ const styles = StyleSheet.create({
     top: 10,
     left: 10,
     right: 10,
-    bottom: 20,
+    bottom: 80,
     borderRadius: 10,
     position: 'absolute'
   },

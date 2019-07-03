@@ -28,7 +28,6 @@ const dialogTheme = {
 const WalletScreen = () => {
   const { state } = useContext(AppContext);
   const currWallet = state.wallets.ccx7EeeSSpdRRn7zHni8Rtb5Y3c5UGim333LVWxxD2XCaTkPxWs6DKRXtznxBsofFP8JB32YYBmtwLdoEirjAbYo4DBZjpnEb8;
-  console.log(state);
 
   onGoBack = () => {
     const { goBack } = this.props.navigation;

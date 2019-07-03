@@ -18,33 +18,34 @@ const useAppState = () => {
       redirectToReferrer: false,
       sendTxResponse: null,
       userLoaded: false,
-      walletsLoaded: false,
+      walletsLoaded: false
     },
     markets: {
       stex: {
         apiURL: 'https://api.wallet.conceal.network/api/stex/status',
         ask: 0,
         bid: 0,
-        volume: 0,
+        volume: 0
       },
       tradeogre: {
         apiURL: 'https://tradeogre.com/api/v1/ticker/BTC-CCX',
         ask: 0,
         bid: 0,
-        volume: 0,
+        volume: 0
       },
     },
     network: {
-      blockchainHeight: 0,
+      blockchainHeight: 0
     },
     prices: {
       priceBTCUSD: 0,
-      priceCCXBTC: 0,
+      priceCCXBTC: 0
     },
     user: {
       addressBook: [],
       loggedIn: false,
       userName: '',
+      password: ''
     },
     userSettings: {
       minimumPasswordLength: 8,
@@ -56,7 +57,7 @@ const useAppState = () => {
     wallets: {},
     appData: {
       sendScreen: {
-        addrListVisible: false,
+        addrListVisible: false
       }
     }
   };
@@ -71,7 +72,7 @@ const useAppState = () => {
           ...state,
           user: {
             ...state.user,
-            loggedIn: true,
+            loggedIn: true
           },
         };
         break;
@@ -254,6 +255,11 @@ const useAppState = () => {
         };
         break;
       case 'PAYMENT_SENT':
+        result = {
+          ...state
+        };
+        break;
+      case 'PAYMENT_FAILED':
         result = {
           ...state
         };
