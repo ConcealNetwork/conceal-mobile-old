@@ -48,8 +48,8 @@ const AddressBookScreen = () => {
               <View>
                 <Text style={styles.addressLabel}>{item.label}</Text>
                 <Text style={styles.address}>Address: {maskAddress(item.address)}</Text>
-                <Text style={styles.data}>Payment ID: {item.paymentID}</Text>
-                <Text style={styles.data}>{item.status}</Text>
+                {item.paymentID ? (<Text style={styles.data}>Payment ID: {item.paymentID}</Text>) : null}
+                {item.status ? (<Text style={styles.data}>{item.status}</Text>) : null}
               </View>
               <View style={styles.walletFooter}>
                 <Button style={[styles.footerBtn, styles.footerBtnLeft]} onPress={this.onDeleteAddress()}>

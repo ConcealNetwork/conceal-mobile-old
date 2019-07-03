@@ -1,9 +1,9 @@
 {
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null,
-  "packagerPort": null,
-  "packagerPid": null,
+  "expoServerNgrokUrl": "https://s4-drq.anonymous.conceal-mobile.exp.direct",
+  "packagerNgrokUrl": "https://packager.s4-drq.anonymous.conceal-mobile.exp.direct",
+  "ngrokPid": 20960,
+  "packagerPort": 19001,
+  "packagerPid": 10456,
   "devToolsPort": 19002,
-  "expoServerPort": null
+  "expoServerPort": 19000
 }

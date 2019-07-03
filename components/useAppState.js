@@ -56,8 +56,7 @@ const useAppState = () => {
     wallets: {},
     appData: {
       sendScreen: {
-        toAddress: '',
-        toText: ''
+        addrListVisible: false,
       }
     }
   };

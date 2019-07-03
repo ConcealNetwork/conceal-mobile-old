@@ -1,13 +1,7 @@
 import React from 'react';
-import { Button } from 'react-native-paper';
+import { colors } from '../constants/Colors';
+import { Button } from 'react-native-elements';
 import { StyleSheet, Text } from 'react-native';
-
-const btnTheme = {
-  roundness: 0,
-  colors: {
-    primary: "#FFA500"
-  }
-}
 
 export default function ConcealButton({
   onPress,
@@ -26,23 +20,20 @@ export default function ConcealButton({
 
   return (
     <Button
-      theme={btnTheme}
+      title={text}
       onPress={onPress}
-      style={btnStyles}
-      contentStyle={styles.buttonContent}
-      mode="contained"
-    >
-      <Text style={styles.buttonText}>{text}</Text>
-    </Button>
+      buttonStyle={btnStyles}
+      containerStyle={btnStyles}
+      titleStyle={styles.buttonText}
+    />
   );
 }
 
 const styles = StyleSheet.create({
   button: {
-    borderRadius: 5
-  },
-  buttonContent: {
-    height: 45
+    height: 45,
+    borderRadius: 5,
+    backgroundColor: colors.concealOrange
   },
   buttonText: {
     color: "#FFFFFF",

@@ -4,7 +4,7 @@ import { Platform, StatusBar, View } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 
 import AppContextProvider from './components/ContextProvider';
-import styles from './components/Style';
+import AppStyles from './components/Style';
 import NavigationService from './helpers/NavigationService';
 import AppNavigator from './navigation/AppNavigator';
 
@@ -36,7 +36,7 @@ const App = props => {
         onFinish={handleFinishLoading}
       />
       : <AppContextProvider>
-        <View style={styles.appContainer}>
+        <View style={AppStyles.appContainer}>
           {Platform.OS === 'ios' && <StatusBar barStyle="light-content" />}
           <AppContainer
             ref={navigatorRef => {
