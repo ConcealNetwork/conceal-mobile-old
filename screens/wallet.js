@@ -1,5 +1,4 @@
 import { Appbar, Dialog, Portal, Avatar, IconButton, Colors } from 'react-native-paper';
-import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
 import { Provider as PaperProvider } from 'react-native-paper';
 import NavigationService from '../helpers/NavigationService';
 import ConcealTextInput from '../components/ccxTextInput';
@@ -58,105 +57,85 @@ const WalletScreen = () => {
 
   };
 
-  onSwipeLeft = (gestureState) => {
-    NavigationService.navigate('AddressBook');
-  };
-
-  onSwipeRight = (gestureState) => {
-    NavigationService.navigate('Wallets');
-  };
-
   return (
-    <GestureRecognizer
-      onSwipeLeft={(state) => this.onSwipeLeft(state)}
-      onSwipeRight={(state) => this.onSwipeRight(state)}
-      config={{
-        velocityThreshold: 0.3,
-        directionalOffsetThreshold: 80
-      }}
-      style={{
-        flex: 1
-      }}
-    >
-      <PaperProvider>
-        <Appbar.Header style={styles.appHeader}>
-          <Appbar.Content
-            title="Default Wallet"
+    <PaperProvider>
+      <Appbar.Header style={styles.appHeader}>
+        <Appbar.Content
+          title="Default Wallet"
+        />
+        <Avatar.Image style={styles.Avatar} size={36} source={require('../assets/images/taegus.png')} />
+      </Appbar.Header>
+      <View style={styles.accountOverview}>
+        <Text style={styles.worthDollars}>$ {(state.prices.priceCCXUSD * currWallet.balance.toFixed(2)).toFixed(2)}</Text>
+        <Text style={styles.ammountCCX}>{currWallet.balance.toFixed(2)} CCX</Text>
+        <View style={styles.btcPriceWrapper}>
+          <Icon
+            containerStyle={styles.btcIcon}
+            name='logo-bitcoin'
+            type='ionicon'
+            color='#FFFFFF'
+            size={16}
           />
-          <Avatar.Image style={styles.Avatar} size={36} source={require('../assets/images/taegus.png')} />
-        </Appbar.Header>
-        <View style={styles.accountOverview}>
-          <Text style={styles.worthDollars}>$ {(state.prices.priceCCXUSD * currWallet.balance.toFixed(2)).toFixed(2)}</Text>
-          <Text style={styles.ammountCCX}>{currWallet.balance.toFixed(2)} CCX</Text>
-          <View style={styles.btcPriceWrapper}>
-            <Icon
-              containerStyle={styles.btcIcon}
-              name='logo-bitcoin'
-              type='ionicon'
-              color='#FFFFFF'
-              size={16}
-            />
-            <Text style={styles.worthBTC}>{(state.prices.priceCCXBTC * currWallet.balance.toFixed(2)).toFixed(8)}</Text>
-          </View>
-          <IconButton
-            size={36}
-            icon="settings"
-            color={Colors.white}
-            style={[styles.iconGeneral, styles.iconSettings]}
-            onPress={() => this.onShowSettings()}
-          />
-          <IconButton
-            size={36}
-            icon="account-balance-wallet"
-            color={Colors.white}
-            style={[styles.iconGeneral, styles.iconWallets]}
-            onPress={() => this.onShowWallets()}
-          />
-          <IconButton
-            size={36}
-            icon="library-books"
-            color={Colors.white}
-            style={[styles.iconGeneral, styles.iconAddressBook]}
-            onPress={() => this.onShowAddressBook()}
-          />
-          <IconButton
-            size={36}
-            icon="show-chart"
-            color={Colors.white}
-            style={[styles.iconGeneral, styles.iconMarkets]}
-            onPress={() => this.onShowMarkets()}
-          />
+          <Text style={styles.worthBTC}>{(state.prices.priceCCXBTC * currWallet.balance.toFixed(2)).toFixed(8)}</Text>
         </View>
-        <Text style={styles.txsText}>Transactions</Text>
-        <View style={styles.transactionsWrapper}>
-          <FlatList
-            data={currWallet.transactions}
-            showsVerticalScrollIndicator={false}
-            renderItem={({ item }) =>
-              <View style={styles.flatview}>
-                <Text style={styles.dataTimestamp}>{Moment(item.timestamp).format('LLLL')}</Text>
-                <Text style={styles.dataAmmount}>{item.amount.toFixed(2)} CCX (fee: {item.fee})</Text>
-                <Text style={styles.dataAddress}>{maskAddress(item.address)}</Text>
+        <IconButton
+          size={36}
+          icon="settings"
+          color={Colors.white}
+          style={[styles.iconGeneral, styles.iconSettings]}
+          onPress={() => this.onShowSettings()}
+        />
+        <IconButton
+          size={36}
+          icon="account-balance-wallet"
+          color={Colors.white}
+          style={[styles.iconGeneral, styles.iconWallets]}
+          onPress={() => this.onShowWallets()}
+        />
+        <IconButton
+          size={36}
+          icon="library-books"
+          color={Colors.white}
+          style={[styles.iconGeneral, styles.iconAddressBook]}
+          onPress={() => this.onShowAddressBook()}
+        />
+        <IconButton
+          size={36}
+          icon="show-chart"
+          color={Colors.white}
+          style={[styles.iconGeneral, styles.iconMarkets]}
+          onPress={() => this.onShowMarkets()}
+        />
+      </View>
+      <Text style={styles.txsText}>Transactions</Text>
+      <View style={styles.transactionsWrapper}>
+        <FlatList
+          data={currWallet.transactions}
+          showsVerticalScrollIndicator={false}
+          renderItem={({ item }) =>
+            <View style={styles.flatview}>
+              <Text style={styles.dataTimestamp}>{Moment(item.timestamp).format('LLLL')}</Text>
+              <Text style={styles.dataAmmount}>{item.amount.toFixed(2)} CCX (fee: {item.fee})</Text>
+              <Text style={styles.dataAddress}>{maskAddress(item.address)}</Text>
 
-                <Icon
-                  name={item.type === 'received' ? "md-arrow-down" : "md-arrow-up"}
-                  type='ionicon'
-                  size={32}
-                  color={item.type === 'received' ? Colors.green500 : Colors.red500}
-                  containerStyle={styles.txDirection}
-                  onPress={() => console.log('Pressed')}
-                />
-              </View>
-            }
-            keyExtractor={item => item.hash}
-          />
-        </View>
-        <View style={styles.footer}>
-          <ConcealButton style={[styles.footerBtn, styles.footerBtnLeft]} onPress={() => this.showSendScreen()} text="SEND" />
-          <ConcealButton style={[styles.footerBtn, styles.footerBtnRight]} onPress={() => console.log('Pressed')} text="RECEIVE" />
-        </View>
-      </PaperProvider>
-    </GestureRecognizer>
+              <Icon
+                name={item.type === 'received' ? "md-arrow-down" : "md-arrow-up"}
+                type='ionicon'
+                size={32}
+                color={item.type === 'received' ? Colors.green500 : Colors.red500}
+                containerStyle={styles.txDirection}
+                onPress={() => console.log('Pressed')}
+              />
+            </View>
+          }
+          keyExtractor={item => item.hash}
+        />
+      </View>
+      <View style={styles.footer}>
+        <ConcealButton style={[styles.footerBtn, styles.footerBtnLeft]} onPress={() => this.showSendScreen()} text="SEND" />
+        <ConcealButton style={[styles.footerBtn, styles.footerBtnRight]} onPress={() => console.log('Pressed')} text="RECEIVE" />
+      </View>
+    </PaperProvider>
   );
 }
 

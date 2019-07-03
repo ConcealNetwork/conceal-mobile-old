@@ -16,7 +16,6 @@
     "react-native": "https://github.com/expo/react-native/archive/sdk-33.0.0.tar.gz",
     "react-native-elements": "^1.1.0",
     "react-native-paper": "^2.16.0",
-    "react-native-swipe-gestures": "^1.0.3",
     "react-navigation": "^3.11.0"
   },
   "devDependencies": {
