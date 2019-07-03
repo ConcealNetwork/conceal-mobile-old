@@ -253,13 +253,18 @@ const useAppState = () => {
           },
         };
         break;
+      case 'PAYMENT_SENT':
+        result = {
+          ...state
+        };
+        break;
       case 'APP_UPDATED':
         result = {
           ...state,
           layout: {
             ...state.layout,
             lastUpdate: new Date(),
-          },
+          }
         };
         break;
       case 'SET_INTERVALS':

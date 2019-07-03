@@ -46,7 +46,7 @@ const Login = () => {
         secureTextEntry={true}
         style={[styles.inputField, styles.textLarge]}
         placeholder="Password"
-        defaultValue="philosophem"
+        defaultValue=""
         placeholderTextColor={colors.placeholderTextColor}
       />
       <TextInput

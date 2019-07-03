@@ -176,6 +176,13 @@ const AppContextProvider = props => {
       .catch(e => console.error(e));
   };
 
+  const sendPayment = (wallet, address, paymentID, amount) => {
+    logger.log('SENDING PAYMENT...');
+    Api.sendTx(wallet, address, paymentID, amount, '', null, 'password')
+      .then(res => console.log(res))
+      .catch(e => console.error(e));
+  };
+
   const setAppData = (appData) => {
     logger.log('SETTING APP DATA...');
     dispatch({ type: 'SET_APP_DATA', appData });
@@ -187,6 +194,7 @@ const AppContextProvider = props => {
     getUser,
     check2FA,
     update2FA,
+    sendPayment,
     createWallet,
     getWallets,
     deleteWallet,

@@ -89,13 +89,16 @@ const WalletScreen = () => {
         <View style={styles.accountOverview}>
           <Text style={styles.worthDollars}>$ {(state.prices.priceCCXUSD * currWallet.balance.toFixed(2)).toFixed(2)}</Text>
           <Text style={styles.ammountCCX}>{currWallet.balance.toFixed(2)} CCX</Text>
-          <Icon
-            reverse
-            name='logo-bitcoin'
-            type='ionicon'
-            color='#517fa4'
-          />
-          <Text style={styles.worthBTC}>{(state.prices.priceCCXBTC * currWallet.balance.toFixed(2)).toFixed(8)}</Text>
+          <View style={styles.btcPriceWrapper}>
+            <Icon
+              containerStyle={styles.btcIcon}
+              name='logo-bitcoin'
+              type='ionicon'
+              color='#FFFFFF'
+              size={16}
+            />
+            <Text style={styles.worthBTC}>{(state.prices.priceCCXBTC * currWallet.balance.toFixed(2)).toFixed(8)}</Text>
+          </View>
           <IconButton
             size={36}
             icon="settings"
@@ -292,6 +295,15 @@ const styles = StyleSheet.create({
   ammount: {
     borderTopWidth: 1,
     borderColor: "#212529"
+  },
+  btcPriceWrapper: {
+    height: 20,
+    display: 'flex',
+    flexDirection: 'row',
+  },
+  btcIcon: {
+    marginRight: 5,
+    paddingTop: 2
   }
 });
 

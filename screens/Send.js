@@ -26,6 +26,15 @@ const SendScreen = () => {
     NavigationService.goBack();
   }
 
+  sendPayment = () => {
+    actions.sendPayment(
+      'ccx7EeeSSpdRRn7zHni8Rtb5Y3c5UGim333LVWxxD2XCaTkPxWs6DKRXtznxBsofFP8JB32YYBmtwLdoEirjAbYo4DBZjpnEb8',
+      state.appData.sendScreen.toAddress,
+      state.appData.sendScreen.toPaymendId,
+      state.appData.sendScreen.toAmmount
+    );
+  }
+
   readFromClipboard = async () => {
     const clipboardContent = await Clipboard.getString();
     setAppData({
@@ -122,7 +131,7 @@ const SendScreen = () => {
         </View>
       </Overlay>
       <View style={styles.footer}>
-        <ConcealButton style={[styles.footerBtn, styles.footerBtnLeft]} onPress={() => this.showSendScreen()} text="SEND" />
+        <ConcealButton style={[styles.footerBtn, styles.footerBtnLeft]} onPress={() => this.sendPayment()} text="SEND" />
         <ConcealButton style={[styles.footerBtn, styles.footerBtnRight]} onPress={() => console.log('Pressed')} text="SCAN QR" />
       </View>
     </PaperProvider>
