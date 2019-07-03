@@ -6,7 +6,6 @@ import { AppContext } from '../components/ContextProvider';
 import ConcealButton from '../components/ccxButton';
 import { maskAddress } from '../helpers/utils';
 import { Icon } from 'react-native-elements';
-import { Formik } from 'formik';
 import Moment from "moment";
 import React, { useContext } from "react";
 import {
