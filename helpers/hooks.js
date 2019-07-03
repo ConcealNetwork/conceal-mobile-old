@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 
 export const useFormInput = (init) => {
   const [value, setValue] = useState(init);
-  const onChange = e => setValue(e.target.value);
-  return { value, onChange };
+  const onChangeText = val => setValue(val);
+  const reset = () => setValue('');
+  return { bind: { value, onChangeText }, reset, setValue, value };
 };
 
 export const useFormValidation = (init) => {

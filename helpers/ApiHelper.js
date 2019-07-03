@@ -1,7 +1,8 @@
-export default class Api {
+export default class ApiHelper {
   constructor(options) {
-    this.apiURL = 'https://api.wallet.conceal.network/api';
-    this.auth = options.auth;
+    this.apiURL = options.state.appSettings.apiURL;
+    this.auth = options.Auth;
+    this.token = null;
   }
 
   signUpUser = (userName, email, password) => {
@@ -68,15 +69,8 @@ export default class Api {
       .then(res => Promise.resolve(res));
   };
 
-  getWalletList = () => {
-    console.log(this.auth);
-
-    return this.fetch(`${this.apiURL}/wallet/list`, { method: 'GET' })
-      .then(res => Promise.resolve(res));
-  };
-
-  getWalletDetails = address => {
-    return this.fetch(`${this.apiURL}/wallet/get/address/${address}`, { method: 'GET' })
+  getWallets = () => {
+    return this.fetch(`${this.apiURL}/wallet/unified`, { method: 'GET' })
       .then(res => Promise.resolve(res));
   };
 
@@ -98,8 +92,8 @@ export default class Api {
       paymentID,
       wallet,  // origin
     };
-    if (twoFACode) body.code = twoFACode;
-    if (password) body.password = password;
+    if (twoFACode && twoFACode !== '') body.code = twoFACode;
+    if (password && password !== '') body.password = password;
     return this.fetch(`${this.apiURL}/wallet`, { method: 'PUT', body: JSON.stringify(body) })
       .then(res => Promise.resolve(res));
   };
@@ -110,7 +104,7 @@ export default class Api {
   };
 
   getPrices = pricesURL => {
-    return fetch(`${pricesURL}/simple/price?ids=conceal&vs_currencies=btc&include_last_updated_at=true`)
+    return fetch(`${pricesURL}/simple/price?ids=conceal&vs_currencies=btc,usd&include_last_updated_at=true`)
       .then(r => r.json())
       .then(res => Promise.resolve(res));
   };
@@ -126,13 +120,24 @@ export default class Api {
       Accept: 'application/json',
       'Content-Type': 'application/json',
     };
-    if (this.auth.loggedIn()) {
-      headers.token = this.auth.getToken();
-    }
 
-    return fetch(url, { headers, ...options })
-      .then(this._checkStatus)
-      .then(response => response.json());
+    const f = (url, { headers, ...options }) =>
+      fetch(url, { headers, ...options })
+        .then(this._checkStatus)
+        .then(response => response.json());
+
+    return this.auth.loggedIn()
+      .then(loggedIn => {
+        if (loggedIn) {
+          return this.auth.getToken()
+            .then(token => {
+              headers.token = token;
+              return f(url, { headers, ...options });
+            })
+            .catch(err => console.error(err));
+        }
+        return f(url, { headers, ...options });
+      });
   };
 
   _checkStatus = response => {

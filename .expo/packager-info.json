@@ -1,9 +1,9 @@
 {
-  "expoServerPort": 19000,
-  "expoServerNgrokUrl": "https://ju-u9c.anonymous.conceal-mobile.exp.direct",
-  "packagerNgrokUrl": "https://packager.ju-u9c.anonymous.conceal-mobile.exp.direct",
-  "ngrokPid": 18484,
-  "packagerPort": 19001,
-  "packagerPid": 7176,
-  "devToolsPort": 19002
+  "expoServerNgrokUrl": null,
+  "packagerNgrokUrl": null,
+  "ngrokPid": null,
+  "packagerPort": null,
+  "packagerPid": null,
+  "devToolsPort": 19002,
+  "expoServerPort": null
 }

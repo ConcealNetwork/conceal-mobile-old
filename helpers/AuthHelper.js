@@ -1,30 +1,31 @@
-import SyncStorage from 'sync-storage';
+import { AsyncStorage } from 'react-native';
 import decode from 'jwt-decode';
+
 
 export default class AuthHelper {
   constructor(domain) {
-    this.domain = 'https://api.wallet.conceal.network/api';
+    this.domain = domain;
   }
 
-  login = (email, password, twoFACode) => {
+  login = options => {
+    const { email, password, twoFACode } = options;
     const body = {
       email,
       password,
       rememberme: false,
     };
-    if (twoFACode) body.code = twoFACode;
+    if (twoFACode && twoFACode !== '') body.code = twoFACode;
     return this.fetch(`${this.domain}/auth`, { method: 'POST', body: JSON.stringify(body) })
       .then(res => {
-        if (res.message.token) {
-          this.setToken(res.message.token);
-        }
+        if (res.message.token) this.setToken(res.message.token);
         return Promise.resolve(res);
       });
   };
 
   loggedIn = () => {
-    const token = this.getToken();
-    return !!token && !this.isTokenExpired(token);
+    return this.getToken()
+      .then(token => !!token && !this.isTokenExpired(token))
+      .catch(e => console.error(e));
   };
 
   isTokenExpired = token => {
@@ -36,11 +37,11 @@ export default class AuthHelper {
     }
   };
 
-  setToken = async idToken => (SyncStorage.set('@conceal.mobile:id_token', idToken));
+  setToken = async idToken => await AsyncStorage.setItem('@conceal:id_token', idToken);
 
-  getToken = () => (SyncStorage.get('@conceal.mobile:id_token'));
+  getToken = async () => (await AsyncStorage.getItem('@conceal:id_token'));
 
-  logout = async () => (SyncStorage.removeItem('@conceal.mobile:id_token'));
+  logout = async () => await AsyncStorage.removeItem('@conceal:id_token');
 
   decodeToken = () => (decode(this.getToken()));
 
@@ -49,9 +50,7 @@ export default class AuthHelper {
       Accept: 'application/json',
       'Content-Type': 'application/json'
     };
-    if (this.loggedIn()) {
-      headers['Authorization'] = `Bearer ${this.getToken()}`;
-    }
+    // if (this.loggedIn()) headers.Authorization = `Bearer ${this.getToken()}`;
 
     return fetch(url, { headers, ...options })
       .then(this._checkStatus)

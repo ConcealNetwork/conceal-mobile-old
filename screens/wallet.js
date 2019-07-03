@@ -1,13 +1,15 @@
 import { Appbar, Dialog, Portal, Avatar, IconButton, Colors } from 'react-native-paper';
+import GestureRecognizer, { swipeDirections } from 'react-native-swipe-gestures';
 import { Provider as PaperProvider } from 'react-native-paper';
+import NavigationService from '../helpers/NavigationService';
 import ConcealTextInput from '../components/ccxTextInput';
-import { maskAddress } from '../src/helpers/utils';
+import { AppContext } from '../components/ContextProvider';
 import ConcealButton from '../components/ccxButton';
-import appData from '../modules/appdata';
-import { observer } from "mobx-react";
+import { maskAddress } from '../helpers/utils';
+import { Icon } from 'react-native-elements';
 import { Formik } from 'formik';
 import Moment from "moment";
-import React from "react";
+import React, { useContext } from "react";
 import {
   Text,
   View,
@@ -23,72 +25,77 @@ const dialogTheme = {
   }
 };
 
-@observer
-export default class WalletScreen extends React.Component {
-
-  constructor(props) {
-    super(props);
-
-    this.state = { sendDialogVisible: false };
-  }
+const WalletScreen = () => {
+  const { state } = useContext(AppContext);
+  const currWallet = state.wallets.ccx7EeeSSpdRRn7zHni8Rtb5Y3c5UGim333LVWxxD2XCaTkPxWs6DKRXtznxBsofFP8JB32YYBmtwLdoEirjAbYo4DBZjpnEb8;
+  console.log(state);
 
   onGoBack = () => {
     const { goBack } = this.props.navigation;
     goBack();
-  };
+  }
 
   onShowSettings = () => {
-    const { navigate } = this.props.navigation;
-    navigate("Settings", {})
-  };
+    NavigationService.navigate('Settings');
+  }
 
   onShowWallets = () => {
-    const { navigate } = this.props.navigation;
-    navigate("Wallets", {})
-  };
+    NavigationService.navigate('Wallets');
+  }
 
   onShowAddressBook = () => {
-    const { navigate } = this.props.navigation;
-
-    appData.dataUser.fetchUserData(function (success) {
-      if (success) {
-        navigate("AddressBook", {})
-      }
-    });
-  };
+    NavigationService.navigate('AddressBook');
+  }
 
   onShowMarkets = () => {
-    const { navigate } = this.props.navigation;
-    navigate("Markets", {})
+
+  }
+
+  showSendScreen = () => {
+    NavigationService.navigate('Send');
+  }
+
+  getAddressItem = () => {
+
   };
 
-  showSendDialog = () => {
-    var stateObject = this;
-    appData.dataUser.fetchUserData(function (success) {
-      if (success) {
-        stateObject.setState({ sendDialogVisible: true });
-      }
-    });
+  onSwipeLeft = (gestureState) => {
+    NavigationService.navigate('AddressBook');
   };
 
-  hideSendDialog = () => {
-    this.setState({ sendDialogVisible: false });
+  onSwipeRight = (gestureState) => {
+    NavigationService.navigate('Wallets');
   };
 
-  render() {
-    var currWallet = this.props.navigation.state.params;
-    return (
+  return (
+    <GestureRecognizer
+      onSwipeLeft={(state) => this.onSwipeLeft(state)}
+      onSwipeRight={(state) => this.onSwipeRight(state)}
+      config={{
+        velocityThreshold: 0.3,
+        directionalOffsetThreshold: 80
+      }}
+      style={{
+        flex: 1
+      }}
+    >
       <PaperProvider>
         <Appbar.Header style={styles.appHeader}>
           <Appbar.Content
             title="Default Wallet"
           />
-          <Avatar.Image style={styles.Avatar} size={36} source={require('../assets/taegus.png')} />
+          <Avatar.Image style={styles.Avatar} size={36} source={require('../assets/images/taegus.png')} />
         </Appbar.Header>
         <View style={styles.accountOverview}>
-          <Text style={styles.worthDollars}>$ 65.22</Text>
+          <Text style={styles.worthDollars}>$ {(state.prices.priceCCXUSD * currWallet.balance.toFixed(2)).toFixed(2)}</Text>
           <Text style={styles.ammountCCX}>{currWallet.balance.toFixed(2)} CCX</Text>
-          <Text style={styles.worthBTC}>{'\u20BF'} 0.002345678</Text>
+          <Icon
+            reverse
+            name='logo-bitcoin'
+            type='ionicon'
+            color='#517fa4'
+          />
+          <Text style={styles.worthBTC}>{(state.prices.priceCCXBTC * currWallet.balance.toFixed(2)).toFixed(8)}</Text>
           <IconButton
             size={36}
             icon="settings"
@@ -129,11 +136,12 @@ export default class WalletScreen extends React.Component {
                 <Text style={styles.dataAmmount}>{item.amount.toFixed(2)} CCX (fee: {item.fee})</Text>
                 <Text style={styles.dataAddress}>{maskAddress(item.address)}</Text>
 
-                <IconButton
-                  size={24}
-                  icon={item.type === 'received' ? "arrow-downward" : "arrow-upward"}
+                <Icon
+                  name={item.type === 'received' ? "md-arrow-down" : "md-arrow-up"}
+                  type='ionicon'
+                  size={32}
                   color={item.type === 'received' ? Colors.green500 : Colors.red500}
-                  style={styles.txDirection}
+                  containerStyle={styles.txDirection}
                   onPress={() => console.log('Pressed')}
                 />
               </View>
@@ -142,75 +150,12 @@ export default class WalletScreen extends React.Component {
           />
         </View>
         <View style={styles.footer}>
-          <ConcealButton style={[styles.footerBtn, styles.footerBtnLeft]} onPress={() => this.showSendDialog()} text="SEND" />
+          <ConcealButton style={[styles.footerBtn, styles.footerBtnLeft]} onPress={() => this.showSendScreen()} text="SEND" />
           <ConcealButton style={[styles.footerBtn, styles.footerBtnRight]} onPress={() => console.log('Pressed')} text="RECEIVE" />
         </View>
-        <Portal>
-          <Dialog visible={this.state.sendDialogVisible} onDismiss={this.hideSendDialog} style={styles.sendDialog}>
-            <View style={styles.content}>
-              <Formik
-                initialValues={{ fromAddress: currWallet.address }}
-                onSubmit={values => {
-                  Alert.alert(JSON.stringify(values, null, 2));
-                  Keyboard.dismiss();
-                }
-                }>
-                {({ handleChange, handleSubmit, values }) => (
-                  <View>
-                    <View style={styles.form}>
-                      <Picker
-                        style={styles.toAddress}
-                        selectedValue={this.state.toAddress}
-                        onValueChange={(itemValue, itemIndex) =>
-                          this.setState({ toAddress: itemValue })
-                        }>
-                        {appData.dataUser.getAddressBook().map((item) => {
-                          return <Picker.Item label={item.label} value={item.entryID.toString()} />
-                        })}
-                      </Picker>
-                      <ConcealTextInput
-                        onChangeText={handleChange('ammount')}
-                        style={styles.ammount}
-                        value={values.ammount}
-                        label="Amount"
-                        placeholder="Amount"
-                        keyboardType="numeric"
-                      />
-                      <ConcealTextInput
-                        onChangeText={handleChange('paymentID')}
-                        value={values.paymentID}
-                        label="Payment ID (Optional)"
-                        placeholder="Payment ID"
-                      />
-                      <ConcealTextInput
-                        onChangeText={handleChange('message')}
-                        value={values.message}
-                        label="Message (Optional)"
-                        placeholder="Message"
-                      />
-                      <ConcealTextInput
-                        onChangeText={handleChange('label')}
-                        value={values.label}
-                        label="Label (Optional)"
-                        placeholder="Label"
-                      />
-                      <ConcealTextInput
-                        onChangeText={handleChange('password')}
-                        value={values.password}
-                        label="Password"
-                        placeholder="Password"
-                      />
-                    </View>
-                    <ConcealButton onPress={handleSubmit} text="SEND" />
-                  </View>
-                )}
-              </Formik>
-            </View>
-          </Dialog>
-        </Portal>
       </PaperProvider>
-    );
-  }
+    </GestureRecognizer>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -327,10 +272,10 @@ const styles = StyleSheet.create({
   },
   txDirection: {
     position: 'absolute',
-    width: 24,
-    height: 24,
+    width: 32,
+    height: 32,
     right: 10,
-    top: 10
+    top: 20
   },
   sendDialog: {
     backgroundColor: "#212529",
@@ -349,3 +294,5 @@ const styles = StyleSheet.create({
     borderColor: "#212529"
   }
 });
+
+export default WalletScreen;
