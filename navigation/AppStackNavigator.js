@@ -1,17 +1,18 @@
 import React from 'react';
 import { createStackNavigator, createAppContainer } from 'react-navigation';
 
-import AddressBookScreen from '../screens/addressBook';
+import Wallet from '../screens/Wallet';
 import WalletsScreen from '../screens/wallets';
-import WalletScreen from '../screens/wallet';
-import SendScreen from '../screens/Send';
-import SettingsScreen from '../screens/Settings';
+import AddressBookScreen from '../screens/addressBook';
+import Send from '../screens/Send';
+import Receive from '../screens/Receive';
+import Settings from '../screens/Settings';
 
 
 const AppNavigator = createStackNavigator(
   {
     Wallet: {
-      screen: WalletScreen,
+      screen: Wallet,
       navigationOptions: {
         header: null,
       },
@@ -29,13 +30,19 @@ const AppNavigator = createStackNavigator(
       },
     },
     Send: {
-      screen: SendScreen,
+      screen: Send,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    Receive: {
+      screen: Receive,
       navigationOptions: {
         header: null,
       },
     },
     Settings: {
-      screen: SettingsScreen,
+      screen: Settings,
       navigationOptions: {
         header: null,
       },

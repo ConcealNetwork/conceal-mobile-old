@@ -28,6 +28,5 @@ npm-debug.*
 yarn-debug.*
 yarn-error.*
 
-.idea/
 /.scannerwork
 /.expo-shared

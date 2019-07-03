@@ -19,8 +19,10 @@ import {
 const SendScreen = () => {
   const { state, actions } = useContext(AppContext);
   const { setAppData } = actions;
-  const currWallet = state.wallets.ccx7EeeSSpdRRn7zHni8Rtb5Y3c5UGim333LVWxxD2XCaTkPxWs6DKRXtznxBsofFP8JB32YYBmtwLdoEirjAbYo4DBZjpnEb8;
-  const addressBook = state.user.addressBook;
+  const { user, wallets } = state;
+  const currWallet = Object.keys(wallets).length > 0
+    ? wallets[Object.keys(wallets)[0]]
+    : null;
 
   onGoBack = () => {
     NavigationService.goBack();
@@ -118,7 +120,7 @@ const SendScreen = () => {
         <View style={styles.overlayWrapper}>
           <View style={styles.addressWrapper}>
             <FlatList
-              data={addressBook}
+              data={user.addressBook}
               showsVerticalScrollIndicator={false}
               renderItem={({ item }) =>
                 <TouchableOpacity onPress={() => setAppData({ sendScreen: { addrListVisible: false, toAddress: item.address, toPaymendId: item.paymentID, toLabel: item.label } })}>
