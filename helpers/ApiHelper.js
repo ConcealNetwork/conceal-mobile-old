@@ -47,6 +47,25 @@ export default class ApiHelper {
       .then(res => Promise.resolve(res));
   };
 
+  addContact = (label, address, paymentID, entryID=null, edit=false) => {
+    const options = {
+      method: edit ? 'PATCH' : 'POST',
+      body: JSON.stringify({
+        entryID,
+        label,
+        address,
+        paymentID,
+      })
+    };
+    return this.fetch(`${this.apiURL}/address-book`, options)
+      .then(res => Promise.resolve(res));
+  };
+
+  deleteContact = entryID => {
+    return this.fetch(`${this.apiURL}/address-book/delete/entryID/${entryID}`, { method: 'DELETE' })
+      .then(res => Promise.resolve(res));
+  };
+
   getBlockchainHeight = () => {
     return this.fetch(`${this.apiURL}/status/height`, { method: 'GET' })
       .then(res => Promise.resolve(res));

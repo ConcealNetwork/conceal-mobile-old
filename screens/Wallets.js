@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Text, View, FlatList, StyleSheet } from 'react-native';
+import { Alert, Text, View, FlatList, StyleSheet } from 'react-native';
 import { Appbar, Button } from 'react-native-paper';
 import NavigationService from '../helpers/NavigationService';
 import { AppContext } from '../components/ContextProvider';
@@ -52,8 +52,18 @@ const Wallets = () => {
               <View style={styles.walletFooter}>
                 <Button
                   style={[styles.footerBtn, styles.footerBtnLeft]}
-                  onPress={() => deleteWallet(item.address)}
                   disabled={!walletsLoaded || item.total !== 0}
+                  onPress={() => {
+                    Alert.alert(
+                      'Delete Wallet',
+                      'You are about to delete this wallet PERMANENTLY! Do you really wish to proceed?',
+                      [
+                        { text: 'OK', onPress: () => deleteWallet(item.address) },
+                        { text: 'Cancel', style: 'cancel' },
+                      ],
+                      { cancelable: false },
+                    );
+                  }}
                 >
                   <Text style={styles.buttonText}>DELETE</Text>
                 </Button>

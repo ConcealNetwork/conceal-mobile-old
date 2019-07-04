@@ -3,7 +3,7 @@ import { createStackNavigator, createAppContainer } from 'react-navigation';
 
 import Wallet from '../screens/Wallet';
 import Wallets from '../screens/Wallets';
-import AddressBookScreen from '../screens/addressBook';
+import AddressBook from '../screens/AddressBook';
 import Send from '../screens/Send';
 import Receive from '../screens/Receive';
 import Settings from '../screens/Settings';
@@ -24,7 +24,7 @@ const AppNavigator = createStackNavigator(
       },
     },
     AddressBook: {
-      screen: AddressBookScreen,
+      screen: AddressBook,
       navigationOptions: {
         header: null,
       },
