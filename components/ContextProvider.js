@@ -47,6 +47,37 @@ const AppContextProvider = props => {
       .catch(e => console.error(e));
   };
 
+  const addContact = (contact, extras) => {
+    const { label, address, paymentID, entryID, edit, id } = contact;
+    let message;
+    Api.addContact(label, address, paymentID, entryID, edit)
+      .then(res => {
+        if (res.result === 'success') {
+          getUser();
+          extras.forEach(fn => fn());
+        } else {
+          message = res.message;
+        }
+      })
+      .catch(err => { message = `ERROR ${err}` })
+      .finally(() => message && dispatch({ type: 'DISPLAY_MESSAGE', message, id }));
+  };
+
+  const deleteContact = contact => {
+    const { entryID } = contact;
+    let message;
+    Api.deleteContact(entryID)
+      .then(res => {
+        if (res.result === 'success') {
+          getUser();
+        } else {
+          message = res.message;
+        }
+      })
+      .catch(err => { message = `ERROR ${err}` })
+      .finally(() => message && dispatch({ type: 'DISPLAY_MESSAGE', message }));
+  };
+
   const check2FA = () => {
     logger.log('CHECKING 2FA...');
     let message;
@@ -101,11 +132,19 @@ const AppContextProvider = props => {
 
   const getWallets = () => {
     logger.log('GETTING WALLETS...');
+    const updatedWallets = updatedState.current.wallets;
     let message;
     Api.getWallets()
       .then(res => {
         if (res.result === 'success') {
           const wallets = res.message.wallets;
+          if (Object.keys(wallets).length > 0) {
+            const selectedAddress = Object.keys(updatedWallets).find(a => updatedWallets[a].selected) || Object.keys(wallets)[0];
+            wallets[selectedAddress].selected = true;
+          }
+          Object.keys(updatedWallets).map(address =>
+            !wallets[address] && dispatch({ type: 'DELETE_WALLET', address })
+          );
           dispatch({ type: 'UPDATE_WALLETS', wallets });
         } else {
           message = res.message;
@@ -143,11 +182,22 @@ const AppContextProvider = props => {
     }
   };
 
+  const switchWallet = address => {
+    logger.log(`SWITCHING WALLET ${address}...`);
+    const { wallets } = state;
+    Object.keys(wallets).map(wallet => {
+      wallets[wallet].selected = wallet === address;
+    });
+    dispatch({ type: 'UPDATE_WALLETS', wallets });
+    NavigationService.navigate('Wallet');
+  };
+
   const deleteWallet = address => {
-    logger.log('DELETING WALLET...');
+    logger.log(`DELETING WALLET ${address}...`);
     Api.deleteWallet(address)
       .then(res => res.result === 'success' && dispatch({ type: 'DELETE_WALLET', address }))
-      .catch(e => console.error(e));
+      .catch(e => console.error(e))
+      .finally(() => getWallets());
   };
 
   const getBlockchainHeight = () => {
@@ -199,11 +249,14 @@ const AppContextProvider = props => {
     loginUser,
     logoutUser,
     getUser,
+    addContact,
+    deleteContact,
     check2FA,
     update2FA,
     sendPayment,
     createWallet,
     getWallets,
+    switchWallet,
     deleteWallet,
     getWalletKeys,
     setAppData
