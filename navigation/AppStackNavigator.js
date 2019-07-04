@@ -2,7 +2,7 @@ import React from 'react';
 import { createStackNavigator, createAppContainer } from 'react-navigation';
 
 import Wallet from '../screens/Wallet';
-import WalletsScreen from '../screens/wallets';
+import Wallets from '../screens/Wallets';
 import AddressBookScreen from '../screens/addressBook';
 import Send from '../screens/Send';
 import Receive from '../screens/Receive';
@@ -18,7 +18,7 @@ const AppNavigator = createStackNavigator(
       },
     },
     Wallets: {
-      screen: WalletsScreen,
+      screen: Wallets,
       navigationOptions: {
         header: null,
       },

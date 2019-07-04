@@ -14,7 +14,7 @@ const Wallet = () => {
   const { state } = useContext(AppContext);
   const { appSettings, layout, prices, user, wallets } = state;
   const currWallet = Object.keys(wallets).length > 0 && layout.walletsLoaded
-    ? wallets[Object.keys(wallets)[0]]
+    ? wallets[Object.keys(wallets).find(address => wallets[address].selected)]
     : null;
 
   const formatOptions = {

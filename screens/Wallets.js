@@ -1,60 +1,43 @@
-import NavigationService from '../helpers/NavigationService';
+import React, { useContext } from 'react';
+import { Text, View, FlatList, StyleSheet } from 'react-native';
 import { Appbar, Button } from 'react-native-paper';
+import NavigationService from '../helpers/NavigationService';
+import { AppContext } from '../components/ContextProvider';
 import { maskAddress } from '../helpers/utils';
 import ConcealFAB from '../components/ccxFAB';
-import { AppContext } from '../components/ContextProvider';
-import React, { useContext } from "react";
-import {
-  Text,
-  View,
-  FlatList,
-  StyleSheet
-} from "react-native";
 
-const WalletsScreen = () => {
-  const { state } = useContext(AppContext);
-  const wallets = [];
 
-  Object.keys(state.wallets).forEach(key => {
-    var wallet = state.wallets[key];
-    wallet.address = key;
-    wallets.push(wallet);
-  });
+const Wallets = () => {
+  const { actions, state } = useContext(AppContext);
+  const { createWallet, deleteWallet, switchWallet } = actions;
+  const { appSettings, layout, wallets } = state;
+  const { walletsLoaded } = layout;
 
-  onCreateWallet = () => {
-
-  }
-
-  onDeleteWallet = () => {
-
-  }
-
-  onExportWallet = () => {
-
-  }
-
-  onSelectWallet = (wallet) => {
-    const { navigate } = this.props.navigation;
-    navigate("Wallet", wallet);
-  }
-
-  onGoBack = () => {
-    NavigationService.goBack();
-  }
+  const walletsList = Object.keys(wallets)
+    .reduce((acc, curr) => {
+      const wallet = wallets[curr];
+      wallet.address = curr;
+      acc.push(wallet);
+      return acc;
+    }, []);
 
   return (
     <View>
       <Appbar.Header style={styles.appHeader}>
-        <Appbar.BackAction onPress={() => this.onGoBack()} />
+        <Appbar.BackAction onPress={() => NavigationService.goBack()} />
         <Appbar.Content
           title="Wallets"
         />
-        <Appbar.Action icon="add-circle-outline" size={36} onPress={() => this.onCreateWallet()} />
+        {walletsLoaded && (walletsList.length < appSettings.maxWallets || walletsList.length === 0) &&
+          <Appbar.Action icon="add-circle-outline" size={36} onPress={() => createWallet()}/>
+        }
       </Appbar.Header>
       <View style={styles.walletsWrapper}>
         <FlatList
-          data={wallets}
+          style={styles.flatList}
+          data={walletsList}
           showsVerticalScrollIndicator={false}
+          keyExtractor={item => item.address}
           renderItem={({ item }) =>
             <View style={styles.flatview}>
               <View>
@@ -63,33 +46,36 @@ const WalletsScreen = () => {
                 <Text style={styles.data}>Locked: {item.locked} CCX</Text>
                 <Text style={styles.data}>{item.status}</Text>
                 <View style={styles.buttonsWrapper}>
-                  <ConcealFAB
-                    onPress={() => this.onSelectWallet(item)}
-                  />
+                  <ConcealFAB onPress={() => {switchWallet(item.address)}} />
                 </View>
               </View>
               <View style={styles.walletFooter}>
-                <Button style={[styles.footerBtn, styles.footerBtnLeft]} onPress={this.onDeleteWallet()}>
+                <Button
+                  style={[styles.footerBtn, styles.footerBtnLeft]}
+                  onPress={() => deleteWallet(item.address)}
+                  disabled={!walletsLoaded || item.total !== 0}
+                >
                   <Text style={styles.buttonText}>DELETE</Text>
                 </Button>
-                <Button style={[styles.footerBtn, styles.footerBtnRight]} onPress={this.onExportWallet()}>
+                <Button
+                  style={[styles.footerBtn, styles.footerBtnRight]}
+                >
                   <Text style={styles.buttonText}>EXPORT</Text>
                 </Button>
               </View>
             </View>
           }
-          keyExtractor={item => item.address}
         />
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   appHeader: {
     borderBottomWidth: 1,
     backgroundColor: '#212529',
-    borderBottomColor: "#343a40"
+    borderBottomColor: '#343a40'
   },
   buttonsWrapper: {
     position: 'absolute',
@@ -97,11 +83,14 @@ const styles = StyleSheet.create({
     top: 15
   },
   icon: {
-    color: "orange"
-    //color: "#CCC"
+    color: 'orange'
+    //color: '#CCC'
+  },
+  flatList: {
+    height: '100%',
   },
   flatview: {
-    backgroundColor: "#212529",
+    backgroundColor: '#212529',
     justifyContent: 'center',
     borderRadius: 10,
     marginBottom: 5,
@@ -109,14 +98,14 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   address: {
-    color: "#FFFFFF",
+    color: '#FFFFFF',
     fontSize: 18
   },
   balance: {
-    color: "#FFA500",
+    color: '#FFA500',
   },
   data: {
-    color: "#AAAAAA"
+    color: '#AAAAAA'
   },
   buttonContainer: {
     margin: 5
@@ -134,11 +123,11 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 40,
     marginTop: 10,
-    color: "#FFFFFF",
+    color: '#FFFFFF',
     borderWidth: 0,
     borderRadius: 0,
     borderBottomWidth: 2,
-    borderColor: "#FFA500",
+    borderColor: '#FFA500',
     backgroundColor: 'rgba(0, 0, 0, 0)'
   },
   footerBtnRight: {
@@ -148,8 +137,8 @@ const styles = StyleSheet.create({
     marginRight: 5
   },
   buttonText: {
-    color: "#FFFFFF"
+    color: '#FFFFFF'
   }
 });
 
-export default WalletsScreen;
+export default Wallets;
