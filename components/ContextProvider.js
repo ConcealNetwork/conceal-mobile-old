@@ -31,6 +31,63 @@ const AppContextProvider = props => {
       .catch(err => dispatch({ type: 'DISPLAY_MESSAGE', message: `ERROR ${err}`, id }));
   };
 
+  const signUpUser = options => {
+    const { userName, email, password, id } = options;
+    let message;
+    dispatch({ type: 'FORM_SUBMITTED', value: true });
+    Api.signUpUser(userName, email, password)
+      .then(res => {
+        message = res.message;
+        if (res.result === 'success') {
+          message = 'Please check your email and follow the instructions to activate your account.';
+          // return props.history.replace('/login');
+        }
+      })
+      .catch(err => { message = `ERROR ${err}` })
+      .finally(() => {
+        dispatch({ type: 'DISPLAY_MESSAGE', message, id });
+        dispatch({ type: 'FORM_SUBMITTED', value: false });
+      });
+  };
+
+  const resetPassword = options => {
+    const { email, id } = options;
+    let message;
+    Api.resetPassword(email)
+      .then(res => {
+        message = res.message;
+        if (res.result === 'success') {
+          message = 'Please check your email and follow instructions to reset password.';
+          Auth.logout();
+          dispatch({ type: 'CLEAR_APP' });
+          NavigationService.navigate('Login');
+        }
+      })
+      .catch(err => { message = `ERROR ${err}` })
+      .finally(() => {
+        dispatch({ type: 'DISPLAY_MESSAGE', message, id });
+      });
+  };
+
+  const resetPasswordConfirm = options => {
+    const { password, token, id } = options;
+    let message;
+    dispatch({ type: 'FORM_SUBMITTED', value: true });
+    Api.resetPasswordConfirm(password, token)
+      .then(res => {
+        message = res.message;
+        if (res.result === 'success') {
+          message = (<>Password successfully changed.<br />Please log in.</>);
+          // return props.history.replace('/login');
+        }
+      })
+      .catch(err => { message = `ERROR ${err}` })
+      .finally(() => {
+        dispatch({ type: 'DISPLAY_MESSAGE', message, id });
+        dispatch({ type: 'FORM_SUBMITTED', value: false });
+      });
+  };
+
   const logoutUser = () => {
     logger.log('LOGGING OUT...');
     Auth.logout()
@@ -247,6 +304,9 @@ const AppContextProvider = props => {
 
   const actions = {
     loginUser,
+    signUpUser,
+    resetPassword,
+    resetPasswordConfirm,
     logoutUser,
     getUser,
     addContact,
