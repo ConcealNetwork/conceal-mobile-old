@@ -17,6 +17,7 @@ export default StyleSheet.create({
     padding: 10,
   },
   loginView: {
+    flex: 1,
     paddingTop: 60,
     alignItems: 'center',
   },
