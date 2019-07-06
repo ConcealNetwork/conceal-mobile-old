@@ -9,6 +9,7 @@ export default StyleSheet.create({
   },
   viewContainer: {
     flex: 1,
+    padding: 15,
     backgroundColor: colors.concealBlack,
   },
   horizontal: {
@@ -35,7 +36,7 @@ export default StyleSheet.create({
     fontSize: 16,
   },
   textLarge: {
-    fontSize: 24,
+    fontSize: 20,
   },
   textOrange: {
     fontFamily: 'Roboto',
@@ -69,8 +70,8 @@ export default StyleSheet.create({
     width: '100%',
     height: 40,
     marginTop: 5,
-    marginBottom: 5,
     borderWidth: 0,
+    marginBottom: 5,
     borderBottomWidth: 1,
     borderColor: 'rgb(55, 55, 55)',
     color: 'rgb(255, 255, 255)',

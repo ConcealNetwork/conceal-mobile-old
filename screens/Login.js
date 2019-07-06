@@ -1,7 +1,8 @@
 import React, { useContext } from 'react';
-import { Animated, Keyboard, Text, TextInput, TouchableWithoutFeedback, View } from 'react-native';
+import { Animated, Keyboard, Text, TextInput, TouchableWithoutFeedback, View, StyleSheet } from 'react-native';
+import ConcealButton from '../components/ccxButton';
 
-import { Button } from 'react-native-elements';
+import { Button, Image } from 'react-native-elements';
 import SlidingUpPanel from 'rn-sliding-up-panel';
 
 import { AppContext } from '../components/ContextProvider';
@@ -9,7 +10,7 @@ import { useFormInput, useFormValidation } from '../helpers/hooks';
 import SignUp from './SignUp';
 import ResetPassword from './ResetPassword';
 import { colors } from '../constants/Colors';
-import styles from '../components/Style';
+import AppStyles from '../components/Style';
 
 
 const Login = () => {
@@ -33,18 +34,22 @@ const Login = () => {
   const formValid = useFormValidation(formValidation);
 
   return (
-    <View style={styles.viewContainer}>
+    <View style={AppStyles.viewContainer}>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <View style={styles.loginView}>
-          <Text style={styles.title}>SIGN IN</Text>
+        <View style={AppStyles.loginView}>
+          <Image
+            source={require('../assets/images/icon.png')}
+            style={{ width: 150, height: 150 }}
+          />
+          <Text style={AppStyles.title}>SIGN IN</Text>
 
           {(message.loginForm || message.signUpForm) &&
-            <Text style={styles.textDanger}>{message.signUpForm || message.loginForm}</Text>
+            <Text style={AppStyles.textDanger}>{message.signUpForm || message.loginForm}</Text>
           }
 
           <TextInput
             {...bindEmail}
-            style={[styles.inputField, styles.textLarge]}
+            style={[AppStyles.inputField, AppStyles.textLarge]}
             placeholder="E-mail"
             placeholderTextColor={colors.placeholderTextColor}
             keyboardType="email-address"
@@ -53,54 +58,50 @@ const Login = () => {
           <TextInput
             {...bindPassword}
             secureTextEntry={true}
-            style={[styles.inputField, styles.textLarge]}
+            style={[AppStyles.inputField, AppStyles.textLarge]}
             placeholder="Password"
             placeholderTextColor={colors.placeholderTextColor}
             textContentType="password"
           />
           <TextInput
             {...bindTwoFACode}
-            style={[styles.inputField, styles.textLarge]}
+            style={[AppStyles.inputField, AppStyles.textLarge]}
             placeholder="2 Factor Authentication Code"
             placeholderTextColor={colors.placeholderTextColor}
             keyboardType="numeric"
             textContentType="none"
           />
 
-          <Button
-            onPress={() => loginUser({ email, password, twoFACode, id: 'loginForm' })}
-            title={formSubmitted ? '' : 'Sign In'}
-            accessibilityLabel="Log In Button"
-            disabled={formSubmitted || !formValid}
-            buttonStyle={[styles.submitButton, styles.loginButton]}
-            disabledStyle={styles.submitButtonDisabled}
-            titleStyle={styles.buttonTitle}
-            disabledTitleStyle={styles.buttonTitleDisabled}
-            loading={formSubmitted}
-            loadingStyle={styles.submitButtonLoading}
-            loadingProps={{ color: colors.concealOrange }}
-          />
+          <View style={styles.footer}>
+            <ConcealButton
+              onPress={() => loginUser({ email, password, twoFACode, id: 'loginForm' })}
+              text={formSubmitted ? '' : 'Sign In'}
+              accessibilityLabel="Log In Button"
+              disabled={formSubmitted || !formValid}
+              style={[styles.footerBtn, styles.footerBtnLeft]}
+              loading={formSubmitted}
+              loadingStyle={AppStyles.submitButtonLoading}
+              loadingProps={{ color: colors.concealOrange }}
+            />
 
-          <Button
-            onPress={() => signUpPanel.show()}
-            title="Sign Up"
-            accessibilityLabel="Sign Up Button"
-            disabled={formSubmitted}
-            buttonStyle={[styles.submitButton, styles.loginButton]}
-            disabledStyle={styles.submitButtonDisabled}
-            titleStyle={styles.buttonTitle}
-            disabledTitleStyle={styles.buttonTitleDisabled}
-          />
+            <ConcealButton
+              onPress={() => signUpPanel.show()}
+              text="Sign Up"
+              style={[styles.footerBtn, styles.footerBtnRight]}
+              accessibilityLabel="Sign Up Button"
+              disabled={formSubmitted}
+            />
+          </View>
 
           <Button
             onPress={() => resetPasswordPanel.show()}
             title="Reset Password"
             accessibilityLabel="Reset Password Up Button"
             disabled={formSubmitted}
-            buttonStyle={[styles.submitButton, styles.loginButton]}
-            disabledStyle={styles.submitButtonDisabled}
-            titleStyle={styles.buttonTitle}
-            disabledTitleStyle={styles.buttonTitleDisabled}
+            buttonStyle={[AppStyles.submitButton, AppStyles.loginButton]}
+            disabledStyle={AppStyles.submitButtonDisabled}
+            titleStyle={AppStyles.buttonTitle}
+            disabledTitleStyle={AppStyles.buttonTitleDisabled}
           />
 
 
@@ -130,5 +131,25 @@ const Login = () => {
     </View>
   )
 };
+
+const styles = StyleSheet.create({
+  footer: {
+    flex: 1,
+    marginTop: 15,
+    alignItems: 'stretch',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  footerBtn: {
+    flex: 1,
+  },
+  footerBtnRight: {
+    marginLeft: 5,
+  },
+  footerBtnLeft: {
+    marginRight: 5,
+  }
+});
+
 
 export default Login;

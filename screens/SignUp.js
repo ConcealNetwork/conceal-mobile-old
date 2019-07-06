@@ -1,10 +1,11 @@
 import React, { useContext } from 'react';
-import { Text, TextInput, View } from 'react-native';
-import { Button } from 'react-native-elements';
+import { Text, TextInput, View, StyleSheet } from 'react-native';
+import { Image } from 'react-native-elements';
+import ConcealButton from '../components/ccxButton';
 
 import { AppContext } from '../components/ContextProvider';
 import { useFormInput, useFormValidation } from '../helpers/hooks';
-import styles from '../components/Style';
+import AppStyles from '../components/Style';
 import { colors } from '../constants/Colors';
 
 
@@ -26,16 +27,20 @@ const SignUp = props => {
   const formValid = useFormValidation(formValidation);
 
   return (
-    <View style={[styles.viewContainer, styles.loginView]}>
-      <Text style={styles.title}>SIGN UP</Text>
+    <View style={[AppStyles.viewContainer, AppStyles.loginView]}>
+      <Image
+        source={require('../assets/images/icon.png')}
+        style={{ width: 150, height: 150 }}
+      />
+      <Text style={AppStyles.title}>SIGN UP</Text>
 
       {message.signUpForm &&
-        <Text style={styles.textDanger}>{message.signUpForm}</Text>
+        <Text style={AppStyles.textDanger}>{message.signUpForm}</Text>
       }
 
       <TextInput
         {...bindUserName}
-        style={[styles.inputField, styles.textLarge]}
+        style={[AppStyles.inputField, AppStyles.textLarge]}
         placeholder="User Name"
         placeholderTextColor={colors.placeholderTextColor}
         textContentType="none"
@@ -43,7 +48,7 @@ const SignUp = props => {
 
       <TextInput
         {...bindEmail}
-        style={[styles.inputField, styles.textLarge]}
+        style={[AppStyles.inputField, AppStyles.textLarge]}
         placeholder="E-mail"
         placeholderTextColor={colors.placeholderTextColor}
         keyboardType="email-address"
@@ -52,32 +57,53 @@ const SignUp = props => {
       <TextInput
         {...bindPassword}
         secureTextEntry={true}
-        style={[styles.inputField, styles.textLarge]}
+        style={[AppStyles.inputField, AppStyles.textLarge]}
         placeholder="Password"
         placeholderTextColor={colors.placeholderTextColor}
         textContentType="newPassword"
       />
 
-      <Button
-        onPress={() => signUpUser({ userName, email, password, id: 'signUpForm' })}
-        title={formSubmitted ? '' : 'Sign Up'}
-        accessibilityLabel="Sign Up Button"
-        disabled={formSubmitted || !formValid}
-        buttonStyle={[styles.submitButton, styles.loginButton]}
-        disabledStyle={styles.submitButtonDisabled}
-        titleStyle={styles.buttonTitle}
-        disabledTitleStyle={styles.buttonTitleDisabled}
-        loading={formSubmitted}
-        loadingStyle={styles.submitButtonLoading}
-        loadingProps={{ color: colors.concealOrange }}
-      />
-      <Button
-        onPress={() => hidePanel()}
-        title="Cancel"
-        accessibilityLabel="Cancel Button"
-      />
+      <View style={styles.footer}>
+        <ConcealButton
+          onPress={() => signUpUser({ userName, email, password, id: 'signUpForm' })}
+          text={formSubmitted ? '' : 'Sign Up'}
+          accessibilityLabel="Sign Up Button"
+          disabled={formSubmitted || !formValid}
+          style={[styles.footerBtn, styles.footerBtnLeft]}
+          loading={formSubmitted}
+          loadingStyle={AppStyles.submitButtonLoading}
+          loadingProps={{ color: colors.concealOrange }}
+        />
+        <ConcealButton
+          onPress={() => hidePanel()}
+          text="Cancel"
+          style={[styles.footerBtn, styles.footerBtnRight]}
+          accessibilityLabel="Cancel Button"
+        />
+      </View>
     </View>
   )
 };
+
+const styles = StyleSheet.create({
+  footer: {
+    flex: 1,
+    marginTop: 15,
+    alignItems: 'stretch',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  footerBtn: {
+    flex: 1,
+  },
+  footerBtnRight: {
+    marginLeft: 5,
+  },
+  footerBtnLeft: {
+    marginRight: 5,
+  }
+});
+
+
 
 export default SignUp;

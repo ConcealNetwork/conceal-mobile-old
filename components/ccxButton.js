@@ -4,8 +4,11 @@ import { Button } from 'react-native-elements';
 import { StyleSheet, Text } from 'react-native';
 
 export default function ConcealButton({
+  loadingStyle,
+  loadingProps,
   disabled,
   onPress,
+  loading,
   style,
   text
 }) {
@@ -17,14 +20,17 @@ export default function ConcealButton({
 
   return (
     <Button
-      title={text}
-      onPress={onPress}
-      disabled={disabled}
-      buttonStyle={btnStyles}
-      containerStyle={style}
-      titleStyle={styles.btnText}
-      disabledStyle={styles.btnDisabled}
-      disabledTitleStyle={styles.btnDisabledText}
+      title={text || ''}
+      onPress={onPress || null}
+      disabled={disabled || null}
+      buttonStyle={btnStyles || null}
+      containerStyle={style || null}
+      titleStyle={styles.btnText || null}
+      disabledStyle={styles.btnDisabled || null}
+      disabledTitleStyle={styles.btnDisabledText || null}
+      loadingStyle={loadingStyle || null}
+      loadingProps={loadingProps || null}
+      loading={loading || null}
     />
   );
 }
