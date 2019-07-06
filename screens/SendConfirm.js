@@ -1,3 +1,4 @@
+import { useFormInput, useFormValidation } from '../helpers/hooks';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { Input, Icon, Overlay } from 'react-native-elements';
 import NavigationService from '../helpers/NavigationService';
@@ -18,14 +19,13 @@ import {
 const SendConfirmScreen = () => {
   const { state, actions } = useContext(AppContext);
   const { setAppData } = actions;
-  const { user, wallets } = state;
+  const { user, userSettings, wallets } = state;
   const currWallet = Object.keys(wallets).length > 0
     ? wallets[Object.keys(wallets).find(address => wallets[address].selected)]
     : null;
 
-  onGoBack = () => {
-    NavigationService.goBack();
-  }
+  const { value: password, bind: bindPassword } = useFormInput('');
+  const { value: twoFACode, bind: bindTwoFACode } = useFormInput('');
 
   toogleSecurePassword = () => {
     setAppData({
@@ -40,28 +40,26 @@ const SendConfirmScreen = () => {
       currWallet.addr,
       state.appData.sendScreen.toAddress,
       state.appData.sendScreen.toPaymendId,
-      state.appData.sendScreen.toAmmount
+      state.appData.sendScreen.toAmmount,
+      twoFACode,
+      password
     );
   }
 
-  isFormValid = () => {
-    if (state.appData.sendScreen.toAddress && state.appData.sendScreen.toAmmount) {
-      return true;
-    } else {
-      return false;
-    }
-  }
+  const formValidation = (password !== '' && password.length >= userSettings.minimumPasswordLength);
+  const formValid = useFormValidation(formValidation);
 
   return (
     <PaperProvider>
       <Appbar.Header style={styles.appHeader}>
-        <Appbar.BackAction onPress={() => this.onGoBack()} />
+        <Appbar.BackAction onPress={() => NavigationService.goBack()} />
         <Appbar.Content
           title="Confirm sending"
         />
       </Appbar.Header>
       <View style={styles.walletWrapper}>
         <Input
+          {...bindPassword}
           placeholder='please enter your password...'
           inputStyle={styles.toAddress}
           containerStyle={styles.sendInput}
@@ -77,21 +75,24 @@ const SendConfirmScreen = () => {
             />
           }
         />
-        <Input
-          placeholder='please enter F2A code if enabled...'
-          inputStyle={styles.toAddress}
-          containerStyle={styles.sendInput}
-          keyboardType='numeric'
-          rightIcon={
-            <Icon
-              onPress={() => console.log("pressed")}
-              name='md-trash'
-              type='ionicon'
-              color='white'
-              size={24}
-            />
-          }
-        />
+        {userSettings.twoFAEnabled ? (
+          <Input
+            {...bindTwoFACode}
+            placeholder='please enter F2A code if enabled...'
+            inputStyle={styles.toAddress}
+            containerStyle={styles.sendInput}
+            keyboardType='numeric'
+            rightIcon={
+              <Icon
+                onPress={() => console.log("pressed")}
+                name='md-trash'
+                type='ionicon'
+                color='white'
+                size={24}
+              />
+            }
+          />
+        ) : null}
         <View style={styles.sendSummaryWrapper}>
           <Text style={styles.sendSummary}>You are sending <Text style={styles.sendSummaryHighlight}>{state.appData.sendScreen.toAmmount} CCX</Text></Text>
           <Text style={styles.sendSummary}>From address: <Text style={styles.sendSummaryHighlight}>{maskAddress(currWallet.addr)}</Text></Text>
@@ -103,8 +104,8 @@ const SendConfirmScreen = () => {
       <View style={styles.footer}>
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnLeft]}
-          disabled={!this.isFormValid()}
           onPress={() => this.sendPayment()}
+          disabled={!formValid}
           text="SEND"
         />
         <ConcealButton

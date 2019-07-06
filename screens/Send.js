@@ -24,10 +24,6 @@ const SendScreen = () => {
     ? wallets[Object.keys(wallets).find(address => wallets[address].selected)]
     : null;
 
-  onGoBack = () => {
-    NavigationService.goBack();
-  }
-
   isFormValid = () => {
     if (state.appData.sendScreen.toAddress && state.appData.sendScreen.toAmmount) {
       return true;
@@ -61,17 +57,17 @@ const SendScreen = () => {
   return (
     <PaperProvider>
       <Appbar.Header style={styles.appHeader}>
-        <Appbar.BackAction onPress={() => this.onGoBack()} />
+        <Appbar.BackAction onPress={() => NavigationService.goBack()} />
         <Appbar.Content
           title="Send CCX"
         />
         <Icon
           onPress={() => this.clearSend()}
-          containerStyle={{ marginRight: 5 }}
+          containerStyle={{ marginRight: 10 }}
           name='md-trash'
           type='ionicon'
           color='white'
-          size={24}
+          size={32}
         />
       </Appbar.Header>
       <View style={styles.walletWrapper}>
