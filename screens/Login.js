@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
 import { Animated, Keyboard, Text, TextInput, TouchableWithoutFeedback, View, StyleSheet } from 'react-native';
+import ConcealTextInput from '../components/ccxTextInput';
 import ConcealButton from '../components/ccxButton';
 
-import { Button, Image } from 'react-native-elements';
+import { Image } from 'react-native-elements';
 import SlidingUpPanel from 'rn-sliding-up-panel';
 
 import { AppContext } from '../components/ContextProvider';
@@ -47,29 +48,26 @@ const Login = () => {
             <Text style={AppStyles.textDanger}>{message.signUpForm || message.loginForm}</Text>
           }
 
-          <TextInput
+          <ConcealTextInput
             {...bindEmail}
-            style={[AppStyles.inputField, AppStyles.textLarge]}
             placeholder="E-mail"
-            placeholderTextColor={colors.placeholderTextColor}
             keyboardType="email-address"
             textContentType="emailAddress"
+            inputStyle={AppStyles.loginInput}
           />
-          <TextInput
+          <ConcealTextInput
             {...bindPassword}
             secureTextEntry={true}
-            style={[AppStyles.inputField, AppStyles.textLarge]}
             placeholder="Password"
-            placeholderTextColor={colors.placeholderTextColor}
             textContentType="password"
+            inputStyle={AppStyles.loginInput}
           />
-          <TextInput
+          <ConcealTextInput
             {...bindTwoFACode}
-            style={[AppStyles.inputField, AppStyles.textLarge]}
             placeholder="2 Factor Authentication Code"
-            placeholderTextColor={colors.placeholderTextColor}
             keyboardType="numeric"
             textContentType="none"
+            inputStyle={AppStyles.loginInput}
           />
 
           <View style={styles.footer}>
@@ -93,6 +91,7 @@ const Login = () => {
             />
           </View>
 
+          {/*
           <Button
             onPress={() => resetPasswordPanel.show()}
             title="Reset Password"
@@ -103,6 +102,7 @@ const Login = () => {
             titleStyle={AppStyles.buttonTitle}
             disabledTitleStyle={AppStyles.buttonTitleDisabled}
           />
+          */}
 
 
           <SlidingUpPanel ref={c => signUpPanel = c} animatedValue={new Animated.Value(0)}>
@@ -135,7 +135,7 @@ const Login = () => {
 const styles = StyleSheet.create({
   footer: {
     flex: 1,
-    marginTop: 15,
+    marginTop: 20,
     alignItems: 'stretch',
     flexDirection: 'row',
     justifyContent: 'space-between',

@@ -1,9 +1,10 @@
 import { Provider as PaperProvider } from 'react-native-paper';
-import { Input, Icon, Overlay } from 'react-native-elements';
+import { Icon, Overlay } from 'react-native-elements';
 import NavigationService from '../helpers/NavigationService';
 import { Appbar, Button } from 'react-native-paper';
 import { maskAddress } from '../helpers/utils';
 import { AppContext } from '../components/ContextProvider';
+import ConcealTextInput from '../components/ccxTextInput';
 import ConcealButton from '../components/ccxButton';
 import { colors } from '../constants/Colors';
 import React, { useContext } from "react";
@@ -71,13 +72,15 @@ const SendScreen = () => {
         />
       </Appbar.Header>
       <View style={styles.walletWrapper}>
-        <Text style={styles.fromAddress}>{maskAddress(currWallet.addr)}</Text>
-        <Text style={styles.fromBalance}>{currWallet.balance.toFixed(2)} CCX</Text>
-        <Input
-          placeholder='Select ammount to send...'
-          inputStyle={styles.toAddress}
-          containerStyle={styles.sendInput}
+        <View style={styles.fromWrapper}>
+          <Text style={styles.fromAddress}>{maskAddress(currWallet.addr)}</Text>
+          <Text style={styles.fromBalance}>{currWallet.balance.toFixed(2)} CCX</Text>
+        </View>
+
+        <ConcealTextInput
           keyboardType='numeric'
+          placeholder='Select ammount to send...'
+          containerStyle={styles.sendInput}
           value={state.appData.sendScreen.toAmmount}
           onChangeText={(text) => setAppData({ sendScreen: { toAmmount: text } })}
           rightIcon={
@@ -91,10 +94,9 @@ const SendScreen = () => {
           }
         />
         <TouchableOpacity onPress={() => setAppData({ sendScreen: { addrListVisible: true } })}>
-          <Input
-            placeholder='Select recipient address...'
+          <ConcealTextInput
             editable={false}
-            inputStyle={styles.toAddress}
+            placeholder='Select recipient address...'
             containerStyle={styles.sendInput}
             value={state.appData.sendScreen.toAddress}
             rightIcon={
@@ -261,6 +263,9 @@ const styles = StyleSheet.create({
   },
   footerBtnLeft: {
     marginRight: 5
+  },
+  fromWrapper: {
+    marginBottom: 10
   }
 });
 

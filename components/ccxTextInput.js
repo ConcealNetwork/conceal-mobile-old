@@ -1,50 +1,86 @@
 import React from 'react';
+import { Input } from 'react-native-elements';
+import { colors } from '../constants/Colors';
 import { StyleSheet } from 'react-native';
-import { TextInput } from 'react-native-paper';
-
-const inputTheme = {
-  roundness: 0,
-  colors: {
-    text: "#FFFFFF",
-    primary: '#FFA500',
-    placeholder: "#6c757d"
-  }
-}
 
 export default function ConcealTextInput({
   onChangeText,
   value,
-  label,
-  style,
+  editable,
+  rightIcon,
+  inputStyle,
   placeholder,
-  keyboardType
+  keyboardType,
+  containerStyle,
+  secureTextEntry,
+  textContentType,
+  inputContainerStyle
 }) {
-  var compStyles = [styles.input];
+  var inputContainerStyles = [styles.InputContainer];
+  var containerStyles = [styles.Container];
+  var inputStyles = [styles.Input];
 
-  if (style) {
-    if (Array.isArray(style)) {
-      compStyles = compStyles.concat(style);
+  if (inputStyle) {
+    if (Array.isArray(inputStyle)) {
+      inputStyles = inputStyles.concat(inputStyle);
     } else {
-      compStyles.push(style);
+      inputStyles.push(inputStyle);
     }
   }
 
+  if (containerStyle) {
+    if (Array.isArray(containerStyle)) {
+      containerStyles = containerStyles.concat(containerStyle);
+    } else {
+      containerStyles.push(containerStyle);
+    }
+  }
+
+  if (inputContainerStyle) {
+    if (Array.isArray(inputContainerStyle)) {
+      inputContainerStyles = inputContainerStyles.concat(inputContainerStyle);
+    } else {
+      inputContainerStyles.push(inputContainerStyle);
+    }
+  }
+
+  if (editable == undefined) {
+    editable = true;
+  }
+
   return (
-    <TextInput
-      onChangeText={onChangeText}
+    <Input
       value={value}
-      theme={inputTheme}
-      label={label}
-      mode="flat"
-      style={compStyles}
+      editable={editable}
+      inputStyle={inputStyles}
       placeholder={placeholder}
+      onChangeText={onChangeText}
+      containerStyle={containerStyles}
+      secureTextEntry={secureTextEntry}
+      textContentType={textContentType}
+      inputContainerStyle={inputContainerStyles}
       keyboardType={keyboardType ? keyboardType : "default"}
+      placeholderTextColor={colors.placeholderTextColor}
+      rightIcon={rightIcon}
     />
   );
 }
 
 const styles = StyleSheet.create({
-  input: {
-    backgroundColor: "#212529"
+  Container: {
+    width: '100%',
+    height: 40,
+    marginTop: 5,
+    borderWidth: 0,
+    marginBottom: 5
   },
+  InputContainer: {
+    borderWidth: 0,
+    borderBottomWidth: 1,
+    borderColor: 'rgb(55, 55, 55)'
+  },
+  Input: {
+    fontSize: 20,
+    color: 'rgb(255, 255, 255)'
+  }
 })

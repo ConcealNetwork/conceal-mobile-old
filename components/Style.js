@@ -66,6 +66,9 @@ export default StyleSheet.create({
   tabBarIndicator: {
     backgroundColor: colors.concealOrange,
   },
+  loginInput: {
+    textAlign: 'center'
+  },
   inputField: {
     width: '100%',
     height: 40,

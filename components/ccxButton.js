@@ -1,7 +1,7 @@
 import React from 'react';
 import { colors } from '../constants/Colors';
 import { Button } from 'react-native-elements';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet } from 'react-native';
 
 export default function ConcealButton({
   loadingStyle,
