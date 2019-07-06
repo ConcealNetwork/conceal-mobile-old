@@ -5,6 +5,7 @@ import Wallet from '../screens/Wallet';
 import Wallets from '../screens/Wallets';
 import AddressBook from '../screens/AddressBook';
 import Send from '../screens/Send';
+import SendConfirm from '../screens/SendConfirm';
 import Receive from '../screens/Receive';
 import Settings from '../screens/Settings';
 
@@ -31,6 +32,12 @@ const AppNavigator = createStackNavigator(
     },
     Send: {
       screen: Send,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    SendConfirm: {
+      screen: SendConfirm,
       navigationOptions: {
         header: null,
       },

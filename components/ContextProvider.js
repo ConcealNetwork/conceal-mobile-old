@@ -196,7 +196,13 @@ const AppContextProvider = props => {
         if (res.result === 'success') {
           const wallets = res.message.wallets;
           if (Object.keys(wallets).length > 0) {
-            const selectedAddress = Object.keys(updatedWallets).find(a => updatedWallets[a].selected) || Object.keys(wallets)[0];
+            selectedAddress = Object.keys(wallets)[0];
+
+            Object.keys(wallets).forEach(function (key) {
+              selectedAddress = wallets[key].selected ? key : selectedAddress;
+              wallets[key].addr = key;
+            });
+
             wallets[selectedAddress].selected = true;
           }
           Object.keys(updatedWallets).map(address =>

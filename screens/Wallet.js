@@ -29,7 +29,7 @@ const Wallet = () => {
         <Appbar.Content
           title="Default Wallet"
         />
-        <Avatar.Image style={styles.Avatar} size={36} source={{ uri: user.avatar }}/>
+        <Avatar.Image style={styles.Avatar} size={36} source={{ uri: user.avatar }} />
       </Appbar.Header>
       {currWallet &&
         <>

@@ -57,7 +57,9 @@ const useAppState = () => {
     wallets: {},
     appData: {
       sendScreen: {
-        addrListVisible: false
+        addrListVisible: false,
+        sendConfirmVisible: false,
+        securePasswordEntry: true
       }
     }
   };

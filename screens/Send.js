@@ -28,22 +28,23 @@ const SendScreen = () => {
     NavigationService.goBack();
   }
 
-  sendPayment = () => {
-    actions.sendPayment(
-      'ccx7EeeSSpdRRn7zHni8Rtb5Y3c5UGim333LVWxxD2XCaTkPxWs6DKRXtznxBsofFP8JB32YYBmtwLdoEirjAbYo4DBZjpnEb8',
-      state.appData.sendScreen.toAddress,
-      state.appData.sendScreen.toPaymendId,
-      state.appData.sendScreen.toAmmount
-    );
-  }
-
   isFormValid = () => {
-    console.log(state.appData.sendScreen.toAddress && state.appData.sendScreen.toAmmount);
     if (state.appData.sendScreen.toAddress && state.appData.sendScreen.toAmmount) {
       return true;
     } else {
       return false;
     }
+  }
+
+  clearSend = () => {
+    setAppData({
+      sendScreen: {
+        toAmmount: '',
+        toAddress: '',
+        toPaymendId: '',
+        toLabel: ''
+      }
+    });
   }
 
   readFromClipboard = async () => {
@@ -64,9 +65,17 @@ const SendScreen = () => {
         <Appbar.Content
           title="Send CCX"
         />
+        <Icon
+          onPress={() => this.clearSend()}
+          containerStyle={{ marginRight: 5 }}
+          name='md-trash'
+          type='ionicon'
+          color='white'
+          size={24}
+        />
       </Appbar.Header>
       <View style={styles.walletWrapper}>
-        <Text style={styles.fromAddress}>{maskAddress("ccx7EeeSSpdRRn7zHni8Rtb5Y3c5UGim333LVWxxD2XCaTkPxWs6DKRXtznxBsofFP8JB32YYBmtwLdoEirjAbYo4DBZjpnEb8")}</Text>
+        <Text style={styles.fromAddress}>{maskAddress(currWallet.addr)}</Text>
         <Text style={styles.fromBalance}>{currWallet.balance.toFixed(2)} CCX</Text>
         <Input
           placeholder='Select ammount to send...'
@@ -77,7 +86,7 @@ const SendScreen = () => {
           onChangeText={(text) => setAppData({ sendScreen: { toAmmount: text } })}
           rightIcon={
             <Icon
-              onPress={() => setAppData({ sendScreen: { toAmmount: '5' } })}
+              onPress={() => setAppData({ sendScreen: { toAmmount: currWallet.balance.toString() } })}
               name='md-add'
               type='ionicon'
               color='white'
@@ -103,19 +112,18 @@ const SendScreen = () => {
             }
           />
         </TouchableOpacity>
-        <View style={styles.selectedAddress}>
-          {state.appData.sendScreen.toLabel ? (<Text style={styles.sendSummary}>Label: {state.appData.sendScreen.toLabel}</Text>) : null}
-          {state.appData.sendScreen.toAddress ? (<Text style={styles.sendSummary}>Address: {maskAddress(state.appData.sendScreen.toAddress)}</Text>) : null}
-          {state.appData.sendScreen.toPaymendId ? (<Text style={styles.sendSummary}>Payment ID: {maskAddress(state.appData.sendScreen.toPaymendId)}</Text>) : null}
-          {state.appData.sendScreen.toAmmount ? (<Text style={styles.sendSummary}>Send: {state.appData.sendScreen.toAmmount} CCX</Text>) : null}
+        <View style={styles.sendSummaryWrapper}>
+          {state.appData.sendScreen.toLabel ? (<Text style={styles.sendSummary}><Text style={styles.sendSummaryLabel}>Label:</Text> {state.appData.sendScreen.toLabel}</Text>) : null}
+          {state.appData.sendScreen.toAddress ? (<Text style={styles.sendSummary}><Text style={styles.sendSummaryLabel}>Address:</Text> {maskAddress(state.appData.sendScreen.toAddress)}</Text>) : null}
+          {state.appData.sendScreen.toPaymendId ? (<Text style={styles.sendSummary}><Text style={styles.sendSummaryLabel}>Payment ID:</Text> {maskAddress(state.appData.sendScreen.toPaymendId)}</Text>) : null}
+          {state.appData.sendScreen.toAmmount ? (<Text style={styles.sendSummary}><Text style={styles.sendSummaryLabel}>Send:</Text> {state.appData.sendScreen.toAmmount} CCX</Text>) : null}
         </View>
       </View>
       <Overlay
         isVisible={state.appData.sendScreen.addrListVisible}
-        windowBackgroundColor="rgba(255, 255, 255, .5)"
         overlayBackgroundColor={colors.concealBackground}
-        width="90%"
-        height="90%"
+        width="100%"
+        height="100%"
       >
         <View style={styles.overlayWrapper}>
           <View style={styles.addressWrapper}>
@@ -137,7 +145,11 @@ const SendScreen = () => {
             />
           </View>
           <View style={styles.footer}>
-            <ConcealButton style={[styles.footerBtn]} onPress={() => setAppData({ sendScreen: { addrListVisible: false } })} text="CLOSE" />
+            <ConcealButton
+              style={[styles.footerBtn]}
+              onPress={() => setAppData({ sendScreen: { addrListVisible: false } })}
+              text="CLOSE"
+            />
           </View>
         </View>
       </Overlay>
@@ -145,7 +157,7 @@ const SendScreen = () => {
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnLeft]}
           disabled={!this.isFormValid()}
-          onPress={() => this.sendPayment()}
+          onPress={() => NavigationService.navigate('SendConfirm')}
           text="SEND"
         />
         <ConcealButton
@@ -205,6 +217,9 @@ const styles = StyleSheet.create({
     color: "#AAAAAA",
     fontSize: 16
   },
+  sendSummaryLabel: {
+    color: colors.concealOrange
+  },
   buttonContainer: {
     margin: 5
   },
@@ -213,7 +228,7 @@ const styles = StyleSheet.create({
     margin: 15,
     flexDirection: 'column'
   },
-  selectedAddress: {
+  sendSummaryWrapper: {
     margin: 10,
     marginTop: 20
   },
