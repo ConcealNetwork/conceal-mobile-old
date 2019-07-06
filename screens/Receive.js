@@ -5,11 +5,13 @@ import { Provider as PaperProvider } from 'react-native-paper';
 import NavigationService from '../helpers/NavigationService';
 import ConcealButton from '../components/ccxButton';
 import QRCode from 'react-native-qrcode-svg';
+import Toast from 'react-native-root-toast';
 import { colors } from '../constants/Colors';
 import AppStyles from '../components/Style';
 import {
   Text,
   View,
+  Share,
   ScrollView,
   StyleSheet
 } from "react-native";
@@ -22,6 +24,38 @@ const Receive = () => {
     ? wallets[Object.keys(wallets).find(address => wallets[address].selected)]
     : null;
 
+  onShare = async (content) => {
+    try {
+      const result = await Share.share({ message: "My CCX address is: " + content });
+
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+
+  onCopyAddress = async (text) => {
+    let toast = Toast.show(text, {
+      backgroundColor: colors.concealOrange,
+      duration: Toast.durations.LONG,
+      position: 50,
+      animation: true,
+      hideOnPress: true,
+      shadow: true,
+      delay: 300
+    });
+  }
+
+  // You can manually hide the Toast, or it will automatically disappear after a `duration` ms timeout.
   return (
     <PaperProvider>
       <Appbar.Header style={styles.appHeader}>
@@ -45,12 +79,12 @@ const Receive = () => {
       <View style={styles.footer}>
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnLeft]}
-          onPress={() => console.log("pressed")}
+          onPress={() => this.onCopyAddress("Copied address to the clipboard...")}
           text="COPY"
         />
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnRight]}
-          onPress={() => console.log("pressed")}
+          onPress={() => this.onShare(currWallet.addr)}
           text="SHARE"
         />
       </View>
