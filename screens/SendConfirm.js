@@ -4,6 +4,7 @@ import NavigationService from '../helpers/NavigationService';
 import { maskAddress } from '../helpers/utils';
 import { AppContext } from '../components/ContextProvider';
 import ConcealButton from '../components/ccxButton';
+import ConcealLoader from '../components/ccxLoader';
 import { colors } from '../constants/Colors';
 import React, { useContext } from "react";
 import {
@@ -49,6 +50,7 @@ const SendConfirmScreen = () => {
 
   return (
     <View style={styles.pageWrapper}>
+      <ConcealLoader loading={state.appData.sendScreen.isSendingPayment} />
       <Header
         placement="left"
         containerStyle={styles.appHeader}

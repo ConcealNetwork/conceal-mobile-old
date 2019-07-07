@@ -292,6 +292,7 @@ const AppContextProvider = props => {
 
   const sendPayment = (wallet, address, paymentID, amount, twoFA, password) => {
     logger.log('SENDING PAYMENT...');
+    setAppData({ sendScreen: { isSendingPayment: true } });
     Api.sendTx(wallet, address, paymentID, amount, '', twoFA, password)
       .then(res => {
         if (res.result === 'success') {
@@ -300,7 +301,10 @@ const AppContextProvider = props => {
           dispatch({ type: 'PAYMENT_FAILED', res })
         }
       })
-      .catch(e => console.error(e));
+      .catch(e => console.error(e))
+      .finally(() => {
+        setAppData({ sendScreen: { isSendingPayment: false } });
+      });
   };
 
   const setAppData = (appData) => {

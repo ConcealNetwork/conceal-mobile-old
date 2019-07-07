@@ -59,7 +59,8 @@ const useAppState = () => {
       sendScreen: {
         addrListVisible: false,
         sendConfirmVisible: false,
-        securePasswordEntry: true
+        securePasswordEntry: true,
+        isSendingPayment: false
       }
     }
   };
@@ -287,6 +288,7 @@ const useAppState = () => {
           ...state,
           appData: mergeJSON.merge(state.appData, action.appData)
         };
+        console.log(result);
         break;
       case 'CLEAR_APP':
         logger.log('***** APP CLEANUP *****');

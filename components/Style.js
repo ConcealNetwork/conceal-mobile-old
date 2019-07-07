@@ -5,12 +5,12 @@ import { colors } from '../constants/Colors';
 export default StyleSheet.create({
   appContainer: {
     flex: 1,
-    backgroundColor: colors.concealBackground,
+    backgroundColor: colors.concealBlack,
   },
   viewContainer: {
     flex: 1,
     padding: 15,
-    backgroundColor: colors.concealBackground,
+    backgroundColor: colors.concealBlack,
   },
   horizontal: {
     flexDirection: 'row',
