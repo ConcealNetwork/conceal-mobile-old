@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
-import { Appbar } from 'react-native-paper';
+import { Header, Icon } from 'react-native-elements';
 import { AppContext } from '../components/ContextProvider';
-import { Provider as PaperProvider } from 'react-native-paper';
 import NavigationService from '../helpers/NavigationService';
 import ConcealButton from '../components/ccxButton';
 import QRCode from 'react-native-qrcode-svg';
@@ -57,15 +56,21 @@ const Receive = () => {
 
   // You can manually hide the Toast, or it will automatically disappear after a `duration` ms timeout.
   return (
-    <PaperProvider>
-      <Appbar.Header style={styles.appHeader}>
-        <Appbar.BackAction onPress={() => NavigationService.goBack()} />
-        <Appbar.Content
-          title="Receive CCX"
-        />
-      </Appbar.Header>
-      <View style={AppStyles.viewContainer}>
-        <ScrollView style={AppStyles.viewContainer} contentContainerStyle={AppStyles.contentContainer}>
+    <View style={styles.pageWrapper}>
+      <Header
+        placement="left"
+        containerStyle={styles.appHeader}
+        leftComponent={<Icon
+          onPress={() => NavigationService.goBack()}
+          name='md-return-left'
+          type='ionicon'
+          color='white'
+          size={26}
+        />}
+        centerComponent={{ text: 'Receive CCX', style: { color: '#fff', fontSize: 20 } }}
+      />
+      <View style={styles.receiveContainer}>
+        <ScrollView contentContainerStyle={AppStyles.contentContainer}>
           <Text style={styles.address}>{currWallet.addr}</Text>
           <QRCode
             style={{ margin: 10 }}
@@ -88,11 +93,19 @@ const Receive = () => {
           text="SHARE"
         />
       </View>
-    </PaperProvider>
+    </View>
   )
 };
 
 const styles = StyleSheet.create({
+  pageWrapper: {
+    flex: 1,
+    backgroundColor: 'rgb(40, 45, 49)'
+  },
+  receiveContainer: {
+    flex: 1,
+    padding: 20
+  },
   appHeader: {
     borderBottomWidth: 1,
     backgroundColor: '#212529',

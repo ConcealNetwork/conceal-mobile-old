@@ -1,8 +1,6 @@
 import { useFormInput, useFormValidation } from '../helpers/hooks';
-import { Provider as PaperProvider } from 'react-native-paper';
-import { Input, Icon, Overlay } from 'react-native-elements';
+import { Input, Icon, Overlay, Header } from 'react-native-elements';
 import NavigationService from '../helpers/NavigationService';
-import { Appbar, Button } from 'react-native-paper';
 import { maskAddress } from '../helpers/utils';
 import { AppContext } from '../components/ContextProvider';
 import ConcealButton from '../components/ccxButton';
@@ -50,13 +48,19 @@ const SendConfirmScreen = () => {
   const formValid = useFormValidation(formValidation);
 
   return (
-    <PaperProvider>
-      <Appbar.Header style={styles.appHeader}>
-        <Appbar.BackAction onPress={() => NavigationService.goBack()} />
-        <Appbar.Content
-          title="Confirm sending"
-        />
-      </Appbar.Header>
+    <View style={styles.pageWrapper}>
+      <Header
+        placement="left"
+        containerStyle={styles.appHeader}
+        leftComponent={<Icon
+          onPress={() => NavigationService.goBack()}
+          name='md-return-left'
+          type='ionicon'
+          color='white'
+          size={26}
+        />}
+        centerComponent={{ text: 'Confirm sending', style: { color: '#fff', fontSize: 20 } }}
+      />
       <View style={styles.walletWrapper}>
         <Input
           {...bindPassword}
@@ -114,11 +118,15 @@ const SendConfirmScreen = () => {
           text="CANCEL"
         />
       </View>
-    </PaperProvider>
+    </View>
   )
 };
 
 const styles = StyleSheet.create({
+  pageWrapper: {
+    flex: 1,
+    backgroundColor: 'rgb(40, 45, 49)'
+  },
   appHeader: {
     borderBottomWidth: 1,
     backgroundColor: '#212529',
@@ -163,6 +171,12 @@ const styles = StyleSheet.create({
   },
   sendSummary: {
     color: "#AAAAAA",
+    backgroundColor: '#212529',
+    borderColor: '#333',
+    borderWidth: 1,
+    marginBottom: 2,
+    marginTop: 2,
+    padding: 10,
     fontSize: 16
   },
   buttonContainer: {

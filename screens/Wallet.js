@@ -1,7 +1,6 @@
 import React, { useContext } from 'react';
-import { Icon } from 'react-native-elements';
-import { Appbar, Avatar, IconButton, Colors } from 'react-native-paper';
-import { Provider as PaperProvider } from 'react-native-paper';
+import { Icon, Header } from 'react-native-elements';
+import { IconButton, Colors } from 'react-native-paper';
 import { Text, View, FlatList, StyleSheet } from 'react-native';
 import Moment from 'moment';
 import NavigationService from '../helpers/NavigationService';
@@ -24,12 +23,12 @@ const Wallet = () => {
   const format4Decimals = { minimumFractionDigits: 4, maximumFractionDigits: 4 };
   const format8Decimals = { minimumFractionDigits: 8, maximumFractionDigits: 8 };
   return (
-    <PaperProvider>
-      <Appbar.Header style={styles.appHeader}>
-        <Appbar.Content
-          title="Default Wallet"
-        />
-      </Appbar.Header>
+    <View style={styles.pageWrapper}>
+      <Header
+        placement="left"
+        containerStyle={styles.appHeader}
+        centerComponent={{ text: 'Default Wallet', style: { color: '#fff', fontSize: 20 } }}
+      />
       {currWallet &&
         <>
           <View style={styles.accountOverview}>
@@ -120,11 +119,15 @@ const Wallet = () => {
           </View>
         </>
       }
-    </PaperProvider>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  pageWrapper: {
+    flex: 1,
+    backgroundColor: 'rgb(40, 45, 49)'
+  },
   appHeader: {
     borderBottomWidth: 1,
     backgroundColor: '#212529',
@@ -133,8 +136,10 @@ const styles = StyleSheet.create({
   flatview: {
     backgroundColor: '#212529',
     justifyContent: 'center',
+    borderColor: '#333333',
     borderRadius: 10,
     marginBottom: 5,
+    borderWidth: 1,
     marginTop: 5,
     padding: 20,
   },
@@ -162,6 +167,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#212529',
+    borderColor: '#333333',
+    borderWidth: 1
   },
   footer: {
     bottom: 10,
@@ -232,9 +239,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginTop: 5,
     marginLeft: 20,
-    paddingLeft: 10,
-    borderLeftWidth: 4,
-    borderColor: '#FFA500',
+    paddingLeft: 0
   },
   txDirection: {
     position: 'absolute',

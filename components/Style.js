@@ -5,12 +5,12 @@ import { colors } from '../constants/Colors';
 export default StyleSheet.create({
   appContainer: {
     flex: 1,
-    backgroundColor: colors.concealBlack,
+    backgroundColor: colors.concealBackground,
   },
   viewContainer: {
     flex: 1,
     padding: 15,
-    backgroundColor: colors.concealBlack,
+    backgroundColor: colors.concealBackground,
   },
   horizontal: {
     flexDirection: 'row',
@@ -76,7 +76,7 @@ export default StyleSheet.create({
     borderWidth: 0,
     marginBottom: 5,
     borderBottomWidth: 1,
-    borderColor: 'rgb(55, 55, 55)',
+    borderColor: 'rgb(50, 50, 50)',
     color: 'rgb(255, 255, 255)',
     textAlign: 'center',
   },

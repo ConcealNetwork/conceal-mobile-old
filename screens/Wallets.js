@@ -29,7 +29,7 @@ const Wallets = () => {
           title="Wallets"
         />
         {walletsLoaded && (walletsList.length < appSettings.maxWallets || walletsList.length === 0) &&
-          <Appbar.Action icon="add-circle-outline" size={36} onPress={() => createWallet()}/>
+          <Appbar.Action icon="add-circle-outline" size={36} onPress={() => createWallet()} />
         }
       </Appbar.Header>
       <View style={styles.walletsWrapper}>
@@ -46,7 +46,7 @@ const Wallets = () => {
                 <Text style={styles.data}>Locked: {item.locked} CCX</Text>
                 <Text style={styles.data}>{item.status}</Text>
                 <View style={styles.buttonsWrapper}>
-                  <ConcealFAB onPress={() => {switchWallet(item.address)}} />
+                  <ConcealFAB onPress={() => { switchWallet(item.address) }} />
                 </View>
               </View>
               <View style={styles.walletFooter}>
@@ -102,8 +102,10 @@ const styles = StyleSheet.create({
   flatview: {
     backgroundColor: '#212529',
     justifyContent: 'center',
+    borderColor: '#333333',
     borderRadius: 10,
     marginBottom: 5,
+    borderWidth: 1,
     marginTop: 5,
     padding: 20,
   },

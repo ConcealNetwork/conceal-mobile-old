@@ -1,7 +1,5 @@
-import { Provider as PaperProvider } from 'react-native-paper';
-import { Icon, Overlay } from 'react-native-elements';
+import { Icon, Overlay, Header } from 'react-native-elements';
 import NavigationService from '../helpers/NavigationService';
-import { Appbar, Button } from 'react-native-paper';
 import { maskAddress } from '../helpers/utils';
 import { AppContext } from '../components/ContextProvider';
 import ConcealTextInput from '../components/ccxTextInput';
@@ -56,21 +54,26 @@ const SendScreen = () => {
   };
 
   return (
-    <PaperProvider>
-      <Appbar.Header style={styles.appHeader}>
-        <Appbar.BackAction onPress={() => NavigationService.goBack()} />
-        <Appbar.Content
-          title="Send CCX"
-        />
-        <Icon
+    <View style={styles.pageWrapper}>
+      <Header
+        placement="left"
+        containerStyle={styles.appHeader}
+        leftComponent={<Icon
+          onPress={() => NavigationService.goBack()}
+          name='md-return-left'
+          type='ionicon'
+          color='white'
+          size={26}
+        />}
+        centerComponent={{ text: 'Send CCX', style: { color: '#fff', fontSize: 20 } }}
+        rightComponent={<Icon
           onPress={() => this.clearSend()}
-          containerStyle={{ marginRight: 10 }}
           name='md-trash'
           type='ionicon'
           color='white'
-          size={32}
-        />
-      </Appbar.Header>
+          size={26}
+        />}
+      />
       <View style={styles.walletWrapper}>
         <View style={styles.fromWrapper}>
           <Text style={styles.fromAddress}>{maskAddress(currWallet.addr)}</Text>
@@ -164,11 +167,15 @@ const SendScreen = () => {
           text="SCAN QR"
         />
       </View>
-    </PaperProvider>
+    </View>
   )
 };
 
 const styles = StyleSheet.create({
+  pageWrapper: {
+    flex: 1,
+    backgroundColor: 'rgb(40, 45, 49)'
+  },
   appHeader: {
     borderBottomWidth: 1,
     backgroundColor: '#212529',
@@ -213,6 +220,12 @@ const styles = StyleSheet.create({
   },
   sendSummary: {
     color: "#AAAAAA",
+    backgroundColor: '#212529',
+    borderColor: '#333',
+    borderWidth: 1,
+    marginBottom: 2,
+    marginTop: 2,
+    padding: 10,
     fontSize: 16
   },
   sendSummaryLabel: {
