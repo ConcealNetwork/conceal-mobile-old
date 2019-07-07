@@ -13,7 +13,6 @@
     "moment": "^2.24.0",
     "react": "16.8.3",
     "react-native": "https://github.com/expo/react-native/archive/sdk-33.0.0.tar.gz",
-    "react-native-easy-toast": "^1.2.0",
     "react-native-elements": "^1.1.0",
     "react-native-paper": "^2.16.0",
     "react-native-qrcode-svg": "^5.1.2",
