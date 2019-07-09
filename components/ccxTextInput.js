@@ -1,6 +1,6 @@
 import React from 'react';
 import { Input } from 'react-native-elements';
-import { colors } from '../constants/Colors';
+import { AppColors } from '../constants/Colors';
 import { StyleSheet } from 'react-native';
 
 export default function ConcealTextInput({
@@ -60,7 +60,7 @@ export default function ConcealTextInput({
       textContentType={textContentType}
       inputContainerStyle={inputContainerStyles}
       keyboardType={keyboardType ? keyboardType : "default"}
-      placeholderTextColor={colors.placeholderTextColor}
+      placeholderTextColor={AppColors.placeholderTextColor}
       rightIcon={rightIcon}
     />
   );

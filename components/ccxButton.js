@@ -1,6 +1,6 @@
 import React from 'react';
-import { colors } from '../constants/Colors';
 import { Button } from 'react-native-elements';
+import { AppColors } from '../constants/Colors';
 import { StyleSheet } from 'react-native';
 
 export default function ConcealButton({
@@ -39,8 +39,7 @@ const styles = StyleSheet.create({
   button: {
     height: 45,
     borderWidth: 1,
-    borderRadius: 5,
-    borderColor: colors.concealOrange,
+    borderColor: AppColors.concealOrange,
     backgroundColor: "transparent"
   },
   btnDisabled: {

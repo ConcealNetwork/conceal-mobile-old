@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "expo": "^33.0.7",
+    "expo-barcode-scanner": "^5.0.1",
     "jwt-decode": "^2.2.0",
     "merge-json": "0.1.0-b.3",
     "moment": "^2.24.0",

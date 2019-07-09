@@ -1,16 +1,16 @@
 import { StyleSheet } from 'react-native';
-import { colors } from '../constants/Colors';
+import { AppColors } from '../constants/Colors';
 
 
 export default StyleSheet.create({
   appContainer: {
     flex: 1,
-    backgroundColor: colors.concealBlack,
+    backgroundColor: AppColors.concealBlack,
   },
   viewContainer: {
     flex: 1,
     padding: 15,
-    backgroundColor: colors.concealBlack,
+    backgroundColor: AppColors.concealBlack,
   },
   horizontal: {
     flexDirection: 'row',
@@ -30,7 +30,7 @@ export default StyleSheet.create({
   textRegular: {
     fontFamily: 'Roboto',
     fontSize: 20,
-    color: colors.text,
+    color: AppColors.text,
   },
   textSmall: {
     fontSize: 16,
@@ -41,18 +41,18 @@ export default StyleSheet.create({
   textOrange: {
     fontFamily: 'Roboto',
     fontSize: 24,
-    color: colors.concealOrange,
+    color: AppColors.concealOrange,
   },
   title: {
     fontFamily: 'Roboto',
     fontSize: 36,
-    color: colors.concealOrange,
+    color: AppColors.concealOrange,
   },
   textDanger: {
     fontFamily: 'Roboto',
     fontWeight: 'bold',
-    color: colors.errorText,
-    backgroundColor: colors.errorBackground,
+    color: AppColors.errorText,
+    backgroundColor: AppColors.errorBackground,
   },
   tabBar: {
     backgroundColor: 'rgb(25, 25, 25)',
@@ -64,7 +64,7 @@ export default StyleSheet.create({
     lineHeight: 60,
   },
   tabBarIndicator: {
-    backgroundColor: colors.concealOrange,
+    backgroundColor: AppColors.concealOrange,
   },
   loginInput: {
     textAlign: 'center'
@@ -81,7 +81,7 @@ export default StyleSheet.create({
     textAlign: 'center',
   },
   submitButton: {
-    backgroundColor: colors.concealOrange,
+    backgroundColor: AppColors.concealOrange,
     margin: 10,
     paddingTop: 5,
     paddingBottom: 5,
@@ -91,11 +91,11 @@ export default StyleSheet.create({
   submitButtonDisabled: {
     borderColor: 'rgba(255, 165, 0, 0.3)',
     borderWidth: 1,
-    backgroundColor: colors.concealBlack,
+    backgroundColor: AppColors.concealBlack,
   },
   submitButtonLoading: {
     borderWidth: 0,
-    backgroundColor: colors.concealBlack,
+    backgroundColor: AppColors.concealBlack,
   },
   loginButton: {
     width: 100,

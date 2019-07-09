@@ -4,8 +4,8 @@ import { Button } from 'react-native-elements';
 
 import { AppContext } from '../components/ContextProvider';
 import { useFormInput, useFormValidation } from '../helpers/hooks';
-import styles from '../components/Style';
-import { colors } from '../constants/Colors';
+import { AppColors } from '../constants/Colors';
+import AppStyles from '../components/Style';
 
 
 const ResetPassword = props => {
@@ -22,18 +22,18 @@ const ResetPassword = props => {
   const formValid = useFormValidation(formValidation);
 
   return (
-    <View style={[styles.viewContainer, styles.loginView]}>
-      <Text style={styles.title}>RESET PASSWORD</Text>
+    <View style={[AppStyles.viewContainer, AppStyles.loginView]}>
+      <Text style={AppStyles.title}>RESET PASSWORD</Text>
 
       {message.resetPasswordForm &&
-        <Text style={styles.textDanger}>{message.resetPasswordForm}</Text>
+        <Text style={AppStyles.textDanger}>{message.resetPasswordForm}</Text>
       }
 
       <TextInput
         {...bindEmail}
-        style={[styles.inputField, styles.textLarge]}
+        style={[AppStyles.inputField, AppStyles.textLarge]}
         placeholder="E-mail"
-        placeholderTextColor={colors.placeholderTextColor}
+        placeholderTextColor={AppColors.placeholderTextColor}
         keyboardType="email-address"
         textContentType="none"
         secureTextEntry={false}
@@ -44,13 +44,13 @@ const ResetPassword = props => {
         title={formSubmitted ? '' : 'Send E-mail'}
         accessibilityLabel="Send E-mail Button"
         disabled={formSubmitted || !formValid}
-        buttonStyle={[styles.submitButton, styles.loginButton]}
-        disabledStyle={styles.submitButtonDisabled}
-        titleStyle={styles.buttonTitle}
-        disabledTitleStyle={styles.buttonTitleDisabled}
+        buttonStyle={[AppStyles.submitButton, AppStyles.loginButton]}
+        disabledStyle={AppStyles.submitButtonDisabled}
+        titleStyle={AppStyles.buttonTitle}
+        disabledTitleStyle={AppStyles.buttonTitleDisabled}
         loading={formSubmitted}
-        loadingStyle={styles.submitButtonLoading}
-        loadingProps={{ color: colors.concealOrange }}
+        loadingStyle={AppStyles.submitButtonLoading}
+        loadingProps={{ color: AppColors.concealOrange }}
       />
       <Button
         onPress={() => hidePanel()}

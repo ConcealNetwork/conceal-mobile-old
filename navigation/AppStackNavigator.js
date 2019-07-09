@@ -8,6 +8,8 @@ import Send from '../screens/Send';
 import SendConfirm from '../screens/SendConfirm';
 import Receive from '../screens/Receive';
 import Settings from '../screens/Settings';
+import Scanner from '../screens/Scanner';
+import Market from '../screens/Market';
 
 
 const AppNavigator = createStackNavigator(
@@ -54,6 +56,18 @@ const AppNavigator = createStackNavigator(
         header: null,
       },
     },
+    Market: {
+      screen: Market,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    Scanner: {
+      screen: Scanner,
+      navigationOptions: {
+        header: null,
+      },
+    }
   },
   {
     headerMode: 'screen',

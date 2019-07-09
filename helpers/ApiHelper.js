@@ -47,7 +47,7 @@ export default class ApiHelper {
       .then(res => Promise.resolve(res));
   };
 
-  addContact = (label, address, paymentID, entryID=null, edit=false) => {
+  addContact = (label, address, paymentID, entryID = null, edit = false) => {
     const options = {
       method: edit ? 'PATCH' : 'POST',
       body: JSON.stringify({
