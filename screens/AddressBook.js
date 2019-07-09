@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
+import { Icon, Header } from 'react-native-elements';
 import { Alert, Text, View, FlatList, StyleSheet } from 'react-native';
-import { Appbar, Button } from 'react-native-paper';
+import { Button } from 'react-native-paper';
 import NavigationService from '../helpers/NavigationService';
 import { AppContext } from '../components/ContextProvider';
 import { maskAddress } from '../helpers/utils';
@@ -12,55 +13,67 @@ const AddressBook = () => {
   const { layout, user } = state;
 
   return (
-    <View>
-      <Appbar.Header style={styles.appHeader}>
-        <Appbar.BackAction onPress={() => NavigationService.goBack()} />
-        <Appbar.Content
-          title="Address Book"
-        />
-        <Appbar.Action icon="add-circle-outline" size={36} onPress={() => {}} />
-      </Appbar.Header>
+    <View style={styles.pageWrapper}>
+      <Header
+        placement="left"
+        containerStyle={styles.appHeader}
+        leftComponent={<Icon
+          onPress={() => NavigationService.goBack()}
+          name='md-return-left'
+          type='ionicon'
+          color='white'
+          size={26}
+        />}
+        centerComponent={{ text: 'Address Book', style: { color: '#fff', fontSize: 20 } }}
+        rightComponent={<Icon
+          onPress={() => console.log("pressed")}
+          name='md-add-circle-outline'
+          type='ionicon'
+          color='white'
+          size={26}
+        />}
+      />
       <View style={styles.walletsWrapper}>
         {layout.userLoaded && user.addressBook.length === 0
           ? <Text>
-              You have no contacts saved in your address book.
-              Add one by clicking on the button or when you are sending funds.
+            You have no contacts saved in your address book.
+            Add one by clicking on the button or when you are sending funds.
             </Text>
           : <FlatList
-              data={user.addressBook}
-              showsVerticalScrollIndicator={false}
-              keyExtractor={item => item.entryID.toString()}
-              renderItem={({ item }) =>
-                <View style={styles.flatview}>
-                  <View>
-                    <Text style={styles.addressLabel}>{item.label}</Text>
-                    <Text style={styles.address}>Address: {maskAddress(item.address)}</Text>
-                    {item.paymentID ? (<Text style={styles.data}>Payment ID: {item.paymentID}</Text>) : null}
-                  </View>
-                  <View style={styles.walletFooter}>
-                    <Button
-                      style={[styles.footerBtn, styles.footerBtnLeft]}
-                      onPress={() => {
-                        Alert.alert(
-                          'Delete Contact',
-                          'You are about to delete this contact! Do you really wish to proceed?',
-                          [
-                            { text: 'OK', onPress: () => deleteContact(item) },
-                            { text: 'Cancel', style: 'cancel' },
-                          ],
-                          { cancelable: false },
-                        );
-                      }}
-                    >
-                      <Text style={styles.buttonText}>DELETE</Text>
-                    </Button>
-                    <Button style={[styles.footerBtn, styles.footerBtnRight]} onPress={() => {}}>
-                      <Text style={styles.buttonText}>COPY</Text>
-                    </Button>
-                  </View>
+            data={user.addressBook}
+            showsVerticalScrollIndicator={false}
+            keyExtractor={item => item.entryID.toString()}
+            renderItem={({ item }) =>
+              <View style={styles.flatview}>
+                <View>
+                  <Text style={styles.addressLabel}>{item.label}</Text>
+                  <Text style={styles.address}>Address: {maskAddress(item.address)}</Text>
+                  {item.paymentID ? (<Text style={styles.data}>Payment ID: {item.paymentID}</Text>) : null}
                 </View>
-              }
-            />
+                <View style={styles.walletFooter}>
+                  <Button
+                    style={[styles.footerBtn, styles.footerBtnLeft]}
+                    onPress={() => {
+                      Alert.alert(
+                        'Delete Contact',
+                        'You are about to delete this contact! Do you really wish to proceed?',
+                        [
+                          { text: 'OK', onPress: () => deleteContact(item) },
+                          { text: 'Cancel', style: 'cancel' },
+                        ],
+                        { cancelable: false },
+                      );
+                    }}
+                  >
+                    <Text style={styles.buttonText}>DELETE</Text>
+                  </Button>
+                  <Button style={[styles.footerBtn, styles.footerBtnRight]} onPress={() => { }}>
+                    <Text style={styles.buttonText}>EDIT</Text>
+                  </Button>
+                </View>
+              </View>
+            }
+          />
         }
       </View>
     </View>
@@ -68,6 +81,10 @@ const AddressBook = () => {
 };
 
 const styles = StyleSheet.create({
+  pageWrapper: {
+    flex: 1,
+    backgroundColor: 'rgb(40, 45, 49)'
+  },
   appHeader: {
     borderBottomWidth: 1,
     backgroundColor: '#212529',
@@ -103,7 +120,11 @@ const styles = StyleSheet.create({
     margin: 5
   },
   walletsWrapper: {
-    padding: 10
+    top: 90,
+    left: 10,
+    right: 10,
+    bottom: 0,
+    position: 'absolute'
   },
   walletFooter: {
     flex: 1,

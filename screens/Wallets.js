@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
+import { Icon, Header } from 'react-native-elements';
 import { Alert, Text, View, FlatList, StyleSheet } from 'react-native';
-import { Appbar, Button } from 'react-native-paper';
+import { Button } from 'react-native-paper';
 import NavigationService from '../helpers/NavigationService';
 import { AppContext } from '../components/ContextProvider';
 import { maskAddress } from '../helpers/utils';
@@ -23,15 +24,26 @@ const Wallets = () => {
 
   return (
     <View>
-      <Appbar.Header style={styles.appHeader}>
-        <Appbar.BackAction onPress={() => NavigationService.goBack()} />
-        <Appbar.Content
-          title="Wallets"
-        />
-        {walletsLoaded && (walletsList.length < appSettings.maxWallets || walletsList.length === 0) &&
-          <Appbar.Action icon="add-circle-outline" size={36} onPress={() => createWallet()} />
-        }
-      </Appbar.Header>
+      <Header
+        placement="left"
+        containerStyle={styles.appHeader}
+        leftComponent={<Icon
+          onPress={() => NavigationService.goBack()}
+          name='md-return-left'
+          type='ionicon'
+          color='white'
+          size={26}
+        />}
+        centerComponent={{ text: 'Wallets', style: { color: '#fff', fontSize: 20 } }}
+        rightComponent={walletsLoaded && (walletsList.length < appSettings.maxWallets || walletsList.length === 0) ?
+          (< Icon
+            onPress={() => createWallet()}
+            name='md-add-circle-outline'
+            type='ionicon'
+            color='white'
+            size={26}
+          />) : null}
+      />
       <View style={styles.walletsWrapper}>
         <FlatList
           style={styles.flatList}
@@ -82,6 +94,10 @@ const Wallets = () => {
 };
 
 const styles = StyleSheet.create({
+  pageWrapper: {
+    flex: 1,
+    backgroundColor: 'rgb(40, 45, 49)'
+  },
   appHeader: {
     borderBottomWidth: 1,
     backgroundColor: '#212529',

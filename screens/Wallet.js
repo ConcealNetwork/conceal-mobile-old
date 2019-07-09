@@ -140,9 +140,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderColor: '#333333',
     borderRadius: 10,
-    marginBottom: 5,
+    marginBottom: 3,
     borderWidth: 1,
-    marginTop: 5,
+    marginTop: 3,
     padding: 20,
   },
   worthDollars: {
@@ -163,8 +163,8 @@ const styles = StyleSheet.create({
     margin: 10,
     padding: 25,
     height: 125,
-    marginLeft: 20,
-    marginRight: 20,
+    marginLeft: 10,
+    marginRight: 10,
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
@@ -174,8 +174,8 @@ const styles = StyleSheet.create({
   },
   footer: {
     bottom: 10,
-    left: 20,
-    right: 20,
+    left: 10,
+    right: 10,
     position: 'absolute',
     flex: 1,
     alignItems: 'stretch',
@@ -218,8 +218,8 @@ const styles = StyleSheet.create({
   },
   transactionsWrapper: {
     top: 260,
-    left: 20,
-    right: 20,
+    left: 10,
+    right: 10,
     bottom: 70,
     borderRadius: 10,
     position: 'absolute',
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 18,
     marginTop: 5,
-    marginLeft: 20,
+    marginLeft: 10,
     paddingLeft: 0
   },
   txDirection: {
