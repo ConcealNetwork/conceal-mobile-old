@@ -4,7 +4,7 @@ import { maskAddress } from '../helpers/utils';
 import { AppContext } from '../components/ContextProvider';
 import ConcealTextInput from '../components/ccxTextInput';
 import ConcealButton from '../components/ccxButton';
-import { colors } from '../constants/Colors';
+import { AppColors } from '../constants/Colors';
 import React, { useContext } from "react";
 import {
   Text,
@@ -122,7 +122,7 @@ const SendScreen = () => {
       </View>
       <Overlay
         isVisible={state.appData.sendScreen.addrListVisible}
-        overlayBackgroundColor={colors.concealBackground}
+        overlayBackgroundColor={AppColors.concealBackground}
         width="100%"
         height="100%"
       >
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
     fontSize: 16
   },
   sendSummaryLabel: {
-    color: colors.concealOrange
+    color: AppColors.concealOrange
   },
   buttonContainer: {
     margin: 5

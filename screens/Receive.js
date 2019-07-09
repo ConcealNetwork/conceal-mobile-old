@@ -5,7 +5,7 @@ import NavigationService from '../helpers/NavigationService';
 import ConcealButton from '../components/ccxButton';
 import QRCode from 'react-native-qrcode-svg';
 import Toast from 'react-native-root-toast';
-import { colors } from '../constants/Colors';
+import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
 import {
   Text,
@@ -44,8 +44,8 @@ const Receive = () => {
 
   onCopyAddress = async (text) => {
     let toast = Toast.show(text, {
-      backgroundColor: colors.concealInfoColor,
-      textColor: colors.concealBlack,
+      backgroundColor: AppColors.concealInfoColor,
+      textColor: AppColors.concealBlack,
       duration: Toast.durations.LONG,
       position: 0,
       animation: true,
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
   address: {
     fontSize: 16,
     marginBottom: 20,
-    color: colors.concealOrange
+    color: AppColors.concealOrange
   },
 });
 

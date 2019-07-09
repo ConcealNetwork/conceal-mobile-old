@@ -6,7 +6,7 @@ import ConcealButton from '../components/ccxButton';
 import { AppContext } from '../components/ContextProvider';
 import { useFormInput, useFormValidation } from '../helpers/hooks';
 import AppStyles from '../components/Style';
-import { colors } from '../constants/Colors';
+import { AppColors } from '../constants/Colors';
 
 
 const SignUp = props => {
@@ -42,7 +42,7 @@ const SignUp = props => {
         {...bindUserName}
         style={[AppStyles.inputField, AppStyles.textLarge]}
         placeholder="User Name"
-        placeholderTextColor={colors.placeholderTextColor}
+        placeholderTextColor={AppColors.placeholderTextColor}
         textContentType="none"
       />
 
@@ -50,7 +50,7 @@ const SignUp = props => {
         {...bindEmail}
         style={[AppStyles.inputField, AppStyles.textLarge]}
         placeholder="E-mail"
-        placeholderTextColor={colors.placeholderTextColor}
+        placeholderTextColor={AppColors.placeholderTextColor}
         keyboardType="email-address"
         textContentType="none"
       />
@@ -59,7 +59,7 @@ const SignUp = props => {
         secureTextEntry={true}
         style={[AppStyles.inputField, AppStyles.textLarge]}
         placeholder="Password"
-        placeholderTextColor={colors.placeholderTextColor}
+        placeholderTextColor={AppColors.placeholderTextColor}
         textContentType="newPassword"
       />
 
@@ -72,7 +72,7 @@ const SignUp = props => {
           style={[styles.footerBtn, styles.footerBtnLeft]}
           loading={formSubmitted}
           loadingStyle={AppStyles.submitButtonLoading}
-          loadingProps={{ color: colors.concealOrange }}
+          loadingProps={{ color: AppColors.concealOrange }}
         />
         <ConcealButton
           onPress={() => hidePanel()}

@@ -11,7 +11,7 @@ import { AppContext } from '../components/ContextProvider';
 import { useFormInput, useFormValidation } from '../helpers/hooks';
 import SignUp from './SignUp';
 import ResetPassword from './ResetPassword';
-import { colors } from '../constants/Colors';
+import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
 
 

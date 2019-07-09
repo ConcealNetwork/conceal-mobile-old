@@ -3,7 +3,7 @@ import { Icon, Header, ListItem } from 'react-native-elements';
 import { ScrollView, Text, View, StyleSheet, FlatList } from 'react-native';
 import NavigationService from '../helpers/NavigationService';
 import { AppContext } from '../components/ContextProvider';
-import { colors } from '../constants/Colors';
+import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
 
 
@@ -91,20 +91,20 @@ const styles = StyleSheet.create({
     borderBottomColor: '#343a40'
   },
   settingsLabel: {
-    color: colors.concealOrange
+    color: AppColors.concealOrange
   },
   settingsText: {
-    color: colors.concealTextColor
+    color: AppColors.concealTextColor
   },
   settingsList: {
     margin: 10,
-    backgroundColor: colors.concealBackground
+    backgroundColor: AppColors.concealBackground
   },
   settingsItem: {
     backgroundColor: '#212529',
     borderWidth: 0,
     borderBottomWidth: 1,
-    borderBottomColor: colors.concealBackground,
+    borderBottomColor: AppColors.concealBackground,
   }
 });
 

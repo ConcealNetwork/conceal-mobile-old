@@ -3,6 +3,7 @@ import { Icon, Header } from 'react-native-elements';
 import { IconButton, Colors } from 'react-native-paper';
 import { Text, View, FlatList, StyleSheet } from 'react-native';
 import Moment from 'moment';
+import { AppColors } from '../constants/Colors';
 import NavigationService from '../helpers/NavigationService';
 import { AppContext } from '../components/ContextProvider';
 import ConcealButton from '../components/ccxButton';
@@ -76,6 +77,7 @@ const Wallet = () => {
               icon="show-chart"
               color={Colors.white}
               style={[styles.iconGeneral, styles.iconMarkets]}
+              onPress={() => NavigationService.navigate('Market')}
             />
           </View>
           <Text style={styles.txsText}>Transactions</Text>
@@ -138,11 +140,9 @@ const styles = StyleSheet.create({
   flatview: {
     backgroundColor: '#212529',
     justifyContent: 'center',
-    borderColor: '#333333',
-    borderRadius: 10,
-    marginBottom: 3,
-    borderWidth: 1,
-    marginTop: 3,
+    borderBottomColor: AppColors.concealBackground,
+    borderWidth: 0,
+    borderBottomWidth: 1,
     padding: 20,
   },
   worthDollars: {
@@ -165,11 +165,10 @@ const styles = StyleSheet.create({
     height: 125,
     marginLeft: 10,
     marginRight: 10,
-    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#212529',
-    borderColor: '#333333',
+    borderColor: AppColors.concealBorderColor,
     borderWidth: 1
   },
   footer: {
@@ -221,8 +220,9 @@ const styles = StyleSheet.create({
     left: 10,
     right: 10,
     bottom: 70,
-    borderRadius: 10,
     position: 'absolute',
+    borderWidth: 1,
+    borderColor: AppColors.concealBorderColor
   },
   dataTimestamp: {
     color: '#FFFFFF',

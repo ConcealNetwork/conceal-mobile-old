@@ -5,7 +5,7 @@ import { maskAddress } from '../helpers/utils';
 import { AppContext } from '../components/ContextProvider';
 import ConcealButton from '../components/ccxButton';
 import ConcealLoader from '../components/ccxLoader';
-import { colors } from '../constants/Colors';
+import { AppColors } from '../constants/Colors';
 import Toast from 'react-native-root-toast';
 import React, { useContext } from "react";
 import {
@@ -47,7 +47,7 @@ const SendConfirmScreen = () => {
         console.log(data);
         if (data.result == "error") {
           let toast = Toast.show(data.message.join(), {
-            backgroundColor: colors.concealErrorColor,
+            backgroundColor: AppColors.concealErrorColor,
             duration: Toast.durations.LONG,
             opacity: 0.9,
             position: 0,
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
     marginTop: 20
   },
   sendSummaryHighlight: {
-    color: colors.concealOrange
+    color: AppColors.concealOrange
   },
   overlayWrapper: {
     top: 0,

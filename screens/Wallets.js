@@ -5,6 +5,7 @@ import { Button } from 'react-native-paper';
 import NavigationService from '../helpers/NavigationService';
 import { AppContext } from '../components/ContextProvider';
 import { maskAddress } from '../helpers/utils';
+import { AppColors } from '../constants/Colors';
 import ConcealFAB from '../components/ccxFAB';
 
 
@@ -118,8 +119,7 @@ const styles = StyleSheet.create({
   flatview: {
     backgroundColor: '#212529',
     justifyContent: 'center',
-    borderColor: '#333333',
-    borderRadius: 10,
+    borderColor: AppColors.concealBorderColor,
     marginBottom: 5,
     borderWidth: 1,
     marginTop: 5,
