@@ -3,7 +3,6 @@ import mergeJSON from 'merge-json';
 import { appSettings } from '../constants/appSettings';
 import { logger } from '../helpers/Logger';
 
-
 const useAppState = () => {
   const initialState = {
     appSettings,
@@ -59,8 +58,7 @@ const useAppState = () => {
       sendScreen: {
         addrListVisible: false,
         sendConfirmVisible: false,
-        securePasswordEntry: true,
-        isSendingPayment: false
+        securePasswordEntry: true
       }
     }
   };

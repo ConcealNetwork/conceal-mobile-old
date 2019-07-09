@@ -22,6 +22,8 @@ const Wallet = () => {
   };
   const format4Decimals = { minimumFractionDigits: 4, maximumFractionDigits: 4 };
   const format8Decimals = { minimumFractionDigits: 8, maximumFractionDigits: 8 };
+  const transactions = currWallet.transactions.reverse();
+
   return (
     <View style={styles.pageWrapper}>
       <Header
@@ -79,7 +81,7 @@ const Wallet = () => {
           <Text style={styles.txsText}>Transactions</Text>
           <View style={styles.transactionsWrapper}>
             <FlatList
-              data={currWallet.transactions}
+              data={transactions}
               showsVerticalScrollIndicator={false}
               keyExtractor={item => item.hash}
               renderItem={({ item }) =>

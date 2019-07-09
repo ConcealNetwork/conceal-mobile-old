@@ -292,7 +292,7 @@ const AppContextProvider = props => {
 
   const sendPayment = (wallet, address, paymentID, amount, twoFA, password, callback) => {
     logger.log('SENDING PAYMENT...');
-    setAppData({ sendScreen: { isSendingPayment: true } });
+    dispatch({ type: 'FORM_SUBMITTED', value: true });
     Api.sendTx(wallet, address, paymentID, amount, '', twoFA, password)
       .then(res => {
         if (res.result === 'success') {
@@ -305,7 +305,7 @@ const AppContextProvider = props => {
       })
       .catch(e => console.error(e))
       .finally(() => {
-        setAppData({ sendScreen: { isSendingPayment: false } });
+        dispatch({ type: 'FORM_SUBMITTED', value: false });
       });
   };
 

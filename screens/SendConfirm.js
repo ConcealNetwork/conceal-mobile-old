@@ -19,7 +19,7 @@ import {
 const SendConfirmScreen = () => {
   const { state, actions } = useContext(AppContext);
   const { setAppData } = actions;
-  const { user, userSettings, wallets } = state;
+  const { userSettings, layout, wallets } = state;
   const currWallet = Object.keys(wallets).length > 0
     ? wallets[Object.keys(wallets).find(address => wallets[address].selected)]
     : null;
@@ -57,8 +57,7 @@ const SendConfirmScreen = () => {
             delay: 300
           });
         } else if (data.result == "success") {
-          NavigationService.goBack();
-          NavigationService.goBack();
+          NavigationService.navigate('Wallet');
         }
       }
     );
@@ -66,10 +65,11 @@ const SendConfirmScreen = () => {
 
   const formValidation = (password !== '' && password.length >= userSettings.minimumPasswordLength);
   const formValid = useFormValidation(formValidation);
+  const { formSubmitted } = layout;
 
   return (
     <View style={styles.pageWrapper}>
-      <ConcealLoader loading={state.appData.sendScreen.isSendingPayment} />
+      <ConcealLoader loading={formSubmitted} />
       <Header
         placement="left"
         containerStyle={styles.appHeader}
