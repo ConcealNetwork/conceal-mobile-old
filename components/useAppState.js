@@ -59,6 +59,10 @@ const useAppState = () => {
         addrListVisible: false,
         sendConfirmVisible: false,
         securePasswordEntry: true
+      },
+      scanCode: {
+        hasCameraPermission: null,
+        scanned: false
       }
     }
   };
@@ -287,6 +291,12 @@ const useAppState = () => {
           appData: mergeJSON.merge(state.appData, action.appData)
         };
         break;
+      case 'BARCODE_SCANNED':
+        console.log(action.data);
+        result = {
+          ...state
+        }
+        break
       case 'CLEAR_APP':
         logger.log('***** APP CLEANUP *****');
         state.intervals.forEach(interval => clearInterval(interval));

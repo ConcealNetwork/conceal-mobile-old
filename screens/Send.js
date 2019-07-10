@@ -163,7 +163,7 @@ const SendScreen = () => {
         />
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnRight]}
-          onPress={() => console.log('Pressed')}
+          onPress={() => NavigationService.navigate('Scanner', { path: ["sendScreen", "toAddress"] })}
           text="SCAN QR"
         />
       </View>

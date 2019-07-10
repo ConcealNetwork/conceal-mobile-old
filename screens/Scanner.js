@@ -1,34 +1,43 @@
-import * as React from 'react';
+import React, { useContext } from "react";
+import { AppContext } from '../components/ContextProvider';
+import NavigationService from '../helpers/NavigationService';
 import { Text, View, StyleSheet, Button } from 'react-native';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
-
 import { BarCodeScanner } from 'expo-barcode-scanner';
 
-export default class BarcodeScannerExample extends React.Component {
-  state = {
-    hasCameraPermission: null,
-    scanned: false,
-  };
+const BarcodeScanner = (props) => {
+  const params = props.navigation.state.params
 
-  async componentDidMount() {
-    this.getPermissionsAsync();
+  const { state, actions } = useContext(AppContext);
+  const { setAppData } = actions;
+
+  function constructPayload(codeObject, index, path, data) {
+    if (index < (path.length - 1)) {
+      codeObject[path[index]] = {};
+      constructPayload(codeObject[path[index]], index + 1, path, data);
+    } else if (index < path.length) {
+      codeObject[path[index]] = data;
+      constructPayload(codeObject[path[index]], index + 1, path, data);
+    }
   }
+
+  handleBarCodeScanned = ({ type, data }) => {
+    var codeObject = {};
+    constructPayload(codeObject, 0, params.path, data);
+    constructPayload(codeObject, 0, ["scanCode", "scanned"], true);
+    actions.setAppData(codeObject);
+    NavigationService.goBack();
+  };
 
   getPermissionsAsync = async () => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
     this.setState({ hasCameraPermission: status === 'granted' });
   };
 
-  render() {
-    const { hasCameraPermission, scanned } = this.state;
-
-    if (hasCameraPermission === null) {
-      return <Text>Requesting for camera permission</Text>;
-    }
-    if (hasCameraPermission === false) {
-      return <Text>No access to camera</Text>;
-    }
+  if (state.appData.scanCode.hasCameraPermission) {
+    getPermissionsAsync();
+  } else {
     return (
       <View
         style={{
@@ -37,19 +46,12 @@ export default class BarcodeScannerExample extends React.Component {
           justifyContent: 'flex-end',
         }}>
         <BarCodeScanner
-          onBarCodeScanned={scanned ? undefined : this.handleBarCodeScanned}
+          onBarCodeScanned={state.appData.scanCode.scanned ? undefined : this.handleBarCodeScanned}
           style={StyleSheet.absoluteFillObject}
         />
-
-        {scanned && (
-          <Button title={'Tap to Scan Again'} onPress={() => this.setState({ scanned: false })} />
-        )}
       </View>
     );
   }
-
-  handleBarCodeScanned = ({ type, data }) => {
-    this.setState({ scanned: true });
-    alert(`Bar code with type ${type} and data ${data} has been scanned!`);
-  };
 }
+
+export default BarcodeScanner;
