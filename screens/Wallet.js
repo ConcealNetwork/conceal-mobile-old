@@ -38,7 +38,7 @@ const Wallet = () => {
             <Text style={styles.worthDollars}>
               $ {(prices.usd * currWallet.balance).toLocaleString(undefined, format4Decimals)}
             </Text>
-            <Text style={styles.amountCCX}>{currWallet.balance.toLocaleString(undefined, formatOptions)} CCX</Text>
+            <Text style={styles.amountCCX}>{currWallet.balance.toLocaleString(undefined, format2Decimals)} CCX</Text>
             <View style={styles.btcPriceWrapper}>
               <Icon
                 containerStyle={styles.btcIcon}

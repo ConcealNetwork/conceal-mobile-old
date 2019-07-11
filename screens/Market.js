@@ -27,17 +27,22 @@ const Market = () => {
     },
     {
       value: prices.usd_market_cap.toLocaleString(undefined, format0Decimals),
-      title: 'Marketcap',
+      title: 'Marketcap (USD)',
       icon: 'md-cash'
     },
     {
       value: prices.usd_24h_vol.toLocaleString(undefined, format0Decimals),
-      title: '24h Volume',
+      title: '24h Volume (USD)',
       icon: 'md-rocket'
     },
     {
+      value: prices.btc_24h_change.toLocaleString(undefined, format8Decimals),
+      title: '24h Change (BTC)',
+      icon: 'md-pricetag'
+    },
+    {
       value: prices.usd_24h_change.toLocaleString(undefined, format4Decimals),
-      title: '24h Change',
+      title: '24h Change (USD)',
       icon: 'md-pricetag'
     }
   ];

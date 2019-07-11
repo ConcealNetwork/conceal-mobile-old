@@ -1,16 +1,53 @@
 import React, { useContext } from 'react';
-import { Icon, Header } from 'react-native-elements';
-import { Alert, Text, View, FlatList, StyleSheet } from 'react-native';
+import { Icon, Header, Overlay } from 'react-native-elements';
 import { Button } from 'react-native-paper';
 import NavigationService from '../helpers/NavigationService';
+import ConcealTextInput from '../components/ccxTextInput';
+import ConcealButton from '../components/ccxButton';
 import { AppContext } from '../components/ContextProvider';
 import { maskAddress } from '../helpers/utils';
+import { AppColors } from '../constants/Colors';
+import {
+  Alert,
+  Text,
+  View,
+  FlatList,
+  StyleSheet,
+  Clipboard
+} from 'react-native';
 
+readLabelromClipboard = async () => {
+  const clipboardContent = await Clipboard.getString();
+  setAppData({
+    addressEntry: {
+      label: clipboardContent
+    }
+  });
+};
+
+readAddressFromClipboard = async () => {
+  const clipboardContent = await Clipboard.getString();
+  setAppData({
+    addressEntry: {
+      address: clipboardContent
+    }
+  });
+};
+
+readPaymentIdFromClipboard = async () => {
+  const clipboardContent = await Clipboard.getString();
+  setAppData({
+    addressEntry: {
+      paymentId: clipboardContent
+    }
+  });
+};
 
 const AddressBook = () => {
   const { actions, state } = useContext(AppContext);
-  const { deleteContact } = actions;
+  const { deleteContact, setAppData } = actions;
   const { layout, user } = state;
+  console.log(user.addressBook);
 
   return (
     <View style={styles.pageWrapper}>
@@ -26,7 +63,18 @@ const AddressBook = () => {
         />}
         centerComponent={{ text: 'Address Book', style: { color: '#fff', fontSize: 20 } }}
         rightComponent={<Icon
-          onPress={() => console.log("pressed")}
+          onPress={() => {
+            setAppData({
+              addressEntry: {
+                headerText: "Create Address",
+                label: '',
+                address: '',
+                paymentId: '',
+                entryId: null
+              }
+            });
+            NavigationService.navigate('EditAddress');
+          }}
           name='md-add-circle-outline'
           type='ionicon'
           color='white'
@@ -67,7 +115,18 @@ const AddressBook = () => {
                   >
                     <Text style={styles.buttonText}>DELETE</Text>
                   </Button>
-                  <Button style={[styles.footerBtn, styles.footerBtnRight]} onPress={() => { }}>
+                  <Button style={[styles.footerBtn, styles.footerBtnRight]} onPress={() => {
+                    setAppData({
+                      addressEntry: {
+                        headerText: "Edit Address",
+                        label: item.label,
+                        address: item.address,
+                        paymentId: item.paymentID,
+                        entryId: item.entryID
+                      }
+                    });
+                    NavigationService.navigate('EditAddress');
+                  }}>
                     <Text style={styles.buttonText}>EDIT</Text>
                   </Button>
                 </View>
@@ -125,6 +184,16 @@ const styles = StyleSheet.create({
     right: 10,
     bottom: 0,
     position: 'absolute'
+  },
+  footer: {
+    bottom: 10,
+    left: 20,
+    right: 20,
+    position: 'absolute',
+    flex: 1,
+    alignItems: 'stretch',
+    flexDirection: 'row',
+    justifyContent: 'space-between'
   },
   walletFooter: {
     flex: 1,

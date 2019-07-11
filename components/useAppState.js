@@ -63,6 +63,13 @@ const useAppState = () => {
       scanCode: {
         hasCameraPermission: null,
         scanned: false
+      },
+      addressEntry: {
+        label: null,
+        address: null,
+        paymentId: null,
+        entryId: null,
+        headerText: null
       }
     }
   };

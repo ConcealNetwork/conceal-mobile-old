@@ -4,6 +4,7 @@ import { createStackNavigator, createAppContainer } from 'react-navigation';
 import Wallet from '../screens/Wallet';
 import Wallets from '../screens/Wallets';
 import AddressBook from '../screens/AddressBook';
+import EditAddress from '../screens/EditAddress';
 import Send from '../screens/Send';
 import SendConfirm from '../screens/SendConfirm';
 import Receive from '../screens/Receive';
@@ -64,6 +65,12 @@ const AppNavigator = createStackNavigator(
     },
     Scanner: {
       screen: Scanner,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    EditAddress: {
+      screen: EditAddress,
       navigationOptions: {
         header: null,
       },
