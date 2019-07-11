@@ -10,6 +10,7 @@ export default function ConcealButton({
   onPress,
   loading,
   style,
+  icon,
   text
 }) {
   var btnStyles = [styles.button];
@@ -21,6 +22,7 @@ export default function ConcealButton({
   return (
     <Button
       title={text || ''}
+      icon={icon || null}
       onPress={onPress || null}
       disabled={disabled || null}
       buttonStyle={btnStyles || null}

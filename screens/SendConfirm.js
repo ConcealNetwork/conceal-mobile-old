@@ -132,7 +132,7 @@ const SendConfirmScreen = () => {
         />
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnRight]}
-          onPress={() => this.onGoBack()}
+          onPress={() => NavigationService.goBack()}
           text="CANCEL"
         />
       </View>
