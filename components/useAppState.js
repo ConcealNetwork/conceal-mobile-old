@@ -1,7 +1,9 @@
 import { useReducer, useRef } from 'react';
 import mergeJSON from 'merge-json';
 import { appSettings } from '../constants/appSettings';
+import { AppColors } from '../constants/Colors';
 import { logger } from '../helpers/Logger';
+import Toast from 'react-native-root-toast';
 
 const useAppState = () => {
   const initialState = {
@@ -248,6 +250,18 @@ const useAppState = () => {
         break;
       case 'DISPLAY_MESSAGE':
         if (!action.message) action.message = {};
+        if (action.message.join() !== '') {
+          let toast = Toast.show(action.message.join(), {
+            backgroundColor: AppColors.concealErrorColor,
+            duration: Toast.durations.LONG,
+            opacity: 1,
+            position: 0,
+            animation: true,
+            hideOnPress: true,
+            shadow: true,
+            delay: 300
+          });
+        }
         result = {
           ...state,
           layout: {

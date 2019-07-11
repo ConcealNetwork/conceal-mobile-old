@@ -5,7 +5,6 @@ import { maskAddress } from '../helpers/utils';
 import { AppContext } from '../components/ContextProvider';
 import ConcealButton from '../components/ccxButton';
 import { AppColors } from '../constants/Colors';
-import Toast from 'react-native-root-toast';
 import React, { useContext } from "react";
 import {
   Text,
@@ -43,19 +42,7 @@ const SendConfirmScreen = () => {
       twoFACode,
       password,
       function (data) {
-        console.log(data);
-        if (data.result == "error") {
-          let toast = Toast.show(data.message.join(), {
-            backgroundColor: AppColors.concealErrorColor,
-            duration: Toast.durations.LONG,
-            opacity: 0.9,
-            position: 0,
-            animation: true,
-            hideOnPress: true,
-            shadow: true,
-            delay: 300
-          });
-        } else if (data.result == "success") {
+        if (data.result == "success") {
           NavigationService.navigate('Wallet');
         }
       }

@@ -23,7 +23,11 @@ const Wallet = () => {
   const currWallet = Object.keys(wallets).length > 0 && layout.walletsLoaded
     ? wallets[Object.keys(wallets).find(address => wallets[address].selected)]
     : null;
-  const transactions = currWallet.transactions.reverse();
+  var transactions = [];
+
+  if (currWallet && currWallet.transactions) {
+    transactions = currWallet.transactions.reverse();
+  }
 
   return (
     <View style={styles.pageWrapper}>

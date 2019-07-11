@@ -51,11 +51,6 @@ const Login = () => {
             style={{ width: 150, height: 150 }}
           />
           <Text style={AppStyles.title}>SIGN IN</Text>
-
-          {(message.loginForm || message.signUpForm) &&
-            <Text style={AppStyles.textDanger}>{message.signUpForm || message.loginForm}</Text>
-          }
-
           <ConcealTextInput
             {...bindEmail}
             placeholder="E-mail"

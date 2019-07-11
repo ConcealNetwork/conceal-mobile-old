@@ -272,7 +272,7 @@ const AppContextProvider = props => {
     dispatch({ type: 'FORM_SUBMITTED', value: true });
     Api.deleteWallet(address)
       .then(res => res.result === 'success' && dispatch({ type: 'DELETE_WALLET', address }))
-      .catch(e => console.error(e))
+      .catch(err => { message = `ERROR ${err}` })
       .finally(() => {
         getWallets();
         dispatch({ type: 'FORM_SUBMITTED', value: false });
@@ -283,7 +283,7 @@ const AppContextProvider = props => {
     logger.log('GETTING BLOCKCHAIN HEIGHT...');
     Api.getBlockchainHeight()
       .then(res => dispatch({ type: 'UPDATE_BLOCKCHAIN_HEIGHT', blockchainHeight: res.message.height }))
-      .catch(e => console.error(e));
+      .catch(err => { message = `ERROR ${err}` })
   };
 
   const getMarketPrices = () => {
@@ -294,7 +294,7 @@ const AppContextProvider = props => {
         .then(res => {
           dispatch({ type: 'UPDATE_MARKET', market, marketData: res })
         })
-        .catch(e => console.error(e));
+        .catch(err => { message = `ERROR ${err}` })
     });
   };
 
@@ -303,7 +303,7 @@ const AppContextProvider = props => {
     const { appSettings } = state;
     Api.getPrices(appSettings.coingeckoAPI)
       .then(res => dispatch({ type: 'UPDATE_PRICES', pricesData: res }))
-      .catch(e => console.error(e));
+      .catch(err => { message = `ERROR ${err}` })
   };
 
   const sendPayment = (wallet, address, paymentID, amount, twoFA, password, callback) => {
@@ -315,11 +315,11 @@ const AppContextProvider = props => {
           dispatch({ type: 'PAYMENT_SENT', res });
           if (callback) { callback(res) }
         } else {
-          dispatch({ type: 'PAYMENT_FAILED', res });
+          dispatch({ type: 'DISPLAY_MESSAGE', message: res.message });
           if (callback) { callback(res) }
         }
       })
-      .catch(e => console.error(e))
+      .catch(err => { message = `ERROR ${err}` })
       .finally(() => {
         dispatch({ type: 'FORM_SUBMITTED', value: false });
       });

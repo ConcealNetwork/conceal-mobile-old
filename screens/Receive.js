@@ -45,9 +45,10 @@ const Receive = () => {
   onCopyAddress = async (text) => {
     let toast = Toast.show(text, {
       backgroundColor: AppColors.concealInfoColor,
-      textColor: AppColors.concealBlack,
+      textColor: AppColors.concealTextColor,
       duration: Toast.durations.LONG,
       position: 0,
+      opacity: 1,
       animation: true,
       hideOnPress: true,
       shadow: true,
