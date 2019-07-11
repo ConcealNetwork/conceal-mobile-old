@@ -6,9 +6,11 @@ import { StyleSheet } from 'react-native';
 export default function ConcealTextInput({
   onChangeText,
   value,
+  label,
   editable,
   rightIcon,
   inputStyle,
+  labelStyle,
   placeholder,
   keyboardType,
   containerStyle,
@@ -18,6 +20,7 @@ export default function ConcealTextInput({
 }) {
   var inputContainerStyles = [styles.InputContainer];
   var containerStyles = [styles.Container];
+  var labelStyles = [styles.label];
   var inputStyles = [styles.Input];
 
   if (inputStyle) {
@@ -25,6 +28,14 @@ export default function ConcealTextInput({
       inputStyles = inputStyles.concat(inputStyle);
     } else {
       inputStyles.push(inputStyle);
+    }
+  }
+
+  if (labelStyle) {
+    if (Array.isArray(labelStyle)) {
+      labelStyles = labelStyles.concat(labelStyle);
+    } else {
+      labelStyles.push(labelStyle);
     }
   }
 
@@ -51,8 +62,10 @@ export default function ConcealTextInput({
   return (
     <Input
       value={value}
+      label={label}
       editable={editable}
       inputStyle={inputStyles}
+      labelStyle={labelStyles}
       placeholder={placeholder}
       onChangeText={onChangeText}
       containerStyle={containerStyles}
@@ -82,5 +95,8 @@ const styles = StyleSheet.create({
   Input: {
     fontSize: 20,
     color: 'rgb(255, 255, 255)'
+  },
+  label: {
+    color: 'rgb(255, 0, 0)'
   }
 })

@@ -1,12 +1,18 @@
 import { Icon, Overlay, Header } from 'react-native-elements';
 import NavigationService from '../helpers/NavigationService';
-import { maskAddress } from '../helpers/utils';
 import { AppContext } from '../components/ContextProvider';
 import ConcealTextInput from '../components/ccxTextInput';
 import ConcealButton from '../components/ccxButton';
 import { AppColors } from '../constants/Colors';
-
 import React, { useContext } from "react";
+import {
+  maskAddress,
+  formatOptions,
+  format0Decimals,
+  format2Decimals,
+  format4Decimals,
+  format8Decimals
+} from '../helpers/utils';
 import {
   Text,
   View,
@@ -26,7 +32,8 @@ const SendScreen = () => {
 
   isFormValid = () => {
     if (state.appData.sendScreen.toAddress && state.appData.sendScreen.toAmmount) {
-      return true;
+      var ammountAsFloat = parseFloat(state.appData.sendScreen.toAmmount);
+      return ((ammountAsFloat > 0) && (ammountAsFloat <= (parseFloat(currWallet.balance) - 0.0001)));
     } else {
       return false;
     }
@@ -54,6 +61,17 @@ const SendScreen = () => {
     });
   };
 
+  getAmmountError = () => {
+    var ammountAsFloat = parseFloat(state.appData.sendScreen.toAmmount || 0);
+    if ((ammountAsFloat <= 0) && (state.appData.sendScreen.toAmmount)) {
+      return "Ammount must be greater then 0"
+    } else if (ammountAsFloat > (parseFloat(currWallet.balance) - 0.0001)) {
+      return "The ammount exceeds wallet balance"
+    } else {
+      return "";
+    }
+  }
+
   return (
     <View style={styles.pageWrapper}>
       <Header
@@ -78,18 +96,21 @@ const SendScreen = () => {
       <View style={styles.walletWrapper}>
         <View style={styles.fromWrapper}>
           <Text style={styles.fromAddress}>{maskAddress(currWallet.addr)}</Text>
-          <Text style={styles.fromBalance}>{currWallet.balance.toFixed(2)} CCX</Text>
+          <Text style={styles.fromBalance}>{currWallet.balance.toLocaleString(undefined, format2Decimals)} CCX</Text>
         </View>
 
         <ConcealTextInput
+          label={this.getAmmountError()}
           keyboardType='numeric'
           placeholder='Select ammount to send...'
           containerStyle={styles.sendInput}
           value={state.appData.sendScreen.toAmmount}
-          onChangeText={(text) => setAppData({ sendScreen: { toAmmount: text } })}
+          onChangeText={(text) => {
+            setAppData({ sendScreen: { toAmmount: text } });
+          }}
           rightIcon={
             <Icon
-              onPress={() => setAppData({ sendScreen: { toAmmount: currWallet.balance.toString() } })}
+              onPress={() => setAppData({ sendScreen: { toAmmount: (parseFloat(currWallet.balance) - 0.0001).toLocaleString(undefined, format4Decimals) } })}
               name='md-add'
               type='ionicon'
               color='white'
