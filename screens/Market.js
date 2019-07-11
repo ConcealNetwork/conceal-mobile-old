@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { Icon, Header, ListItem } from 'react-native-elements';
 import { ScrollView, Text, View, StyleSheet, FlatList } from 'react-native';
+import { format0Decimals, format2Decimals, format4Decimals, format8Decimals } from '../helpers/utils';
 import NavigationService from '../helpers/NavigationService';
 import { ActivityIndicator } from 'react-native';
 import { AppContext } from '../components/ContextProvider';
@@ -15,27 +16,27 @@ const Market = () => {
 
   const list = [
     {
-      value: prices.usd,
+      value: prices.usd.toLocaleString(undefined, format4Decimals),
       title: 'CCX to USD',
       icon: 'logo-usd'
     },
     {
-      value: prices.btc,
+      value: prices.btc.toLocaleString(undefined, format8Decimals),
       title: 'CCX to BTC',
       icon: 'logo-bitcoin'
     },
     {
-      value: prices.usd_market_cap,
+      value: prices.usd_market_cap.toLocaleString(undefined, format0Decimals),
       title: 'Marketcap',
       icon: 'md-cash'
     },
     {
-      value: prices.usd_24h_vol,
+      value: prices.usd_24h_vol.toLocaleString(undefined, format0Decimals),
       title: '24h Volume',
       icon: 'md-rocket'
     },
     {
-      value: prices.usd_24h_change,
+      value: prices.usd_24h_change.toLocaleString(undefined, format4Decimals),
       title: '24h Change',
       icon: 'md-pricetag'
     }

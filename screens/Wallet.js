@@ -7,7 +7,14 @@ import { AppColors } from '../constants/Colors';
 import NavigationService from '../helpers/NavigationService';
 import { AppContext } from '../components/ContextProvider';
 import ConcealButton from '../components/ccxButton';
-import { maskAddress } from '../helpers/utils';
+import {
+  maskAddress,
+  formatOptions,
+  format0Decimals,
+  format2Decimals,
+  format4Decimals,
+  format8Decimals
+} from '../helpers/utils';
 
 
 const Wallet = () => {
@@ -16,15 +23,7 @@ const Wallet = () => {
   const currWallet = Object.keys(wallets).length > 0 && layout.walletsLoaded
     ? wallets[Object.keys(wallets).find(address => wallets[address].selected)]
     : null;
-
-  const formatOptions = {
-    minimumFractionDigits: appSettings.coinDecimals,
-    maximumFractionDigits: appSettings.coinDecimals,
-  };
-  const format4Decimals = { minimumFractionDigits: 4, maximumFractionDigits: 4 };
-  const format8Decimals = { minimumFractionDigits: 8, maximumFractionDigits: 8 };
   const transactions = currWallet.transactions.reverse();
-  console.log(prices);
 
   return (
     <View style={styles.pageWrapper}>
