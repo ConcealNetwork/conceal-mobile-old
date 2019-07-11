@@ -2,7 +2,6 @@ import { Icon, Overlay, Header } from 'react-native-elements';
 import NavigationService from '../helpers/NavigationService';
 import { maskAddress } from '../helpers/utils';
 import { AppContext } from '../components/ContextProvider';
-import { readFromClipboard } from '../helpers/utils';
 import ConcealTextInput from '../components/ccxTextInput';
 import ConcealButton from '../components/ccxButton';
 import { AppColors } from '../constants/Colors';

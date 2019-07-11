@@ -216,7 +216,7 @@ const styles = StyleSheet.create({
     flex: 1
   },
   addrInput: {
-    marginTop: 10
+    marginTop: 20
   },
 });
 

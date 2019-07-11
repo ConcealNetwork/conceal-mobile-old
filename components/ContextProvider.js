@@ -107,6 +107,7 @@ const AppContextProvider = props => {
   const addContact = (contact, extras) => {
     const { label, address, paymentID, entryID, edit, id } = contact;
     let message;
+    dispatch({ type: 'FORM_SUBMITTED', value: true });
     Api.addContact(label, address, paymentID, entryID, edit)
       .then(res => {
         if (res.result === 'success') {
@@ -117,12 +118,16 @@ const AppContextProvider = props => {
         }
       })
       .catch(err => { message = `ERROR ${err}` })
-      .finally(() => message && dispatch({ type: 'DISPLAY_MESSAGE', message, id }));
+      .finally(() => {
+        message && dispatch({ type: 'DISPLAY_MESSAGE', message, id });
+        dispatch({ type: 'FORM_SUBMITTED', value: false });
+      });
   };
 
   const deleteContact = contact => {
     const { entryID } = contact;
     let message;
+    dispatch({ type: 'FORM_SUBMITTED', value: true });
     Api.deleteContact(entryID)
       .then(res => {
         if (res.result === 'success') {
@@ -132,7 +137,10 @@ const AppContextProvider = props => {
         }
       })
       .catch(err => { message = `ERROR ${err}` })
-      .finally(() => message && dispatch({ type: 'DISPLAY_MESSAGE', message }));
+      .finally(() => {
+        message && dispatch({ type: 'DISPLAY_MESSAGE', message });
+        dispatch({ type: 'FORM_SUBMITTED', value: false });
+      });
   };
 
   const check2FA = () => {
@@ -172,6 +180,7 @@ const AppContextProvider = props => {
 
   const createWallet = () => {
     logger.log('CREATING WALLET...');
+    dispatch({ type: 'FORM_SUBMITTED', value: true });
     let message;
     Api.createWallet()
       .then(res => {
@@ -184,7 +193,10 @@ const AppContextProvider = props => {
         }
       })
       .catch(err => { message = `ERROR ${err}` })
-      .finally(() => message && dispatch({ type: 'DISPLAY_MESSAGE', message }));
+      .finally(() => {
+        message && dispatch({ type: 'DISPLAY_MESSAGE', message });
+        dispatch({ type: 'FORM_SUBMITTED', value: false });
+      });
   };
 
   const getWallets = () => {
@@ -257,10 +269,14 @@ const AppContextProvider = props => {
 
   const deleteWallet = address => {
     logger.log(`DELETING WALLET ${address}...`);
+    dispatch({ type: 'FORM_SUBMITTED', value: true });
     Api.deleteWallet(address)
       .then(res => res.result === 'success' && dispatch({ type: 'DELETE_WALLET', address }))
       .catch(e => console.error(e))
-      .finally(() => getWallets());
+      .finally(() => {
+        getWallets();
+        dispatch({ type: 'FORM_SUBMITTED', value: false });
+      });
   };
 
   const getBlockchainHeight = () => {

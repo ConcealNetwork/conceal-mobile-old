@@ -6,8 +6,7 @@ import NavigationService from '../helpers/NavigationService';
 import { ActivityIndicator } from 'react-native';
 import { AppContext } from '../components/ContextProvider';
 import { AppColors } from '../constants/Colors';
-import AppStyles from '../components/Style';
-
+import { sprintf } from 'sprintf-js';
 
 const Market = () => {
   const { actions, state } = useContext(AppContext);
@@ -16,7 +15,7 @@ const Market = () => {
 
   const list = [
     {
-      value: prices.usd.toLocaleString(undefined, format4Decimals),
+      value: sprintf('$ %s', prices.usd.toLocaleString(undefined, format4Decimals)),
       title: 'CCX to USD',
       icon: 'logo-usd'
     },
@@ -26,22 +25,22 @@ const Market = () => {
       icon: 'logo-bitcoin'
     },
     {
-      value: prices.usd_market_cap.toLocaleString(undefined, format0Decimals),
+      value: sprintf('$ %s', prices.usd_market_cap.toLocaleString(undefined, format0Decimals)),
       title: 'Marketcap (USD)',
       icon: 'md-cash'
     },
     {
-      value: prices.usd_24h_vol.toLocaleString(undefined, format0Decimals),
+      value: sprintf('$ %s', prices.usd_24h_vol.toLocaleString(undefined, format0Decimals)),
       title: '24h Volume (USD)',
       icon: 'md-rocket'
     },
     {
-      value: prices.btc_24h_change.toLocaleString(undefined, format8Decimals),
+      value: sprintf('%s %%', prices.btc_24h_change.toLocaleString(undefined, format2Decimals)),
       title: '24h Change (BTC)',
       icon: 'md-pricetag'
     },
     {
-      value: prices.usd_24h_change.toLocaleString(undefined, format4Decimals),
+      value: sprintf('%s %%', prices.usd_24h_change.toLocaleString(undefined, format2Decimals)),
       title: '24h Change (USD)',
       icon: 'md-pricetag'
     }

@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React, { Component, useContext } from 'react';
+import { AppContext } from '../components/ContextProvider';
 import {
   StyleSheet,
   View,
@@ -7,22 +8,23 @@ import {
 } from 'react-native';
 
 const ConcealLoader = props => {
-  const {
-    loading,
-    ...attributes
-  } = props;
+  const { state } = useContext(AppContext);
+  const { layout } = state;
+  const { formSubmitted } = layout;
+
+  console.log(formSubmitted);
 
   return (
     <Modal
       transparent={true}
       animationType={'none'}
-      visible={loading}
-      onRequestClose={() => { console.log('close modal') }}>
+      visible={formSubmitted}
+      onRequestClose={() => { }}>
       <View style={styles.modalBackground}>
         <View style={styles.activityIndicatorWrapper}>
           <ActivityIndicator
             size="large"
-            animating={loading}
+            animating={formSubmitted}
           />
         </View>
       </View>

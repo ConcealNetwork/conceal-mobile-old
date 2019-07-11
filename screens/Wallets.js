@@ -1,12 +1,19 @@
 import React, { useContext } from 'react';
-import { Icon, Header } from 'react-native-elements';
-import { Alert, Text, View, FlatList, StyleSheet } from 'react-native';
+import { Icon, Header, CheckBox } from 'react-native-elements';
 import { Button } from 'react-native-paper';
 import NavigationService from '../helpers/NavigationService';
 import { AppContext } from '../components/ContextProvider';
 import { maskAddress } from '../helpers/utils';
 import { AppColors } from '../constants/Colors';
 import ConcealFAB from '../components/ccxFAB';
+import {
+  Alert,
+  Text,
+  View,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity
+} from 'react-native';
 
 
 const Wallets = () => {
@@ -22,6 +29,14 @@ const Wallets = () => {
       acc.push(wallet);
       return acc;
     }, []);
+
+  console.log((walletsList.length < appSettings.maxWallets) || walletsList.length === 0);
+  console.log(walletsList.length < appSettings.maxWallets);
+  console.log(walletsList.length === 0);
+
+  console.log(walletsList.length);
+  console.log(appSettings.maxWallets);
+
 
   return (
     <View>
@@ -42,7 +57,7 @@ const Wallets = () => {
             name='md-add-circle-outline'
             type='ionicon'
             color='white'
-            size={26}
+            size={32}
           />) : null}
       />
       <View style={styles.walletsWrapper}>
@@ -53,15 +68,23 @@ const Wallets = () => {
           keyExtractor={item => item.address}
           renderItem={({ item }) =>
             <View style={styles.flatview}>
-              <View>
-                <Text style={styles.address}>{maskAddress(item.address)}</Text>
-                <Text style={styles.balance}>Balance: {item.total} CCX</Text>
-                <Text style={styles.data}>Locked: {item.locked} CCX</Text>
-                <Text style={styles.data}>{item.status}</Text>
-                <View style={styles.buttonsWrapper}>
-                  <ConcealFAB onPress={() => { switchWallet(item.address) }} />
+              <TouchableOpacity onPress={() => switchWallet(item.address)}>
+                <View>
+                  <Text style={styles.address}>{maskAddress(item.address)}</Text>
+                  <Text style={styles.balance}>Balance: {item.total} CCX</Text>
+                  <Text style={styles.data}>Locked: {item.locked} CCX</Text>
+                  <Text style={styles.data}>{item.status}</Text>
+                  <View style={styles.selectedWrapper}>
+                    <CheckBox
+                      center
+                      size={36}
+                      checkedIcon='dot-circle-o'
+                      uncheckedIcon='circle-o'
+                      checked={item.selected}
+                    />
+                  </View>
                 </View>
-              </View>
+              </TouchableOpacity>
               <View style={styles.walletFooter}>
                 <Button
                   style={[styles.footerBtn, styles.footerBtnLeft]}
@@ -104,9 +127,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#212529',
     borderBottomColor: '#343a40'
   },
-  buttonsWrapper: {
+  selectedWrapper: {
     position: 'absolute',
-    right: 20,
+    right: 0,
     top: 15
   },
   icon: {

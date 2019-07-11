@@ -1,8 +1,6 @@
 import React, { useContext } from 'react';
-import { Animated, Keyboard, Text, TextInput, TouchableWithoutFeedback, View, StyleSheet } from 'react-native';
 import ConcealTextInput from '../components/ccxTextInput';
 import ConcealButton from '../components/ccxButton';
-import ConcealLoader from '../components/ccxLoader';
 
 import { Image } from 'react-native-elements';
 import SlidingUpPanel from 'rn-sliding-up-panel';
@@ -13,6 +11,15 @@ import SignUp from './SignUp';
 import ResetPassword from './ResetPassword';
 import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
+import {
+  Animated,
+  Keyboard,
+  Text,
+  TextInput,
+  TouchableWithoutFeedback,
+  View,
+  StyleSheet
+} from 'react-native';
 
 
 const Login = () => {
@@ -37,7 +44,6 @@ const Login = () => {
 
   return (
     <View style={AppStyles.viewContainer}>
-      <ConcealLoader loading={formSubmitted} />
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <View style={AppStyles.loginView}>
           <Image

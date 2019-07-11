@@ -4,7 +4,6 @@ import NavigationService from '../helpers/NavigationService';
 import { maskAddress } from '../helpers/utils';
 import { AppContext } from '../components/ContextProvider';
 import ConcealButton from '../components/ccxButton';
-import ConcealLoader from '../components/ccxLoader';
 import { AppColors } from '../constants/Colors';
 import Toast from 'react-native-root-toast';
 import React, { useContext } from "react";
@@ -65,11 +64,9 @@ const SendConfirmScreen = () => {
 
   const formValidation = (password !== '' && password.length >= userSettings.minimumPasswordLength);
   const formValid = useFormValidation(formValidation);
-  const { formSubmitted } = layout;
 
   return (
     <View style={styles.pageWrapper}>
-      <ConcealLoader loading={formSubmitted} />
       <Header
         placement="left"
         containerStyle={styles.appHeader}
