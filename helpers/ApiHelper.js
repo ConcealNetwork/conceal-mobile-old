@@ -123,7 +123,7 @@ export default class ApiHelper {
   };
 
   getPrices = pricesURL => {
-    return fetch(`${pricesURL}/simple/price?ids=conceal&vs_currencies=btc,usd&include_last_updated_at=true`)
+    return fetch(`${pricesURL}/simple/price?ids=conceal&vs_currencies=btc,usd&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true&include_last_updated_at=true`)
       .then(r => r.json())
       .then(res => Promise.resolve(res));
   };

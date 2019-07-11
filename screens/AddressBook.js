@@ -30,7 +30,7 @@ const AddressBook = () => {
           name='md-add-circle-outline'
           type='ionicon'
           color='white'
-          size={26}
+          size={32}
         />}
       />
       <View style={styles.walletsWrapper}>

@@ -10,24 +10,34 @@ import AppStyles from '../components/Style';
 
 const Market = () => {
   const { actions, state } = useContext(AppContext);
+  const { network, user, prices } = state;
   const { logoutUser } = actions;
-  const { network, user } = state;
 
   const list = [
     {
-      value: user.name,
-      title: 'User Name',
-      icon: 'md-person'
+      value: prices.usd,
+      title: 'CCX to USD',
+      icon: 'logo-usd'
     },
     {
-      value: user.email,
-      title: 'Email',
-      icon: 'md-mail'
+      value: prices.btc,
+      title: 'CCX to BTC',
+      icon: 'logo-bitcoin'
     },
     {
-      value: network.blockchainHeight.toLocaleString(),
-      title: 'Height',
-      icon: 'md-pulse'
+      value: prices.usd_market_cap,
+      title: 'Marketcap',
+      icon: 'md-cash'
+    },
+    {
+      value: prices.usd_24h_vol,
+      title: '24h Volume',
+      icon: 'md-rocket'
+    },
+    {
+      value: prices.usd_24h_change,
+      title: '24h Change',
+      icon: 'md-pricetag'
     }
   ];
 

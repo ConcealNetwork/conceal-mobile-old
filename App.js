@@ -8,8 +8,16 @@ import AppStyles from './components/Style';
 import NavigationService from './helpers/NavigationService';
 import AppNavigator from './navigation/AppNavigator';
 
+// add locales for android
+if (Platform.OS === 'android') {
+  require('intl');
+  require('intl/locale-data/jsonp/en-US');
+  require('intl/locale-data/jsonp/en-GB');
+}
 
+// create the app container first
 const AppContainer = createAppContainer(AppNavigator);
+
 
 const App = props => {
   const [isLoadingComplete, setIsLoadingComplete] = useState(false);

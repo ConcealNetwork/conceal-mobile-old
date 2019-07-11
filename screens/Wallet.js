@@ -24,6 +24,7 @@ const Wallet = () => {
   const format4Decimals = { minimumFractionDigits: 4, maximumFractionDigits: 4 };
   const format8Decimals = { minimumFractionDigits: 8, maximumFractionDigits: 8 };
   const transactions = currWallet.transactions.reverse();
+  console.log(prices);
 
   return (
     <View style={styles.pageWrapper}>
@@ -36,7 +37,7 @@ const Wallet = () => {
         <>
           <View style={styles.accountOverview}>
             <Text style={styles.worthDollars}>
-              $ {(prices.priceCCXUSD * currWallet.balance).toLocaleString(undefined, format4Decimals)}
+              $ {(prices.usd * currWallet.balance).toLocaleString(undefined, format4Decimals)}
             </Text>
             <Text style={styles.amountCCX}>{currWallet.balance.toLocaleString(undefined, formatOptions)} CCX</Text>
             <View style={styles.btcPriceWrapper}>
@@ -48,7 +49,7 @@ const Wallet = () => {
                 size={16}
               />
               <Text style={styles.worthBTC}>
-                {(prices.priceCCXBTC * currWallet.balance).toLocaleString(undefined, format8Decimals)}
+                {(prices.btc * currWallet.balance).toLocaleString(undefined, format8Decimals)}
               </Text>
             </View>
             <IconButton

@@ -37,8 +37,8 @@ const useAppState = () => {
       blockchainHeight: 0
     },
     prices: {
-      priceBTCUSD: 0,
-      priceCCXBTC: 0
+      usd: 0,
+      btc: 0
     },
     user: {
       addressBook: [],
@@ -216,8 +216,7 @@ const useAppState = () => {
           ...state,
           prices: {
             ...state.prices,
-            priceCCXBTC: pricesData.conceal && pricesData.conceal.btc ? pricesData.conceal.btc : 0,
-            priceCCXUSD: pricesData.conceal && pricesData.conceal.usd ? pricesData.conceal.usd : 0,
+            ...pricesData.conceal
           },
         };
         break;
