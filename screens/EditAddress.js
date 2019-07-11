@@ -119,7 +119,8 @@ const EditAddress = () => {
               paymentID: state.appData.addressEntry.paymentId,
               entryID: state.appData.addressEntry.entryId,
               edit: state.appData.addressEntry.entryId !== null
-            })
+            });
+            NavigationService.goBack()
           }}
           text="SAVE"
         />
