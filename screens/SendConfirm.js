@@ -40,12 +40,7 @@ const SendConfirmScreen = () => {
       state.appData.sendScreen.toPaymendId,
       state.appData.sendScreen.toAmmount,
       twoFACode,
-      password,
-      function (data) {
-        if (data.result == "success") {
-          NavigationService.navigate('Wallet');
-        }
-      }
+      password
     );
   }
 

@@ -283,11 +283,16 @@ const useAppState = () => {
         };
         break;
       case 'PAYMENT_SENT':
-        result = {
-          ...state
-        };
-        break;
-      case 'PAYMENT_FAILED':
+        let toast = Toast.show('Payment was succesfully sent to the recipient', {
+          backgroundColor: AppColors.concealInfoColor,
+          duration: Toast.durations.LONG,
+          opacity: 1,
+          position: 0,
+          animation: true,
+          hideOnPress: true,
+          shadow: true,
+          delay: 300
+        });
         result = {
           ...state
         };

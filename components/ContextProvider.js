@@ -316,17 +316,16 @@ const AppContextProvider = props => {
       .catch(err => { message = `ERROR ${err}` })
   };
 
-  const sendPayment = (wallet, address, paymentID, amount, twoFA, password, callback) => {
+  const sendPayment = (wallet, address, paymentID, amount, twoFA, password) => {
     logger.log('SENDING PAYMENT...');
     dispatch({ type: 'FORM_SUBMITTED', value: true });
     Api.sendTx(wallet, address, paymentID, amount, '', twoFA, password)
       .then(res => {
         if (res.result === 'success') {
           dispatch({ type: 'PAYMENT_SENT', res });
-          if (callback) { callback(res) }
+          NavigationService.navigate('Wallet');
         } else {
           dispatch({ type: 'DISPLAY_MESSAGE', message: res.message });
-          if (callback) { callback(res) }
         }
       })
       .catch(err => { message = `ERROR ${err}` })
