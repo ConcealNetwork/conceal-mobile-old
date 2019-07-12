@@ -42,13 +42,15 @@ const Login = () => {
   );
   const formValid = useFormValidation(formValidation);
 
-  getUsername().then(username => {
-    setAppData({
-      login: {
-        userName: username
-      }
+  if (!appData.login.userName) {
+    getUsername().then(username => {
+      setAppData({
+        login: {
+          userName: username
+        }
+      });
     });
-  });
+  }
 
   return (
     <View style={AppStyles.viewContainer}>
