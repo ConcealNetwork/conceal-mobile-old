@@ -202,7 +202,7 @@ const AppContextProvider = props => {
 
   const getWallets = () => {
     logger.log('GETTING WALLETS...');
-    const updatedWallets = updatedState.current.wallets;
+    const oldWallets = updatedState.current.wallets;
     let message;
 
     Api.getWallets()
@@ -212,17 +212,22 @@ const AppContextProvider = props => {
           if (Object.keys(wallets).length > 0) {
             let selectedAddress = Object.keys(wallets)[0];
 
-            Object.keys(updatedWallets).forEach(function (key) {
-              if (wallets[key].selected) selectedAddress = key;
+            Object.keys(oldWallets).forEach(function (key) {
+              if (oldWallets[key].selected) { selectedAddress = key; }
+              oldWallets[key].selected = false;
             });
 
             Object.keys(wallets).forEach(function (key) {
               wallets[key].addr = key;
             });
 
-            wallets[selectedAddress].selected = true;
+            if (wallets[selectedAddress]) {
+              wallets[selectedAddress].selected = true;
+            } else {
+              wallets[Object.keys(wallets)[0]].selected = true;
+            }
           }
-          Object.keys(updatedWallets).map(address =>
+          Object.keys(oldWallets).map(address =>
             !wallets[address] && dispatch({ type: 'DELETE_WALLET', address })
           );
           dispatch({ type: 'UPDATE_WALLETS', wallets });
