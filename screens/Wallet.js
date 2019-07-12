@@ -88,8 +88,8 @@ const Wallet = () => {
           <View style={styles.transactionsWrapper}>
           {layout.userLoaded && transactions.length === 0
           ? <Text style={styles.emptyTransactionsText}>
-            You have no transactions in this wallet yet.
-            To make a transaction either send some funds or receive them.
+              You have no transactions in this wallet yet.
+              To make a transaction either send some funds or receive them.
             </Text>
           : <FlatList           
               data={transactions}
@@ -200,10 +200,6 @@ const styles = StyleSheet.create({
   footerBtnLeft: {
     marginRight: 5,
   },
-  Avatar: {
-    position: 'absolute',
-    right: 10,
-  },
   iconGeneral: {
     position: 'absolute',
     width: 36,
@@ -285,7 +281,9 @@ const styles = StyleSheet.create({
   },
   emptyTransactionsText: {
     fontSize: 16,
-    color: '#FFFFFF'
+    marginTop: 20,
+    color: '#FFFFFF',
+    textAlign: 'center'
   }
 });
 
