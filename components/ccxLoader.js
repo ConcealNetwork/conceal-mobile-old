@@ -12,8 +12,6 @@ const ConcealLoader = props => {
   const { layout } = state;
   const { formSubmitted } = layout;
 
-  console.log(formSubmitted);
-
   return (
     <Modal
       transparent={true}

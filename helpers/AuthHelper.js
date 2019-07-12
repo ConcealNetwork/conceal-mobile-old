@@ -37,12 +37,11 @@ export default class AuthHelper {
     }
   };
 
+  setUsername = async idUsername => await AsyncStorage.setItem('@conceal:id_username', idUsername);
+  getUsername = async () => (await AsyncStorage.getItem('@conceal:id_username'));
   setToken = async idToken => await AsyncStorage.setItem('@conceal:id_token', idToken);
-
   getToken = async () => (await AsyncStorage.getItem('@conceal:id_token'));
-
   logout = async () => await AsyncStorage.removeItem('@conceal:id_token');
-
   decodeToken = () => (decode(this.getToken()));
 
   fetch = (url, options) => {

@@ -86,7 +86,12 @@ const Wallet = () => {
           </View>
           <Text style={styles.txsText}>Transactions</Text>
           <View style={styles.transactionsWrapper}>
-            <FlatList
+          {layout.userLoaded && transactions.length === 0
+          ? <Text style={styles.emptyTransactionsText}>
+            You have no transactions in this wallet yet.
+            To make a transaction either send some funds or receive them.
+            </Text>
+          : <FlatList           
               data={transactions}
               showsVerticalScrollIndicator={false}
               keyExtractor={item => item.hash}
@@ -112,6 +117,7 @@ const Wallet = () => {
                 </View>
               }
             />
+          }
           </View>
           <View style={styles.footer}>
             <ConcealButton
@@ -142,9 +148,8 @@ const styles = StyleSheet.create({
     borderBottomColor: '#343a40',
   },
   flatview: {
-    backgroundColor: '#212529',
     justifyContent: 'center',
-    borderBottomColor: AppColors.concealBackground,
+    borderBottomColor: AppColors.concealBlack,
     borderWidth: 0,
     borderBottomWidth: 1,
     padding: 20,
@@ -169,6 +174,7 @@ const styles = StyleSheet.create({
     height: 125,
     marginLeft: 10,
     marginRight: 10,
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#212529',
@@ -224,9 +230,7 @@ const styles = StyleSheet.create({
     left: 10,
     right: 10,
     bottom: 70,
-    position: 'absolute',
-    borderWidth: 1,
-    borderColor: AppColors.concealBorderColor
+    position: 'absolute'
   },
   dataTimestamp: {
     color: '#FFFFFF',
@@ -279,6 +283,10 @@ const styles = StyleSheet.create({
     marginRight: 5,
     paddingTop: 2,
   },
+  emptyTransactionsText: {
+    fontSize: 16,
+    color: '#FFFFFF'
+  }
 });
 
 export default Wallet;

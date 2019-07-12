@@ -17,6 +17,7 @@ const AppContextProvider = props => {
   const loginUser = options => {
     const { id } = options;
     dispatch({ type: 'FORM_SUBMITTED', value: true });
+    Auth.setUsername(options.email);
     Auth.login(options)
       .then(res => {
         if (res.result === 'success') {
@@ -203,15 +204,19 @@ const AppContextProvider = props => {
     logger.log('GETTING WALLETS...');
     const updatedWallets = updatedState.current.wallets;
     let message;
+
     Api.getWallets()
       .then(res => {
         if (res.result === 'success') {
           const wallets = res.message.wallets;
           if (Object.keys(wallets).length > 0) {
-            selectedAddress = Object.keys(wallets)[0];
+            let selectedAddress = Object.keys(wallets)[0];
+
+            Object.keys(updatedWallets).forEach(function (key) {
+              if (wallets[key].selected) selectedAddress = key;
+            });
 
             Object.keys(wallets).forEach(function (key) {
-              selectedAddress = wallets[key].selected ? key : selectedAddress;
               wallets[key].addr = key;
             });
 
@@ -330,6 +335,11 @@ const AppContextProvider = props => {
     dispatch({ type: 'SET_APP_DATA', appData });
   };
 
+  const getUsername = () => {
+    return Auth.getUsername();
+  };
+
+
   const actions = {
     loginUser,
     signUpUser,
@@ -347,7 +357,8 @@ const AppContextProvider = props => {
     switchWallet,
     deleteWallet,
     getWalletKeys,
-    setAppData
+    setAppData,
+    getUsername
   };
 
   useEffect(() => {

@@ -47,7 +47,6 @@ const AddressBook = () => {
   const { actions, state } = useContext(AppContext);
   const { deleteContact, setAppData } = actions;
   const { layout, user } = state;
-  console.log(user.addressBook);
 
   return (
     <View style={styles.pageWrapper}>

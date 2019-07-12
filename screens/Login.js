@@ -24,8 +24,8 @@ import {
 
 const Login = () => {
   const { actions, state } = useContext(AppContext);
-  const { loginUser, resetPassword, signUpUser } = actions;
-  const { layout, userSettings } = state;
+  const { loginUser, resetPassword, signUpUser, getUsername, setAppData } = actions;
+  const { layout, userSettings, appData } = state;
   const { formSubmitted, message } = layout;
 
   const { value: email, bind: bindEmail } = useFormInput('');
@@ -42,6 +42,14 @@ const Login = () => {
   );
   const formValid = useFormValidation(formValidation);
 
+  getUsername().then(username => {
+    setAppData({
+      login: {
+        userName: username
+      }
+    });
+  });
+
   return (
     <View style={AppStyles.viewContainer}>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -53,6 +61,7 @@ const Login = () => {
           <Text style={AppStyles.title}>SIGN IN</Text>
           <ConcealTextInput
             {...bindEmail}
+            value={appData.login.userName}
             placeholder="E-mail"
             keyboardType="email-address"
             textContentType="emailAddress"

@@ -215,7 +215,8 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   sendInput: {
-    marginTop: 20
+    marginTop: 10,
+    marginBottom: 20
   },
   addressLabel: {
     color: "#FFFFFF",
@@ -263,7 +264,7 @@ const styles = StyleSheet.create({
   },
   sendSummaryWrapper: {
     margin: 10,
-    marginTop: 20
+    marginTop: 5
   },
   overlayWrapper: {
     top: 0,

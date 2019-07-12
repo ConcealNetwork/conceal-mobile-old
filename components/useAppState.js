@@ -72,6 +72,9 @@ const useAppState = () => {
         paymentId: null,
         entryId: null,
         headerText: null
+      },
+      login: {
+        userName: ''
       }
     }
   };
@@ -312,7 +315,6 @@ const useAppState = () => {
         };
         break;
       case 'BARCODE_SCANNED':
-        console.log(action.data);
         result = {
           ...state
         }

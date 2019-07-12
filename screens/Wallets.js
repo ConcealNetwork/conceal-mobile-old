@@ -30,14 +30,6 @@ const Wallets = () => {
       return acc;
     }, []);
 
-  console.log((walletsList.length < appSettings.maxWallets) || walletsList.length === 0);
-  console.log(walletsList.length < appSettings.maxWallets);
-  console.log(walletsList.length === 0);
-
-  console.log(walletsList.length);
-  console.log(appSettings.maxWallets);
-
-
   return (
     <View>
       <Header
@@ -143,6 +135,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#212529',
     justifyContent: 'center',
     borderColor: AppColors.concealBorderColor,
+    borderRadius: 10,
     marginBottom: 5,
     borderWidth: 1,
     marginTop: 5,
