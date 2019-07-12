@@ -276,7 +276,7 @@ const useAppState = () => {
         };
         break;
       case 'PAYMENT_SENT':
-        showSuccessToast(action.message.join());
+        showSuccessToast('Payment was succesfully sent to the recipient');
         result = {
           ...state
         };
