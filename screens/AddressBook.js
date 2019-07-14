@@ -57,7 +57,7 @@ const AddressBook = () => {
           name='md-return-left'
           type='ionicon'
           color='white'
-          size={26}
+          size={32}
         />}
         centerComponent={{ text: 'Address Book', style: { color: '#fff', fontSize: 20 } }}
         rightComponent={<Icon
@@ -207,7 +207,6 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 40,
     marginTop: 10,
-    color: '#FFFFFF',
     borderWidth: 0,
     borderRadius: 0,
     borderBottomWidth: 2,

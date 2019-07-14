@@ -75,7 +75,7 @@ const Market = () => {
           name='md-return-left'
           type='ionicon'
           color='white'
-          size={26}
+          size={32}
         />}
         centerComponent={{ text: 'Market Data', style: { color: '#fff', fontSize: 20 } }}
       />

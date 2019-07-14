@@ -34,7 +34,7 @@ const Wallet = () => {
             <Header
                 placement="left"
                 containerStyle={styles.appHeader}
-                centerComponent={{ text: 'Default Wallet', style: { color: '#fff', fontSize: 20 } }}
+                centerComponent={{ text: 'Selected Wallet', style: { color: '#fff', fontSize: 20 } }}
             />
             {currWallet &&
                 <>

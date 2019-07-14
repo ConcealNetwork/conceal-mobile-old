@@ -44,7 +44,7 @@ const Settings = () => {
         name={item.icon}
         type='ionicon'
         color='white'
-        size={26}
+        size={32}
       />}
     />
   );

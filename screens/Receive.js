@@ -44,7 +44,6 @@ const Receive = () => {
     }
   };
 
-
   onCopyAddress = async (text) => {
     showSuccessToast(text);
   }
@@ -60,7 +59,7 @@ const Receive = () => {
           name='md-return-left'
           type='ionicon'
           color='white'
-          size={26}
+          size={32}
         />}
         centerComponent={{ text: 'Receive CCX', style: { color: '#fff', fontSize: 20 } }}
       />

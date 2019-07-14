@@ -30,6 +30,24 @@ const Wallets = () => {
       return acc;
     }, []);
 
+  onExport = async (content) => {
+    try {
+      const result = await Share.share({ message: "My Private Key is: " + content });
+
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   return (
     <View>
       <Header
@@ -40,7 +58,7 @@ const Wallets = () => {
           name='md-return-left'
           type='ionicon'
           color='white'
-          size={26}
+          size={32}
         />}
         centerComponent={{ text: 'Wallets', style: { color: '#fff', fontSize: 20 } }}
         rightComponent={walletsLoaded && (walletsList.length < appSettings.maxWallets || walletsList.length === 0) ?
@@ -99,6 +117,7 @@ const Wallets = () => {
                 <ConcealButton
                   style={[styles.footerBtn, styles.footerBtnRight]}
                   buttonStyle={styles.btnStyle}
+                  disabled={true}
                   text="EXPORT"
                 />
               </View>
@@ -171,7 +190,6 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 40,
     marginTop: 10,
-    color: '#FFFFFF',
     borderWidth: 0,
     borderRadius: 0,
     borderBottomWidth: 2,
@@ -182,7 +200,6 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 40,
     marginTop: 10,
-    color: '#FFFFFF',
     borderWidth: 0,
     borderRadius: 0,
     borderBottomWidth: 2,

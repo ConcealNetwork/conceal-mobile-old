@@ -83,7 +83,7 @@ const SendScreen = () => {
           name='md-return-left'
           type='ionicon'
           color='white'
-          size={26}
+          size={32}
         />}
         centerComponent={{ text: 'Send CCX', style: { color: '#fff', fontSize: 20 } }}
         rightComponent={<Icon
@@ -91,7 +91,7 @@ const SendScreen = () => {
           name='md-trash'
           type='ionicon'
           color='white'
-          size={26}
+          size={32}
         />}
       />
       <ScrollView contentContainerStyle={styles.walletWrapper}>
