@@ -1,4 +1,4 @@
-import { Icon, Overlay, Header } from 'react-native-elements';
+import { Icon, Overlay, Header, ListItem } from 'react-native-elements';
 import NavigationService from '../helpers/NavigationService';
 import { AppContext } from '../components/ContextProvider';
 import ConcealTextInput from '../components/ccxTextInput';
@@ -30,6 +30,59 @@ const SendScreen = () => {
   const currWallet = Object.keys(wallets).length > 0
     ? wallets[Object.keys(wallets).find(address => wallets[address].selected)]
     : null;
+
+  const sendSummaryList = [];
+
+  if (state.appData.sendScreen.toLabel) {
+    sendSummaryList.push({
+      value: state.appData.sendScreen.toLabel,
+      title: 'Label',
+      icon: 'md-eye'
+    });
+  }
+
+  if (state.appData.sendScreen.toAddress) {
+    sendSummaryList.push({
+      value: maskAddress(state.appData.sendScreen.toAddress),
+      title: 'Address',
+      icon: 'md-mail'
+    });
+  }
+
+  if (state.appData.sendScreen.toPaymendId) {
+    sendSummaryList.push({
+      value: maskAddress(state.appData.sendScreen.toPaymendId),
+      title: 'Payment ID',
+      icon: 'md-key'
+    });
+  }
+
+  if (state.appData.sendScreen.toAmmount) {
+    sendSummaryList.push({
+      value: state.appData.sendScreen.toAmmount,
+      title: 'Ammount',
+      icon: 'md-cash'
+    });
+  }
+
+  // key extractor for the list
+  keyExtractor = (item, index) => index.toString();
+
+  renderItem = ({ item }) => (
+    <ListItem
+      title={item.value}
+      subtitle={item.title}
+      titleStyle={styles.summaryText}
+      subtitleStyle={styles.summaryLabel}
+      containerStyle={styles.summaryItem}
+      leftIcon={<Icon
+        name={item.icon}
+        type='ionicon'
+        color='white'
+        size={32}
+      />}
+    />
+  );
 
   isFormValid = () => {
     if (state.appData.sendScreen.toAddress && state.appData.sendScreen.toAmmount) {
@@ -147,12 +200,12 @@ const SendScreen = () => {
             }
           />
         </TouchableOpacity>
-        <View style={styles.sendSummaryWrapper}>
-          {state.appData.sendScreen.toLabel ? (<Text style={styles.sendSummary}><Text style={styles.sendSummaryLabel}>Label:</Text> {state.appData.sendScreen.toLabel}</Text>) : null}
-          {state.appData.sendScreen.toAddress ? (<Text style={styles.sendSummary}><Text style={styles.sendSummaryLabel}>Address:</Text> {maskAddress(state.appData.sendScreen.toAddress)}</Text>) : null}
-          {state.appData.sendScreen.toPaymendId ? (<Text style={styles.sendSummary}><Text style={styles.sendSummaryLabel}>Payment ID:</Text> {maskAddress(state.appData.sendScreen.toPaymendId)}</Text>) : null}
-          {state.appData.sendScreen.toAmmount ? (<Text style={styles.sendSummary}><Text style={styles.sendSummaryLabel}>Send:</Text> {state.appData.sendScreen.toAmmount} CCX</Text>) : null}
-        </View>
+        <FlatList
+          data={sendSummaryList}
+          style={styles.summaryList}
+          renderItem={this.renderItem}
+          keyExtractor={this.keyExtractor}
+        />
       </ScrollView>
       <Overlay
         isVisible={state.appData.sendScreen.addrListVisible}
@@ -316,6 +369,25 @@ const styles = StyleSheet.create({
   },
   footerBtnLeft: {
     marginRight: 5
+  },
+  summaryLabel: {
+    color: AppColors.concealOrange
+  },
+  summaryText: {
+    color: AppColors.concealTextColor
+  },
+  summaryList: {
+    flex: 1,
+    margin: 10,
+    backgroundColor: AppColors.concealBackground
+  },
+  summaryItem: {
+    backgroundColor: '#212529',
+    borderWidth: 0,
+    paddingTop: 5,
+    paddingBottom: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: AppColors.concealBackground,
   }
 });
 

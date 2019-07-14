@@ -12,7 +12,7 @@ const Settings = () => {
   const { logoutUser } = actions;
   const { network, user } = state;
 
-  const list = [
+  const settingsList = [
     {
       value: user.name,
       title: 'User Name',
@@ -71,7 +71,7 @@ const Settings = () => {
         />}
       />
       <FlatList
-        data={list}
+        data={settingsList}
         style={styles.settingsList}
         renderItem={this.renderItem}
         keyExtractor={this.keyExtractor}

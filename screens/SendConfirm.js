@@ -1,5 +1,5 @@
+import { Input, Icon, Overlay, Header, ListItem } from 'react-native-elements';
 import { useFormInput, useFormValidation } from '../helpers/hooks';
-import { Input, Icon, Overlay, Header } from 'react-native-elements';
 import NavigationService from '../helpers/NavigationService';
 import { maskAddress } from '../helpers/utils';
 import { AppContext } from '../components/ContextProvider';
@@ -25,6 +25,46 @@ const SendConfirmScreen = () => {
 
   const { value: password, bind: bindPassword } = useFormInput('');
   const { value: twoFACode, bind: bindTwoFACode } = useFormInput('');
+
+  const sendSummaryList = [];
+
+  function addSummaryItem(value, title, icon) {
+    sendSummaryList.push({
+      value: value,
+      title: title,
+      icon: icon
+
+    });
+  }
+
+  addSummaryItem(sprintf('%s CCX', state.appData.sendScreen.toAmmount), 'You are sending', 'md-cash');
+  addSummaryItem(maskAddress(currWallet.addr), 'From address', 'md-mail');
+  addSummaryItem(maskAddress(state.appData.sendScreen.toAddress), 'To address', 'md-mail');
+  if (state.appData.sendScreen.toPaymendId) {
+    addSummaryItem(maskAddress(state.appData.sendScreen.toPaymendId), 'Payment ID', 'md-key');
+  }
+  if (state.appData.sendScreen.toLabel) {
+    addSummaryItem(state.appData.sendScreen.toLabel, 'Label', 'md-eye');
+  }
+
+  // key extractor for the list
+  keyExtractor = (item, index) => index.toString();
+
+  renderItem = ({ item }) => (
+    <ListItem
+      title={item.value}
+      subtitle={item.title}
+      titleStyle={styles.summaryText}
+      subtitleStyle={styles.summaryLabel}
+      containerStyle={styles.summaryItem}
+      leftIcon={<Icon
+        name={item.icon}
+        type='ionicon'
+        color='white'
+        size={32}
+      />}
+    />
+  );
 
   toogleSecurePassword = () => {
     setAppData({
@@ -98,13 +138,12 @@ const SendConfirmScreen = () => {
             }
           />
         ) : null}
-        <View style={styles.sendSummaryWrapper}>
-          <Text style={styles.sendSummary}>You are sending <Text style={styles.sendSummaryHighlight}>{state.appData.sendScreen.toAmmount} CCX</Text></Text>
-          <Text style={styles.sendSummary}>From address: <Text style={styles.sendSummaryHighlight}>{maskAddress(currWallet.addr)}</Text></Text>
-          <Text style={styles.sendSummary}>To address: <Text style={styles.sendSummaryHighlight}>{maskAddress(state.appData.sendScreen.toAddress)}</Text></Text>
-          {state.appData.sendScreen.toPaymendId ? (<Text style={styles.sendSummary}>Payment ID: <Text style={styles.sendSummaryHighlight}>{maskAddress(state.appData.sendScreen.toPaymendId)}</Text></Text>) : null}
-          {state.appData.sendScreen.toLabel ? (<Text style={styles.sendSummary}>Label: <Text style={styles.sendSummaryHighlight}>{state.appData.sendScreen.toLabel}</Text></Text>) : null}
-        </View>
+        <FlatList
+          data={sendSummaryList}
+          style={styles.summaryList}
+          renderItem={this.renderItem}
+          keyExtractor={this.keyExtractor}
+        />
       </ScrollView>
       <View style={styles.footer}>
         <ConcealButton
@@ -145,7 +184,8 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   sendInput: {
-    marginTop: 20
+    marginTop: 10,
+    marginBottom: 20
   },
   addressLabel: {
     color: "#FFFFFF",
@@ -233,6 +273,25 @@ const styles = StyleSheet.create({
   },
   footerBtnLeft: {
     marginRight: 5
+  },
+  summaryLabel: {
+    color: AppColors.concealOrange
+  },
+  summaryText: {
+    color: AppColors.concealTextColor
+  },
+  summaryList: {
+    flex: 1,
+    margin: 10,
+    backgroundColor: AppColors.concealBackground
+  },
+  summaryItem: {
+    backgroundColor: '#212529',
+    borderWidth: 0,
+    paddingTop: 5,
+    paddingBottom: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: AppColors.concealBackground,
   }
 });
 

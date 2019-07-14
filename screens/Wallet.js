@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'stretch',
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'space-between'
     },
     footerBtn: {
         flex: 1,
