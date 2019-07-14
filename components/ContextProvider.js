@@ -316,10 +316,10 @@ const AppContextProvider = props => {
       .catch(err => { message = `ERROR ${err}` })
   };
 
-  const sendPayment = (wallet, address, paymentID, amount, twoFA, password) => {
+  const sendPayment = (wallet, address, paymentID, amount, message, twoFA, password) => {
     logger.log('SENDING PAYMENT...');
     dispatch({ type: 'FORM_SUBMITTED', value: true });
-    Api.sendTx(wallet, address, paymentID, amount, '', twoFA, password)
+    Api.sendTx(wallet, address, paymentID, amount, message, twoFA, password)
       .then(res => {
         if (res.result === 'success') {
           dispatch({ type: 'PAYMENT_SENT', res });

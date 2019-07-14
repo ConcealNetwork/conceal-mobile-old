@@ -78,7 +78,7 @@ const EditAddress = () => {
               name='md-copy'
               type='ionicon'
               color='white'
-              size={24}
+              size={32}
             />
           }
         />
@@ -93,7 +93,7 @@ const EditAddress = () => {
               name='md-copy'
               type='ionicon'
               color='white'
-              size={24}
+              size={32}
             />
           }
         />
@@ -108,7 +108,7 @@ const EditAddress = () => {
               name='md-copy'
               type='ionicon'
               color='white'
-              size={24}
+              size={32}
             />
           }
         />
@@ -125,14 +125,14 @@ const EditAddress = () => {
               entryID: state.appData.addressEntry.entryId,
               edit: state.appData.addressEntry.entryId !== null
             });
-            NavigationService.goBack()
+            NavigationService.goBack();
           }}
           text="SAVE"
         />
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnRight]}
-          onPress={() => NavigationService.goBack()}
-          text="CLOSE"
+          onPress={() => NavigationService.navigate('Scanner', { path: ["addressEntry", "address"] })}
+          text="SCAN QR"
         />
       </View>
     </View>
@@ -219,7 +219,8 @@ const styles = StyleSheet.create({
     flex: 1
   },
   addressWrapper: {
-    flex: 1
+    flex: 1,
+    padding: 10
   },
   addrInput: {
     marginTop: 20

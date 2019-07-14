@@ -11,7 +11,8 @@ import {
   View,
   FlatList,
   Clipboard,
-  StyleSheet
+  StyleSheet,
+  ScrollView
 } from "react-native";
 
 const SendConfirmScreen = () => {
@@ -61,7 +62,7 @@ const SendConfirmScreen = () => {
         />}
         centerComponent={{ text: 'Confirm sending', style: { color: '#fff', fontSize: 20 } }}
       />
-      <View style={styles.walletWrapper}>
+      <ScrollView contentContainerStyle={styles.walletWrapper}>
         <Input
           {...bindPassword}
           placeholder='please enter your password...'
@@ -75,7 +76,7 @@ const SendConfirmScreen = () => {
               name='ios-eye-off'
               type='ionicon'
               color='white'
-              size={24}
+              size={32}
             />
           }
         />
@@ -92,7 +93,7 @@ const SendConfirmScreen = () => {
                 name='md-trash'
                 type='ionicon'
                 color='white'
-                size={24}
+                size={32}
               />
             }
           />
@@ -104,7 +105,7 @@ const SendConfirmScreen = () => {
           {state.appData.sendScreen.toPaymendId ? (<Text style={styles.sendSummary}>Payment ID: <Text style={styles.sendSummaryHighlight}>{maskAddress(state.appData.sendScreen.toPaymendId)}</Text></Text>) : null}
           {state.appData.sendScreen.toLabel ? (<Text style={styles.sendSummary}>Label: <Text style={styles.sendSummaryHighlight}>{state.appData.sendScreen.toLabel}</Text></Text>) : null}
         </View>
-      </View>
+      </ScrollView>
       <View style={styles.footer}>
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnLeft]}
@@ -184,7 +185,12 @@ const styles = StyleSheet.create({
   },
   walletWrapper: {
     flex: 1,
+    top: 0,
+    left: 5,
+    right: 5,
+    bottom: 50,
     margin: 15,
+    position: 'absolute',
     flexDirection: 'column'
   },
   sendSummaryWrapper: {

@@ -19,6 +19,7 @@ import {
   FlatList,
   Clipboard,
   StyleSheet,
+  ScrollView,
   TouchableOpacity
 } from "react-native";
 
@@ -93,7 +94,7 @@ const SendScreen = () => {
           size={26}
         />}
       />
-      <View style={styles.walletWrapper}>
+      <ScrollView contentContainerStyle={styles.walletWrapper}>
         <View style={styles.fromWrapper}>
           <Text style={styles.fromAddress}>{maskAddress(currWallet.addr)}</Text>
           <Text style={styles.fromBalance}>{currWallet.balance.toLocaleString(undefined, format2Decimals)} CCX</Text>
@@ -114,7 +115,7 @@ const SendScreen = () => {
               name='md-add'
               type='ionicon'
               color='white'
-              size={24}
+              size={32}
             />
           }
         />
@@ -126,11 +127,22 @@ const SendScreen = () => {
             value={state.appData.sendScreen.toAddress}
             rightIcon={
               <Icon
-                onPress={() => this.readFromClipboard()}
-                name='md-copy'
+                onPress={() => {
+                  setAppData({
+                    addressEntry: {
+                      headerText: "Create Address",
+                      label: '',
+                      address: '',
+                      paymentId: '',
+                      entryId: null
+                    }
+                  });
+                  NavigationService.navigate('EditAddress');
+                }}
+                name='md-add'
                 type='ionicon'
                 color='white'
-                size={24}
+                size={32}
               />
             }
           />
@@ -141,7 +153,7 @@ const SendScreen = () => {
           {state.appData.sendScreen.toPaymendId ? (<Text style={styles.sendSummary}><Text style={styles.sendSummaryLabel}>Payment ID:</Text> {maskAddress(state.appData.sendScreen.toPaymendId)}</Text>) : null}
           {state.appData.sendScreen.toAmmount ? (<Text style={styles.sendSummary}><Text style={styles.sendSummaryLabel}>Send:</Text> {state.appData.sendScreen.toAmmount} CCX</Text>) : null}
         </View>
-      </View>
+      </ScrollView>
       <Overlay
         isVisible={state.appData.sendScreen.addrListVisible}
         overlayBackgroundColor={AppColors.concealBackground}
@@ -259,7 +271,12 @@ const styles = StyleSheet.create({
   },
   walletWrapper: {
     flex: 1,
+    top: 0,
+    left: 5,
+    right: 5,
+    bottom: 50,
     margin: 15,
+    position: 'absolute',
     flexDirection: 'column'
   },
   sendSummaryWrapper: {
@@ -299,9 +316,6 @@ const styles = StyleSheet.create({
   },
   footerBtnLeft: {
     marginRight: 5
-  },
-  fromWrapper: {
-    marginBottom: 10
   }
 });
 

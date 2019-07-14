@@ -4,9 +4,12 @@ import { AppContext } from '../components/ContextProvider';
 import NavigationService from '../helpers/NavigationService';
 import ConcealButton from '../components/ccxButton';
 import QRCode from 'react-native-qrcode-svg';
-import Toast from 'react-native-root-toast';
 import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
+import {
+  showErrorToast,
+  showSuccessToast
+} from '../helpers/utils';
 import {
   Text,
   View,
@@ -43,17 +46,7 @@ const Receive = () => {
 
 
   onCopyAddress = async (text) => {
-    let toast = Toast.show(text, {
-      backgroundColor: AppColors.concealInfoColor,
-      textColor: AppColors.concealTextColor,
-      duration: Toast.durations.LONG,
-      position: 0,
-      opacity: 1,
-      animation: true,
-      hideOnPress: true,
-      shadow: true,
-      delay: 300
-    });
+    showSuccessToast(text);
   }
 
   // You can manually hide the Toast, or it will automatically disappear after a `duration` ms timeout.

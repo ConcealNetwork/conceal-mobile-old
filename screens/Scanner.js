@@ -5,6 +5,10 @@ import { Text, View, StyleSheet, Button } from 'react-native';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 import { BarCodeScanner } from 'expo-barcode-scanner';
+import {
+  showErrorToast,
+  showSuccessToast
+} from '../helpers/utils';
 
 const BarcodeScanner = (props) => {
   const params = props.navigation.state.params
@@ -27,6 +31,7 @@ const BarcodeScanner = (props) => {
     constructPayload(codeObject, 0, params.path, data);
     constructPayload(codeObject, 0, ["scanCode", "scanned"], true);
     actions.setAppData(codeObject);
+    showSuccessToast("Successfully scanned the address");
     NavigationService.goBack();
   };
 
