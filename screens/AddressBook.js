@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { Icon, Header, Overlay } from 'react-native-elements';
-import { Button } from 'react-native-paper';
 import NavigationService from '../helpers/NavigationService';
 import ConcealTextInput from '../components/ccxTextInput';
 import ConcealButton from '../components/ccxButton';
@@ -98,8 +97,9 @@ const AddressBook = () => {
                   {item.paymentID ? (<Text style={styles.data}>Payment ID: {item.paymentID}</Text>) : null}
                 </View>
                 <View style={styles.walletFooter}>
-                  <Button
+                  <ConcealButton
                     style={[styles.footerBtn, styles.footerBtnLeft]}
+                    buttonStyle={styles.btnStyle}
                     onPress={() => {
                       Alert.alert(
                         'Delete Contact',
@@ -111,23 +111,26 @@ const AddressBook = () => {
                         { cancelable: false },
                       );
                     }}
-                  >
-                    <Text style={styles.buttonText}>DELETE</Text>
-                  </Button>
-                  <Button style={[styles.footerBtn, styles.footerBtnRight]} onPress={() => {
-                    setAppData({
-                      addressEntry: {
-                        headerText: "Edit Address",
-                        label: item.label,
-                        address: item.address,
-                        paymentId: item.paymentID,
-                        entryId: item.entryID
-                      }
-                    });
-                    NavigationService.navigate('EditAddress');
-                  }}>
-                    <Text style={styles.buttonText}>EDIT</Text>
-                  </Button>
+                    text="DELETE"
+                  />
+
+                  <ConcealButton
+                    style={[styles.footerBtn, styles.footerBtnRight]}
+                    buttonStyle={styles.btnStyle}
+                    onPress={() => {
+                      setAppData({
+                        addressEntry: {
+                          headerText: "Edit Address",
+                          label: item.label,
+                          address: item.address,
+                          paymentId: item.paymentID,
+                          entryId: item.entryID
+                        }
+                      });
+                      NavigationService.navigate('EditAddress');
+                    }}
+                    text="EDIT"
+                  />
                 </View>
               </View>
             }
@@ -210,6 +213,9 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderColor: '#FFA500',
     backgroundColor: 'rgba(0, 0, 0, 0)'
+  },
+  btnStyle: {
+    borderWidth: 0
   },
   footerBtnRight: {
     marginLeft: 5

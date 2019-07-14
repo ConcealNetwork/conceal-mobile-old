@@ -4,8 +4,12 @@ import { AppColors } from '../constants/Colors';
 import { StyleSheet } from 'react-native';
 
 export default function ConcealButton({
+  disabledTitleStyle,
+  disabledStyle,
   loadingStyle,
   loadingProps,
+  buttonStyle,
+  titleStyle,
   disabled,
   onPress,
   loading,
@@ -13,7 +17,42 @@ export default function ConcealButton({
   icon,
   text
 }) {
+  var disabledTitleStyles = [styles.btnDisabledText];
+  var disabledStyles = [styles.btnDisabled];
+  var titleStyles = [styles.btnText];
   var btnStyles = [styles.button];
+
+  if (buttonStyle) {
+    if (Array.isArray(buttonStyle)) {
+      btnStyles = inputStyles.concat(buttonStyle);
+    } else {
+      btnStyles.push(buttonStyle);
+    }
+  }
+
+  if (titleStyle) {
+    if (Array.isArray(titleStyle)) {
+      titleStyles = inputStyles.concat(titleStyle);
+    } else {
+      titleStyles.push(titleStyle);
+    }
+  }
+
+  if (disabledStyle) {
+    if (Array.isArray(disabledStyle)) {
+      disabledStyles = inputStyles.concat(disabledStyle);
+    } else {
+      disabledStyles.push(disabledStyle);
+    }
+  }
+
+  if (disabledTitleStyle) {
+    if (Array.isArray(disabledTitleStyle)) {
+      disabledTitleStyles = inputStyles.concat(disabledTitleStyle);
+    } else {
+      disabledTitleStyles.push(disabledTitleStyle);
+    }
+  }
 
   if (!disabled) {
     disabled = false;
@@ -25,11 +64,11 @@ export default function ConcealButton({
       icon={icon || null}
       onPress={onPress || null}
       disabled={disabled || null}
-      buttonStyle={btnStyles || null}
+      buttonStyle={btnStyles}
       containerStyle={style || null}
-      titleStyle={styles.btnText || null}
-      disabledStyle={styles.btnDisabled || null}
-      disabledTitleStyle={styles.btnDisabledText || null}
+      titleStyle={titleStyles}
+      disabledStyle={disabledStyles}
+      disabledTitleStyle={disabledTitleStyles}
       loadingStyle={loadingStyle || null}
       loadingProps={loadingProps || null}
       loading={loading || null}

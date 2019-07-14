@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import { Icon, Header, CheckBox } from 'react-native-elements';
-import { Button } from 'react-native-paper';
 import NavigationService from '../helpers/NavigationService';
 import { AppContext } from '../components/ContextProvider';
+import ConcealButton from '../components/ccxButton';
 import { maskAddress } from '../helpers/utils';
 import { AppColors } from '../constants/Colors';
 import ConcealFAB from '../components/ccxFAB';
@@ -78,9 +78,10 @@ const Wallets = () => {
                 </View>
               </TouchableOpacity>
               <View style={styles.walletFooter}>
-                <Button
-                  style={[styles.footerBtn, styles.footerBtnLeft]}
-                  disabled={!walletsLoaded || item.total !== 0}
+                <ConcealButton
+                  style={[!(walletsLoaded && (item.total > 0)) ? styles.footerBtn : styles.footerBtnDisabled, styles.footerBtnLeft]}
+                  disabled={(walletsLoaded && (item.total > 0))}
+                  buttonStyle={styles.btnStyle}
                   onPress={() => {
                     Alert.alert(
                       'Delete Wallet',
@@ -92,14 +93,14 @@ const Wallets = () => {
                       { cancelable: false },
                     );
                   }}
-                >
-                  <Text style={styles.buttonText}>DELETE</Text>
-                </Button>
-                <Button
+                  text="DELETE"
+                />
+
+                <ConcealButton
                   style={[styles.footerBtn, styles.footerBtnRight]}
-                >
-                  <Text style={styles.buttonText}>EXPORT</Text>
-                </Button>
+                  buttonStyle={styles.btnStyle}
+                  text="EXPORT"
+                />
               </View>
             </View>
           }
@@ -163,6 +164,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
+  btnStyle: {
+    borderWidth: 0
+  },
   footerBtn: {
     flex: 1,
     height: 40,
@@ -172,6 +176,17 @@ const styles = StyleSheet.create({
     borderRadius: 0,
     borderBottomWidth: 2,
     borderColor: '#FFA500',
+    backgroundColor: 'rgba(0, 0, 0, 0)'
+  },
+  footerBtnDisabled: {
+    flex: 1,
+    height: 40,
+    marginTop: 10,
+    color: '#FFFFFF',
+    borderWidth: 0,
+    borderRadius: 0,
+    borderBottomWidth: 2,
+    borderColor: 'rgba(255, 165, 0, 0.3)',
     backgroundColor: 'rgba(0, 0, 0, 0)'
   },
   footerBtnRight: {
