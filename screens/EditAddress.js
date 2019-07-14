@@ -16,37 +16,41 @@ import {
   Clipboard
 } from 'react-native';
 
-readLabelromClipboard = async () => {
-  const clipboardContent = await Clipboard.getString();
-  setAppData({
-    addressEntry: {
-      label: clipboardContent
-    }
-  });
-};
-
-readAddressFromClipboard = async () => {
-  const clipboardContent = await Clipboard.getString();
-  setAppData({
-    addressEntry: {
-      address: clipboardContent
-    }
-  });
-};
-
-readPaymentIdFromClipboard = async () => {
-  const clipboardContent = await Clipboard.getString();
-  setAppData({
-    addressEntry: {
-      paymentId: clipboardContent
-    }
-  });
-};
-
 const EditAddress = () => {
   const { actions, state } = useContext(AppContext);
   const { addContact, setAppData } = actions;
   const { layout, user } = state;
+
+  readLabelromClipboard = async () => {
+    const clipboardContent = await Clipboard.getString();
+    setAppData({
+      addressEntry: {
+        label: clipboardContent
+      }
+    });
+  };
+
+  readAddressFromClipboard = async () => {
+    const clipboardContent = await Clipboard.getString();
+    setAppData({
+      addressEntry: {
+        address: clipboardContent
+      }
+    });
+  };
+
+  readPaymentIdFromClipboard = async () => {
+    const clipboardContent = await Clipboard.getString();
+    setAppData({
+      addressEntry: {
+        paymentId: clipboardContent
+      }
+    });
+  };
+
+  isFormValid = () => {
+    return (state.appData.addressEntry.label && state.appData.addressEntry.address);
+  }
 
   return (
     <View style={styles.pageWrapper}>
@@ -112,6 +116,7 @@ const EditAddress = () => {
       <View style={styles.footer}>
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnLeft]}
+          disabled={!this.isFormValid()}
           onPress={() => {
             addContact({
               label: state.appData.addressEntry.label,
