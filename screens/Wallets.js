@@ -17,7 +17,7 @@ import {
 
 const Wallets = () => {
   const { actions, state } = useContext(AppContext);
-  const { createWallet, deleteWallet, switchWallet, setDefaultWallet } = actions;
+  const { createWallet, deleteWallet, switchWallet, setDefaultWallet, getWalletKeys } = actions;
   const { appSettings, layout, wallets } = state;
   const { walletsLoaded } = layout;
 
@@ -117,7 +117,17 @@ const Wallets = () => {
                 <ConcealButton
                   style={[styles.footerBtn, styles.footerBtnRight]}
                   buttonStyle={styles.btnStyle}
-                  disabled={true}
+                  onPress={() => {
+                    Alert.alert(
+                      'Export Keys',
+                      'You are about to export the keys. Do you really wish to proceed?',
+                      [
+                        { text: 'OK', onPress: () => getWalletKeys(item.address, true) },
+                        { text: 'Cancel', style: 'cancel' },
+                      ],
+                      { cancelable: false },
+                    );
+                  }}
                   text="EXPORT"
                 />
               </View>

@@ -1,6 +1,25 @@
 import { appSettings } from '../constants/appSettings';
 import { AppColors } from '../constants/Colors';
 import Toast from 'react-native-root-toast';
+import { Share } from "react-native";
+
+export const shareContent = async (content) => {
+  try {
+    const result = await Share.share({ message: content });
+
+    if (result.action === Share.sharedAction) {
+      if (result.activityType) {
+        // shared with activity type of result.activityType
+      } else {
+        // shared
+      }
+    } else if (result.action === Share.dismissedAction) {
+      // dismissed
+    }
+  } catch (error) {
+    showErrorToast(error.message);
+  }
+}
 
 export const maskAddress = (address, maskingChar = '.', maskedChars = 8, charsPre = 7, charsPost = 7) => {
   if (address) {

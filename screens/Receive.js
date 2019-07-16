@@ -7,6 +7,7 @@ import QRCode from 'react-native-qrcode-svg';
 import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
 import {
+  shareContent,
   showErrorToast,
   showSuccessToast
 } from '../helpers/utils';
@@ -25,24 +26,6 @@ const Receive = () => {
   const currWallet = Object.keys(wallets).length > 0 && layout.walletsLoaded
     ? wallets[Object.keys(wallets).find(address => wallets[address].selected)]
     : null;
-
-  onShare = async (content) => {
-    try {
-      const result = await Share.share({ message: "My CCX address is: " + content });
-
-      if (result.action === Share.sharedAction) {
-        if (result.activityType) {
-          // shared with activity type of result.activityType
-        } else {
-          // shared
-        }
-      } else if (result.action === Share.dismissedAction) {
-        // dismissed
-      }
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
 
   onCopyAddress = async (text) => {
     showSuccessToast(text);
@@ -83,7 +66,7 @@ const Receive = () => {
         />
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnRight]}
-          onPress={() => this.onShare(currWallet.addr)}
+          onPress={() => shareContent("My CCX address is: " + currWallet.addr)}
           text="SHARE"
         />
       </View>

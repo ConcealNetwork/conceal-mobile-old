@@ -283,25 +283,30 @@ const AppContextProvider = props => {
       });
   };
 
-  const getWalletKeys = options => {
-    const { e, address, code, id } = options;
+  const getWalletKeys = (address, share) => {
     logger.log('GETTING WALLET KEYS...');
-    e.preventDefault();
     const { wallets } = state;
     let message;
     dispatch({ type: 'FORM_SUBMITTED', value: true });
+    console.log(wallets);
+    console.log(address);
     if (!wallets[address].keys) {
-      Api.getWalletKeys(address, code)
+      Api.getWalletKeys(address, null)
         .then(res => {
           if (res.result === 'success') {
-            dispatch({ type: 'SET_WALLET_KEYS', keys: res.message });
+            if (share) {
+              dispatch({ type: 'SHARE_WALLET_KEYS', keys: res.message });
+            } else {
+              dispatch({ type: 'SET_WALLET_KEYS', keys: res.message });
+            }
           } else {
             message = res.message;
           }
         })
         .catch(err => { message = `ERROR ${err}` })
         .finally(() => {
-          showMessage(message, msgType);
+          dispatch({ type: 'FORM_SUBMITTED', value: false });
+          showMessage(message);
         });
     }
   };
@@ -329,13 +334,9 @@ const AppContextProvider = props => {
           msgType = 'info';
         } else {
           message = res.message;
-          msgType = 'error';
         }
       })
-      .catch(err => {
-        message = res.message;
-        msgType = 'error'
-      })
+      .catch(err => { message = `ERROR ${err}` })
       .finally(() => {
         getWallets();
         dispatch({ type: 'FORM_SUBMITTED', value: false });
@@ -362,13 +363,9 @@ const AppContextProvider = props => {
           msgType = 'info';
         } else {
           message = res.message;
-          msgType = 'error';
         }
       })
-      .catch(err => {
-        message = res.message;
-        msgType = 'error'
-      })
+      .catch(err => { message = `ERROR ${err}` })
       .finally(() => {
         getWallets();
         dispatch({ type: 'FORM_SUBMITTED', value: false });
@@ -412,17 +409,12 @@ const AppContextProvider = props => {
       .then(res => {
         if (res.result === 'success') {
           dispatch({ type: 'PAYMENT_SENT', res });
+          NavigationService.navigate('Wallet');
           message = 'Payment was succesfully sent to the recipient';
           msgType = 'info';
-          NavigationService.navigate('Wallet');
         } else {
           message = res.message;
-          msgType = 'info';
         }
-      })
-      .catch(err => {
-        message = res.message;
-        msgType = 'info';
       })
       .finally(() => {
         dispatch({ type: 'FORM_SUBMITTED', value: false });

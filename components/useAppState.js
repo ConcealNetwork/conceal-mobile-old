@@ -1,5 +1,6 @@
 import { useReducer, useRef } from 'react';
 import mergeJSON from 'merge-json';
+import { shareContent } from '../helpers/utils';
 import { appSettings } from '../constants/appSettings';
 import { logger } from '../helpers/Logger';
 
@@ -138,6 +139,12 @@ const useAppState = () => {
             ...state.layout,
             walletsLoaded: true,
           },
+        };
+        break;
+      case 'SHARE_WALLET_KEYS':
+        shareContent(JSON.stringify(action.keys));
+        result = {
+          ...state
         };
         break;
       case 'SET_WALLET_KEYS':
