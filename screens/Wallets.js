@@ -5,7 +5,6 @@ import { AppContext } from '../components/ContextProvider';
 import ConcealButton from '../components/ccxButton';
 import { maskAddress } from '../helpers/utils';
 import { AppColors } from '../constants/Colors';
-import ConcealFAB from '../components/ccxFAB';
 import {
   Alert,
   Text,

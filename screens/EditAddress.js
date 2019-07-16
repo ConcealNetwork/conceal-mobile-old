@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
 import { Icon, Header, Overlay } from 'react-native-elements';
-import { Button } from 'react-native-paper';
 import NavigationService from '../helpers/NavigationService';
 import ConcealTextInput from '../components/ccxTextInput';
 import ConcealButton from '../components/ccxButton';

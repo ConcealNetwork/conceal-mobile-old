@@ -23,6 +23,9 @@ const SendConfirmScreen = () => {
     ? wallets[Object.keys(wallets).find(address => wallets[address].selected)]
     : null;
 
+  console.log("wallets");
+  console.log(wallets);
+
   const { value: password, bind: bindPassword } = useFormInput('');
   const { value: twoFACode, bind: bindTwoFACode } = useFormInput('');
 
