@@ -114,7 +114,7 @@ const Wallet = () => {
                       name={item.type === 'received' ? 'md-arrow-down' : 'md-arrow-up'}
                       type='ionicon'
                       size={32}
-                      color={item.type === 'received' ? Colors.green500 : Colors.red500}
+                      color={item.type === 'received' ? "green" : "red"}
                       containerStyle={styles.txDirection}
                     />
                   </View>

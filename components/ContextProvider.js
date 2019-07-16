@@ -202,15 +202,16 @@ const AppContextProvider = props => {
 
   const getWallets = () => {
     logger.log('GETTING WALLETS...');
-    const oldWallets = updatedState.current.wallets;
     let message;
-
     Api.getWallets()
       .then(res => {
         if (res.result === 'success') {
+          const oldWallets = updatedState.current.wallets;
           const wallets = res.message.wallets;
+
           if (Object.keys(wallets).length > 0) {
-            let selectedAddress = Object.keys(wallets)[0];
+            let selectedAddress = null;
+            let defaultAddress = null;
 
             Object.keys(oldWallets).forEach(function (key) {
               if (oldWallets[key].selected) { selectedAddress = key; }
@@ -218,11 +219,14 @@ const AppContextProvider = props => {
             });
 
             Object.keys(wallets).forEach(function (key) {
+              if (wallets[key].default) { defaultAddress = key; }
               wallets[key].addr = key;
             });
 
-            if (wallets[selectedAddress]) {
+            if (selectedAddress) {
               wallets[selectedAddress].selected = true;
+            } else if (defaultAddress) {
+              wallets[defaultAddress].selected = true;
             } else {
               wallets[Object.keys(wallets)[0]].selected = true;
             }
@@ -282,6 +286,30 @@ const AppContextProvider = props => {
     dispatch({ type: 'FORM_SUBMITTED', value: true });
     Api.deleteWallet(address)
       .then(res => res.result === 'success' && dispatch({ type: 'DELETE_WALLET', address }))
+      .catch(err => { message = `ERROR ${err}` })
+      .finally(() => {
+        getWallets();
+        dispatch({ type: 'FORM_SUBMITTED', value: false });
+      });
+  };
+
+  const setDefaultWallet = address => {
+    logger.log(`SETTING DEFAULT WALLET ${address}...`);
+    dispatch({ type: 'FORM_SUBMITTED', value: true });
+    Api.setDefaultWallet(address)
+      .then(res => {
+        if (res.result === 'success') {
+          const wallets = updatedState.current.wallets;
+
+          Object.keys(wallets).forEach(function (key) {
+            wallets[key].default = (key === address);
+          });
+
+          dispatch({ type: 'SET_DEFAULT_WALLET', wallets });
+        } else {
+          dispatch({ type: 'DISPLAY_MESSAGE', message: res.message });
+        }
+      })
       .catch(err => { message = `ERROR ${err}` })
       .finally(() => {
         getWallets();
@@ -360,6 +388,7 @@ const AppContextProvider = props => {
     getWallets,
     switchWallet,
     deleteWallet,
+    setDefaultWallet,
     getWalletKeys,
     setAppData,
     getUsername

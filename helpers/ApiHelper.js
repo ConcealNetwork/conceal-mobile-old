@@ -122,6 +122,14 @@ export default class ApiHelper {
       .then(res => Promise.resolve(res));
   };
 
+  setDefaultWallet = address => {
+    const body = {
+      address: address
+    };
+    return this.fetch(`${this.apiURL}/wallet/default?address=${address}`, { method: 'POST', body: JSON.stringify(body) })
+      .then(res => Promise.resolve(res));
+  }
+
   getPrices = pricesURL => {
     return fetch(`${pricesURL}/simple/price?ids=conceal&vs_currencies=btc,usd&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true&include_last_updated_at=true`)
       .then(r => r.json())

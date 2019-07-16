@@ -17,7 +17,7 @@ import {
 
 const Wallets = () => {
   const { actions, state } = useContext(AppContext);
-  const { createWallet, deleteWallet, switchWallet } = actions;
+  const { createWallet, deleteWallet, switchWallet, setDefaultWallet } = actions;
   const { appSettings, layout, wallets } = state;
   const { walletsLoaded } = layout;
 
@@ -76,7 +76,7 @@ const Wallets = () => {
           showsVerticalScrollIndicator={false}
           keyExtractor={item => item.address}
           renderItem={({ item }) =>
-            <View style={styles.flatview}>
+            <View style={item.selected ? [styles.flatview, styles.walletSelected] : styles.flatview}>
               <TouchableOpacity onPress={() => switchWallet(item.address)}>
                 <View>
                   <Text style={styles.address}>{maskAddress(item.address)}</Text>
@@ -89,7 +89,8 @@ const Wallets = () => {
                       size={36}
                       checkedIcon='dot-circle-o'
                       uncheckedIcon='circle-o'
-                      checked={item.selected}
+                      checked={item.default}
+                      onPress={() => setDefaultWallet(item.address)}
                     />
                   </View>
                 </View>
@@ -159,6 +160,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     marginTop: 5,
     padding: 20,
+  },
+  walletSelected: {
+    borderColor: AppColors.concealOrange,
+    borderWidth: 2
   },
   address: {
     color: '#FFFFFF',

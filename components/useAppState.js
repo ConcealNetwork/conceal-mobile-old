@@ -190,6 +190,15 @@ const useAppState = () => {
           wallets: {},
         };
         break;
+      case 'SET_DEFAULT_WALLET':
+        result = {
+          ...state,
+          wallets: {
+            ...state.wallets,
+            ...action.wallets,
+          },
+        };
+        break;
       case 'SEND_TX':
         result = {
           ...state,
