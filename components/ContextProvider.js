@@ -115,9 +115,14 @@ const AppContextProvider = props => {
 
   const getUser = () => {
     logger.log('GETTING USER...');
+    let message;
+    let msgType;
     Api.getUser()
       .then(res => dispatch({ type: 'USER_LOADED', user: res.message }))
-      .catch(e => console.error(e));
+      .catch(err => { message = `ERROR ${err}` })
+      .finally(() => {
+        showMessage(message, msgType);
+      });
   };
 
   const addContact = (contact, extras) => {
@@ -129,8 +134,8 @@ const AppContextProvider = props => {
       .then(res => {
         if (res.result === 'success') {
           getUser();
-          extras.forEach(fn => fn());
-          message = 'Contact was added successfully';
+          if (extras) extras.forEach(fn => fn());
+          message = 'Contact was added / edited successfully';
           msgType = 'info';
         } else {
           message = res.message;
@@ -194,7 +199,7 @@ const AppContextProvider = props => {
       .then(res => {
         if (res.result === 'success') {
           check2FA();
-          extras.forEach(fn => fn());
+          if (extras) extras.forEach(fn => fn());
           message = `QR Code ${enable ? 'enabled' : 'disabled'}.`;
           msgType = 'info';
         } else {
