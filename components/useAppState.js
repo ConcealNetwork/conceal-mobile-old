@@ -2,10 +2,6 @@ import { useReducer, useRef } from 'react';
 import mergeJSON from 'merge-json';
 import { appSettings } from '../constants/appSettings';
 import { logger } from '../helpers/Logger';
-import {
-  showErrorToast,
-  showSuccessToast
-} from '../helpers/utils';
 
 const useAppState = () => {
   const initialState = {
@@ -262,19 +258,6 @@ const useAppState = () => {
         };
         if (action.value) result.layout.message = {};
         break;
-      case 'DISPLAY_MESSAGE':
-        if (!action.message) action.message = {};
-        if (action.message.join() !== '') {
-          showErrorToast(action.message.join());
-        }
-        result = {
-          ...state,
-          layout: {
-            ...state.layout,
-            message: action.id ? { [action.id]: action.message } : action.message,
-          },
-        };
-        break;
       case 'REDIRECT_TO_REFERRER':
         result = {
           ...state,
@@ -285,7 +268,6 @@ const useAppState = () => {
         };
         break;
       case 'PAYMENT_SENT':
-        showSuccessToast('Payment was succesfully sent to the recipient');
         result = {
           ...state
         };
@@ -328,6 +310,7 @@ const useAppState = () => {
             appLoaded: false,
             userLoaded: false,
             walletsLoaded: false,
+            loginFinished: false,
           },
           user: {
             ...state.user,

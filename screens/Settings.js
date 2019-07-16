@@ -67,7 +67,7 @@ const Settings = () => {
           name='md-log-out'
           type='ionicon'
           color='white'
-          size={26}
+          size={32}
         />}
       />
       <FlatList

@@ -8,11 +8,12 @@ export default class AuthHelper {
   }
 
   login = options => {
-    const { email, password, twoFACode } = options;
+    const { email, password, twoFACode, uuid } = options;
     const body = {
+      uuid,
       email,
       password,
-      rememberme: false,
+      rememberme: true,
     };
     if (twoFACode && twoFACode !== '') body.code = twoFACode;
     return this.fetch(`${this.domain}/auth`, { method: 'POST', body: JSON.stringify(body) })

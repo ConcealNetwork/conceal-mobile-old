@@ -12,6 +12,26 @@ export const maskAddress = (address, maskingChar = '.', maskedChars = 8, charsPr
   }
 };
 
+export const showMessage = (message, msgType) => {
+  let toastMessage;
+
+  if (message) {
+    if (Array.isArray(message)) {
+      toastMessage = message.join();
+    } else {
+      toastMessage = message;
+    }
+
+    if (toastMessage !== '') {
+      if ((msgType || "error") === "error") {
+        showErrorToast(toastMessage);
+      } else if (msgType === "info") {
+        showSuccessToast(toastMessage);
+      }
+    }
+  }
+}
+
 export const showErrorToast = (message) => {
   let toast = Toast.show(message, {
     backgroundColor: AppColors.concealErrorColor,
@@ -21,20 +41,20 @@ export const showErrorToast = (message) => {
     animation: true,
     hideOnPress: true,
     shadow: true,
-    delay: 300
+    delay: 100
   });
 };
 
 export const showSuccessToast = (message) => {
   let toast = Toast.show(message, {
     backgroundColor: AppColors.concealInfoColor,
-    duration: Toast.durations.LONG,
+    duration: Toast.durations.SHORT,
     opacity: 1,
     position: 0,
     animation: true,
     hideOnPress: true,
     shadow: true,
-    delay: 300
+    delay: 100
   });
 };
 

@@ -19,8 +19,6 @@ if (Platform.OS === 'android') {
 // create the app container first
 const AppContainer = createAppContainer(AppNavigator);
 
-//console.log(Expo.Constants.installationId);
-
 const App = props => {
   const [isLoadingComplete, setIsLoadingComplete] = useState(false);
 

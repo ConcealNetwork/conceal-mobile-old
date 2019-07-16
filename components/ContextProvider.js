@@ -2,12 +2,12 @@ import React, { useEffect } from 'react';
 
 import useAppState from './useAppState';
 import NavigationService from '../helpers/NavigationService';
+import { showMessage } from '../helpers/utils';
 import AuthHelper from '../helpers/AuthHelper';
 import ApiHelper from '../helpers/ApiHelper';
 import { logger } from '../helpers/Logger';
-
-
 export const AppContext = React.createContext();
+
 
 const AppContextProvider = props => {
   const [state, dispatch, updatedState] = useAppState();
@@ -16,6 +16,9 @@ const AppContextProvider = props => {
 
   const loginUser = options => {
     const { id } = options;
+    if (options.twoFACode) {
+      options.uuid = Expo.Constants.installationId;
+    }
     dispatch({ type: 'FORM_SUBMITTED', value: true });
     Auth.setUsername(options.email);
     Auth.login(options)
@@ -24,68 +27,80 @@ const AppContextProvider = props => {
           logger.log('USER_LOGGED_IN...');
           dispatch({ type: 'USER_LOGGED_IN', password: options.password });
         } else {
-          dispatch({ type: 'DISPLAY_MESSAGE', message: res.message, id });
+          message = res.message;
         }
         dispatch({ type: 'FORM_SUBMITTED', value: false });
-      }
-      )
-      .catch(err => dispatch({ type: 'DISPLAY_MESSAGE', message: `ERROR ${err}`, id }));
+      })
+      .catch(err => showMessage(`ERROR ${err}`))
+      .finally(() => {
+        showMessage(message, msgType);
+      });
   };
 
   const signUpUser = options => {
     const { userName, email, password, id } = options;
     let message;
+    let msgType;
     dispatch({ type: 'FORM_SUBMITTED', value: true });
     Api.signUpUser(userName, email, password)
       .then(res => {
         message = res.message;
         if (res.result === 'success') {
           message = 'Please check your email and follow the instructions to activate your account.';
-          // return props.history.replace('/login');
+          msgType = "info";
+        } else {
+          message = res.message;
         }
       })
       .catch(err => { message = `ERROR ${err}` })
       .finally(() => {
-        dispatch({ type: 'DISPLAY_MESSAGE', message, id });
         dispatch({ type: 'FORM_SUBMITTED', value: false });
+        showMessage(message, msgType);
       });
   };
 
   const resetPassword = options => {
     const { email, id } = options;
     let message;
+    let msgType;
     Api.resetPassword(email)
       .then(res => {
         message = res.message;
         if (res.result === 'success') {
           message = 'Please check your email and follow instructions to reset password.';
+          msgType = 'info';
           Auth.logout();
           dispatch({ type: 'CLEAR_APP' });
           NavigationService.navigate('Login');
+        } else {
+          message = res.message;
         }
       })
       .catch(err => { message = `ERROR ${err}` })
       .finally(() => {
-        dispatch({ type: 'DISPLAY_MESSAGE', message, id });
+        showMessage(message, msgType);
       });
   };
 
   const resetPasswordConfirm = options => {
     const { password, token, id } = options;
     let message;
+    let msgType;
     dispatch({ type: 'FORM_SUBMITTED', value: true });
     Api.resetPasswordConfirm(password, token)
       .then(res => {
-        message = res.message;
+
         if (res.result === 'success') {
           message = (<>Password successfully changed.<br />Please log in.</>);
-          // return props.history.replace('/login');
+          msgType = 'info';
+        } else {
+          message = res.message;
         }
       })
       .catch(err => { message = `ERROR ${err}` })
       .finally(() => {
-        dispatch({ type: 'DISPLAY_MESSAGE', message, id });
         dispatch({ type: 'FORM_SUBMITTED', value: false });
+        showMessage(message, msgType);
       });
   };
 
@@ -108,86 +123,103 @@ const AppContextProvider = props => {
   const addContact = (contact, extras) => {
     const { label, address, paymentID, entryID, edit, id } = contact;
     let message;
+    let msgType;
     dispatch({ type: 'FORM_SUBMITTED', value: true });
     Api.addContact(label, address, paymentID, entryID, edit)
       .then(res => {
         if (res.result === 'success') {
           getUser();
           extras.forEach(fn => fn());
+          message = 'Contact was added successfully';
+          msgType = 'info';
         } else {
           message = res.message;
         }
       })
       .catch(err => { message = `ERROR ${err}` })
       .finally(() => {
-        message && dispatch({ type: 'DISPLAY_MESSAGE', message, id });
         dispatch({ type: 'FORM_SUBMITTED', value: false });
+        showMessage(message, msgType);
       });
   };
 
   const deleteContact = contact => {
     const { entryID } = contact;
     let message;
+    let msgType;
     dispatch({ type: 'FORM_SUBMITTED', value: true });
     Api.deleteContact(entryID)
       .then(res => {
         if (res.result === 'success') {
           getUser();
+          message = 'Contact was deleted successfully';
+          msgType = 'info';
         } else {
           message = res.message;
         }
       })
       .catch(err => { message = `ERROR ${err}` })
       .finally(() => {
-        message && dispatch({ type: 'DISPLAY_MESSAGE', message });
         dispatch({ type: 'FORM_SUBMITTED', value: false });
+        showMessage(message, msgType);
       });
   };
 
   const check2FA = () => {
     logger.log('CHECKING 2FA...');
     let message;
+    let msgType;
+
     Api.check2FA()
       .then(res => {
         if (res.result === 'success') {
           dispatch({ type: '2FA_CHECK', value: res.message.enabled });
-          // if (!res.message.enabled) getQRCode();
         } else {
           message = res.message;
         }
       })
       .catch(err => { message = `ERROR ${err}` })
-      .finally(() => message && dispatch({ type: 'DISPLAY_MESSAGE', message }));
+      .finally(() => {
+        showMessage(message, msgType);
+      });
   };
 
   const update2FA = (options, extras) => {
     logger.log('UPDATING 2FA...');
     const { twoFACode, enable } = options;
     let message;
+    let msgType;
     dispatch({ type: 'FORM_SUBMITTED', value: true });
     Api.update2FA(twoFACode, enable)
       .then(res => {
         if (res.result === 'success') {
-          message = `QR Code ${enable ? 'enabled' : 'disabled'}.`;
           check2FA();
           extras.forEach(fn => fn());
+          message = `QR Code ${enable ? 'enabled' : 'disabled'}.`;
+          msgType = 'info';
         } else {
           message = res.message;
         }
       })
       .catch(err => { message = `ERROR ${err}` })
-      .finally(() => message && dispatch({ type: 'DISPLAY_MESSAGE', message }));
+      .finally(() => {
+        dispatch({ type: 'FORM_SUBMITTED', value: false });
+        showMessage(message, msgType);
+      });
   };
 
   const createWallet = () => {
     logger.log('CREATING WALLET...');
     dispatch({ type: 'FORM_SUBMITTED', value: true });
     let message;
+    let msgType;
     Api.createWallet()
       .then(res => {
         if (res.result === 'success') {
           const address = res.message.wallet;
           dispatch({ type: 'CREATE_WALLET', address });
+          message = 'Wallet was succesfully created';
+          msgType = 'info';
           getWallets();
         } else {
           message = res.message;
@@ -195,14 +227,15 @@ const AppContextProvider = props => {
       })
       .catch(err => { message = `ERROR ${err}` })
       .finally(() => {
-        message && dispatch({ type: 'DISPLAY_MESSAGE', message });
         dispatch({ type: 'FORM_SUBMITTED', value: false });
+        showMessage(message, msgType);
       });
   };
 
   const getWallets = () => {
     logger.log('GETTING WALLETS...');
     let message;
+    let msgType;
     Api.getWallets()
       .then(res => {
         if (res.result === 'success') {
@@ -244,9 +277,9 @@ const AppContextProvider = props => {
       })
       .catch(err => { message = `ERROR ${err}` })
       .finally(() => {
-        if (message) dispatch({ type: 'DISPLAY_MESSAGE', message });
         dispatch({ type: 'WALLETS_LOADED' });
         dispatch({ type: 'APP_UPDATED' });
+        showMessage(message, msgType);
       });
   };
 
@@ -267,7 +300,9 @@ const AppContextProvider = props => {
           }
         })
         .catch(err => { message = `ERROR ${err}` })
-        .finally(() => message && dispatch({ type: 'DISPLAY_MESSAGE', message }));
+        .finally(() => {
+          showMessage(message, msgType);
+        });
     }
   };
 
@@ -284,18 +319,35 @@ const AppContextProvider = props => {
   const deleteWallet = address => {
     logger.log(`DELETING WALLET ${address}...`);
     dispatch({ type: 'FORM_SUBMITTED', value: true });
+    let message;
+    let msgType;
     Api.deleteWallet(address)
-      .then(res => res.result === 'success' && dispatch({ type: 'DELETE_WALLET', address }))
-      .catch(err => { message = `ERROR ${err}` })
+      .then(res => {
+        if (res.result === 'success') {
+          dispatch({ type: 'DELETE_WALLET', address });
+          message = 'Wallet was succesfully deleted';
+          msgType = 'info';
+        } else {
+          message = res.message;
+          msgType = 'error';
+        }
+      })
+      .catch(err => {
+        message = res.message;
+        msgType = 'error'
+      })
       .finally(() => {
         getWallets();
         dispatch({ type: 'FORM_SUBMITTED', value: false });
+        showMessage(message, msgType);
       });
   };
 
   const setDefaultWallet = address => {
     logger.log(`SETTING DEFAULT WALLET ${address}...`);
     dispatch({ type: 'FORM_SUBMITTED', value: true });
+    let message;
+    let msgType;
     Api.setDefaultWallet(address)
       .then(res => {
         if (res.result === 'success') {
@@ -306,14 +358,21 @@ const AppContextProvider = props => {
           });
 
           dispatch({ type: 'SET_DEFAULT_WALLET', wallets });
+          message = 'Default wallet was succesfully set';
+          msgType = 'info';
         } else {
-          dispatch({ type: 'DISPLAY_MESSAGE', message: res.message });
+          message = res.message;
+          msgType = 'error';
         }
       })
-      .catch(err => { message = `ERROR ${err}` })
+      .catch(err => {
+        message = res.message;
+        msgType = 'error'
+      })
       .finally(() => {
         getWallets();
         dispatch({ type: 'FORM_SUBMITTED', value: false });
+        showMessage(message, msgType);
       });
   };
 
@@ -344,21 +403,30 @@ const AppContextProvider = props => {
       .catch(err => { message = `ERROR ${err}` })
   };
 
-  const sendPayment = (wallet, address, paymentID, amount, message, twoFA, password) => {
+  const sendPayment = (wallet, address, paymentID, amount, aMessage, password) => {
     logger.log('SENDING PAYMENT...');
     dispatch({ type: 'FORM_SUBMITTED', value: true });
-    Api.sendTx(wallet, address, paymentID, amount, message, twoFA, password)
+    let message;
+    let msgType;
+    Api.sendTx(wallet, address, paymentID, amount, aMessage, null, password)
       .then(res => {
         if (res.result === 'success') {
           dispatch({ type: 'PAYMENT_SENT', res });
+          message = 'Payment was succesfully sent to the recipient';
+          msgType = 'info';
           NavigationService.navigate('Wallet');
         } else {
-          dispatch({ type: 'DISPLAY_MESSAGE', message: res.message });
+          message = res.message;
+          msgType = 'info';
         }
       })
-      .catch(err => { message = `ERROR ${err}` })
+      .catch(err => {
+        message = res.message;
+        msgType = 'info';
+      })
       .finally(() => {
         dispatch({ type: 'FORM_SUBMITTED', value: false });
+        showMessage(message, msgType);
       });
   };
 

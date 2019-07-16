@@ -83,7 +83,6 @@ const SendConfirmScreen = () => {
       state.appData.sendScreen.toAddress,
       state.appData.sendScreen.toPaymendId,
       state.appData.sendScreen.toAmmount,
-      twoFACode,
       password
     );
   }
@@ -123,24 +122,6 @@ const SendConfirmScreen = () => {
             />
           }
         />
-        {userSettings.twoFAEnabled ? (
-          <Input
-            {...bindTwoFACode}
-            placeholder='please enter F2A code if enabled...'
-            inputStyle={styles.toAddress}
-            containerStyle={styles.sendInput}
-            keyboardType='numeric'
-            rightIcon={
-              <Icon
-                onPress={() => console.log("pressed")}
-                name='md-trash'
-                type='ionicon'
-                color='white'
-                size={32}
-              />
-            }
-          />
-        ) : null}
         <FlatList
           data={sendSummaryList}
           style={styles.summaryList}
