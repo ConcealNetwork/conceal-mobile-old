@@ -30,18 +30,19 @@ const BarcodeScanner = (props) => {
     var codeObject = {};
     constructPayload(codeObject, 0, params.path, data);
     constructPayload(codeObject, 0, ["scanCode", "scanned"], true);
-    actions.setAppData(codeObject);
+    setAppData(codeObject);
     showSuccessToast("Successfully scanned the address");
     NavigationService.goBack();
   };
 
   getPermissionsAsync = async () => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
-    this.setState({ hasCameraPermission: status === 'granted' });
+    setAppData({ scanCode: { hasCameraPermission: status === 'granted' } });
   };
 
-  if (state.appData.scanCode.hasCameraPermission) {
+  if (!state.appData.scanCode.hasCameraPermission) {
     getPermissionsAsync();
+    return null;
   } else {
     return (
       <View
