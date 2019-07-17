@@ -28,7 +28,15 @@ const BarcodeScanner = (props) => {
 
   handleBarCodeScanned = ({ type, data }) => {
     var codeObject = {};
-    constructPayload(codeObject, 0, params.path, data);
+    var scannedCode = null;
+
+    if (data.search("conceal:") === 0) {
+      scannedCode = data.substring(8);
+    } else {
+      scannedCode = data;
+    }
+
+    constructPayload(codeObject, 0, params.path, scannedCode);
     constructPayload(codeObject, 0, ["scanCode", "scanned"], true);
     setAppData(codeObject);
     showSuccessToast("Successfully scanned the address");

@@ -29,24 +29,6 @@ const Wallets = () => {
       return acc;
     }, []);
 
-  onExport = async (content) => {
-    try {
-      const result = await Share.share({ message: "My Private Key is: " + content });
-
-      if (result.action === Share.sharedAction) {
-        if (result.activityType) {
-          // shared with activity type of result.activityType
-        } else {
-          // shared
-        }
-      } else if (result.action === Share.dismissedAction) {
-        // dismissed
-      }
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
-
   return (
     <View>
       <Header
@@ -76,7 +58,7 @@ const Wallets = () => {
           showsVerticalScrollIndicator={false}
           keyExtractor={item => item.address}
           renderItem={({ item }) =>
-            <View style={item.selected ? [styles.flatview, styles.walletSelected] : styles.flatview}>
+            <View style={(item.addr === global.selectedWallet) ? [styles.flatview, styles.walletSelected] : styles.flatview}>
               <TouchableOpacity onPress={() => switchWallet(item.address)}>
                 <View>
                   <Text style={styles.address}>{maskAddress(item.address)}</Text>

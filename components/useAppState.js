@@ -177,6 +177,11 @@ const useAppState = () => {
           },
         };
         break;
+      case 'SWITCH_WALLET':
+        result = {
+          ...state
+        };
+        break;
       case 'DELETE_WALLET':
         const { address } = action;
         delete state.wallets[address];

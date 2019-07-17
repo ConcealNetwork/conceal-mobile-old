@@ -19,12 +19,7 @@ const SendConfirmScreen = () => {
   const { state, actions } = useContext(AppContext);
   const { setAppData } = actions;
   const { userSettings, layout, wallets } = state;
-  const currWallet = Object.keys(wallets).length > 0
-    ? wallets[Object.keys(wallets).find(address => wallets[address].selected)]
-    : null;
-
-  console.log("wallets");
-  console.log(wallets);
+  const currWallet = wallets[global.selectedWallet];
 
   const { value: password, bind: bindPassword } = useFormInput('');
   const { value: twoFACode, bind: bindTwoFACode } = useFormInput('');

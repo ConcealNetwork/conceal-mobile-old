@@ -20,9 +20,7 @@ const Wallet = () => {
   const { state, actions } = useContext(AppContext);
   const { setAppData } = actions;
   const { appSettings, layout, prices, user, wallets } = state;
-  const currWallet = Object.keys(wallets).length > 0 && layout.walletsLoaded
-    ? wallets[Object.keys(wallets).find(address => wallets[address].selected)]
-    : null;
+  const currWallet = wallets[global.selectedWallet];
   var transactions = [];
 
   if (currWallet && currWallet.transactions) {

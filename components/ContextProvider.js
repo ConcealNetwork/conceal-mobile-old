@@ -251,25 +251,17 @@ const AppContextProvider = props => {
           const wallets = res.message.wallets;
 
           if (Object.keys(wallets).length > 0) {
-            let selectedAddress = null;
             let defaultAddress = null;
-
-            Object.keys(oldWallets).forEach(function (key) {
-              if (oldWallets[key].selected) { selectedAddress = key; }
-              oldWallets[key].selected = false;
-            });
 
             Object.keys(wallets).forEach(function (key) {
               if (wallets[key].default) { defaultAddress = key; }
               wallets[key].addr = key;
             });
 
-            if (selectedAddress) {
-              wallets[selectedAddress].selected = true;
-            } else if (defaultAddress) {
-              wallets[defaultAddress].selected = true;
-            } else {
-              wallets[Object.keys(wallets)[0]].selected = true;
+            if (!global.selectedWallet && defaultAddress) {
+              global.selectedWallet = defaultAddress;
+            } else if (!global.selectedWallet) {
+              global.selectedWallet = Object.keys(wallets)[0];
             }
           }
           Object.keys(oldWallets).map(address =>
@@ -321,11 +313,8 @@ const AppContextProvider = props => {
 
   const switchWallet = address => {
     logger.log(`SWITCHING WALLET ${address}...`);
-    const { wallets } = state;
-    Object.keys(wallets).map(wallet => {
-      wallets[wallet].selected = wallet === address;
-    });
-    dispatch({ type: 'UPDATE_WALLETS', wallets });
+    global.selectedWallet = address;
+    dispatch({ type: 'SWITCH_WALLET', address });
     NavigationService.navigate('Wallet');
   };
 
@@ -337,14 +326,21 @@ const AppContextProvider = props => {
     Api.deleteWallet(address)
       .then(res => {
         if (res.result === 'success') {
+          if (global.selectedWallet === address) { global.selectedWallet = null; }
           dispatch({ type: 'DELETE_WALLET', address });
           message = 'Wallet was succesfully deleted';
           msgType = 'info';
         } else {
+          console.log("error");
+          console.log(res);
           message = res.message;
         }
       })
-      .catch(err => { message = `ERROR ${err}` })
+      .catch(err => {
+        console.log("catch");
+        message = res.message;
+        message = `ERROR ${err}`
+      })
       .finally(() => {
         getWallets();
         dispatch({ type: 'FORM_SUBMITTED', value: false });
