@@ -78,9 +78,10 @@ export const showSuccessToast = (message) => {
 };
 
 export const format0Decimals = { minimumFractionDigits: 0, maximumFractionDigits: 0 };
-export const format2Decimals = { minimumFractionDigits: 2, maximumFractionDigits: 2 };
-export const format4Decimals = { minimumFractionDigits: 4, maximumFractionDigits: 4 };
-export const format8Decimals = { minimumFractionDigits: 8, maximumFractionDigits: 8 };
+export const format2Decimals = { minimumFractionDigits: 0, maximumFractionDigits: 2 };
+export const format4Decimals = { minimumFractionDigits: 0, maximumFractionDigits: 4 };
+export const format6Decimals = { minimumFractionDigits: 0, maximumFractionDigits: 6 };
+export const format8Decimals = { minimumFractionDigits: 0, maximumFractionDigits: 8 };
 
 export const formatOptions = {
   minimumFractionDigits: appSettings.coinDecimals,

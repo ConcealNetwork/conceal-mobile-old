@@ -5,12 +5,14 @@ import ConcealTextInput from '../components/ccxTextInput';
 import ConcealButton from '../components/ccxButton';
 import { AppColors } from '../constants/Colors';
 import React, { useContext } from "react";
+import { sprintf } from 'sprintf-js';
 import {
   maskAddress,
   formatOptions,
   format0Decimals,
   format2Decimals,
   format4Decimals,
+  format6Decimals,
   format8Decimals
 } from '../helpers/utils';
 import {
@@ -56,9 +58,18 @@ const SendScreen = () => {
   }
 
   if (state.appData.sendScreen.toAmmount) {
+    let totalAmount = parseFloat(state.appData.sendScreen.toAmmount);
+    totalAmount = totalAmount + 0.0001;
+
     sendSummaryList.push({
-      value: state.appData.sendScreen.toAmmount,
-      title: 'Ammount',
+      value: sprintf('%s CCX', totalAmount.toLocaleString(undefined, format6Decimals)),
+      title: 'Total Amount',
+      icon: 'md-cash'
+    });
+
+    sendSummaryList.push({
+      value: '0.0001 CCX',
+      title: 'Transaction Fee',
       icon: 'md-cash'
     });
   }

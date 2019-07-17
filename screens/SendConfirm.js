@@ -1,11 +1,19 @@
 import { Input, Icon, Overlay, Header, ListItem } from 'react-native-elements';
 import { useFormInput, useFormValidation } from '../helpers/hooks';
 import NavigationService from '../helpers/NavigationService';
-import { maskAddress } from '../helpers/utils';
 import { AppContext } from '../components/ContextProvider';
 import ConcealButton from '../components/ccxButton';
 import { AppColors } from '../constants/Colors';
 import React, { useContext } from "react";
+import {
+  maskAddress,
+  formatOptions,
+  format0Decimals,
+  format2Decimals,
+  format4Decimals,
+  format6Decimals,
+  format8Decimals
+} from '../helpers/utils';
 import {
   Text,
   View,
@@ -35,7 +43,10 @@ const SendConfirmScreen = () => {
     });
   }
 
-  addSummaryItem(sprintf('%s CCX', state.appData.sendScreen.toAmmount), 'You are sending', 'md-cash');
+  let totalAmount = parseFloat(state.appData.sendScreen.toAmmount);
+  totalAmount = totalAmount + 0.0001;
+
+  addSummaryItem(sprintf('%s CCX', totalAmount.toLocaleString(undefined, format6Decimals)), 'You are sending', 'md-cash');
   addSummaryItem(maskAddress(currWallet.addr), 'From address', 'md-mail');
   addSummaryItem(maskAddress(state.appData.sendScreen.toAddress), 'To address', 'md-mail');
   if (state.appData.sendScreen.toPaymendId) {
@@ -44,6 +55,7 @@ const SendConfirmScreen = () => {
   if (state.appData.sendScreen.toLabel) {
     addSummaryItem(state.appData.sendScreen.toLabel, 'Label', 'md-eye');
   }
+  addSummaryItem('0.0001 CCX', 'Transaction Fee', 'md-cash');
 
   // key extractor for the list
   keyExtractor = (item, index) => index.toString();
