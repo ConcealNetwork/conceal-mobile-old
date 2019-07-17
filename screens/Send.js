@@ -219,15 +219,17 @@ const SendScreen = () => {
               data={user.addressBook}
               showsVerticalScrollIndicator={false}
               renderItem={({ item }) =>
-                <TouchableOpacity onPress={() => setAppData({ sendScreen: { addrListVisible: false, toAddress: item.address, toPaymendId: item.paymentID, toLabel: item.label } })}>
-                  <View style={styles.flatview}>
-                    <View>
-                      <Text style={styles.addressLabel}>{item.label}</Text>
-                      <Text style={styles.address}>Address: {maskAddress(item.address)}</Text>
-                      {item.paymentID ? (<Text style={styles.data}>Payment ID: {item.paymentID}</Text>) : null}
+                (currWallet.addr !== item.address)
+                  ? (<TouchableOpacity onPress={() => setAppData({ sendScreen: { addrListVisible: false, toAddress: item.address, toPaymendId: item.paymentID, toLabel: item.label } })}>
+                    <View style={styles.flatview}>
+                      <View>
+                        <Text style={styles.addressLabel}>{item.label}</Text>
+                        <Text style={styles.address}>Address: {maskAddress(item.address)}</Text>
+                        {item.paymentID ? (<Text style={styles.data}>Payment ID: {item.paymentID}</Text>) : null}
+                      </View>
                     </View>
-                  </View>
-                </TouchableOpacity>
+                  </TouchableOpacity>)
+                  : null
               }
               keyExtractor={item => item.entryID.toString()}
             />

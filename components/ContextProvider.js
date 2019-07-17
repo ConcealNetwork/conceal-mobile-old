@@ -19,6 +19,8 @@ const AppContextProvider = props => {
     if (options.twoFACode) {
       options.uuid = Expo.Constants.installationId;
     }
+    let message;
+    let msgType;
     dispatch({ type: 'FORM_SUBMITTED', value: true });
     Auth.setUsername(options.email);
     Auth.login(options)
@@ -46,6 +48,7 @@ const AppContextProvider = props => {
       .then(res => {
         message = res.message;
         if (res.result === 'success') {
+          Auth.setUsername(email);
           message = 'Please check your email and follow the instructions to activate your account.';
           msgType = "info";
         } else {

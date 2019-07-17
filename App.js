@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { AsyncStorage } from 'react-native';
 import { AppLoading, Font, Icon } from 'expo';
 import { Platform, StatusBar, View } from 'react-native';
 import { createAppContainer } from 'react-navigation';
@@ -30,6 +31,9 @@ const App = props => {
         'Lato': require('./assets/fonts/Lato/Lato-Regular.ttf'),
         'Roboto': require('./assets/fonts/Roboto/Roboto-Regular.ttf'),
       }),
+      AsyncStorage.getItem('@conceal:id_username').then(res => {
+        global.username = res;
+      })
     ]);
   };
 

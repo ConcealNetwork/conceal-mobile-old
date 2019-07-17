@@ -17,7 +17,8 @@ import {
 
 
 const Wallet = () => {
-  const { state } = useContext(AppContext);
+  const { state, actions } = useContext(AppContext);
+  const { setAppData } = actions;
   const { appSettings, layout, prices, user, wallets } = state;
   const currWallet = Object.keys(wallets).length > 0 && layout.walletsLoaded
     ? wallets[Object.keys(wallets).find(address => wallets[address].selected)]
@@ -125,7 +126,17 @@ const Wallet = () => {
           <View style={styles.footer}>
             <ConcealButton
               style={[styles.footerBtn, styles.footerBtnLeft]}
-              onPress={() => NavigationService.navigate('Send')}
+              onPress={() => {
+                setAppData({
+                  sendScreen: {
+                    toAmmount: '',
+                    toAddress: '',
+                    toPaymendId: '',
+                    toLabel: ''
+                  }
+                });
+                NavigationService.navigate('Send')
+              }}
               disabled={currWallet.balance < 0.0001}
               text="SEND"
             />
