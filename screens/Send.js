@@ -149,6 +149,20 @@ const SendScreen = () => {
         <View style={styles.fromWrapper}>
           <Text style={styles.fromAddress}>{maskAddress(currWallet.addr)}</Text>
           <Text style={styles.fromBalance}>{currWallet.balance.toLocaleString(undefined, format2Decimals)} CCX</Text>
+          {currWallet.locked
+            ? (<View style={styles.lockedWrapper}>
+              <Icon
+                containerStyle={styles.lockedIcon}
+                name='md-lock'
+                type='ionicon'
+                color='#FF0000'
+                size={16}
+              />
+              <Text style={currWallet.locked ? [styles.worthBTC, styles.lockedText] : styles.worthBTC}>
+                {sprintf('%s CCX', currWallet.locked.toLocaleString(undefined, format2Decimals))}
+              </Text>
+            </View>)
+            : null}
         </View>
 
         <ConcealTextInput
@@ -387,8 +401,23 @@ const styles = StyleSheet.create({
     paddingTop: 5,
     paddingBottom: 5,
     borderBottomWidth: 1,
-    borderBottomColor: AppColors.concealBackground,
+    borderBottomColor: AppColors.concealBackground
+  },
+  lockedWrapper: {
+    height: 20,
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  lockedIcon: {
+    marginRight: 5,
+    paddingTop: 2
+  },
+  lockedText: {
+    color: '#FF0000'
   }
+
 });
 
 

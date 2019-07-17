@@ -1,11 +1,12 @@
 import React, { useContext } from 'react';
 import { Icon, Header } from 'react-native-elements';
 import { Text, View, FlatList, StyleSheet } from 'react-native';
-import Moment from 'moment';
 import { AppColors } from '../constants/Colors';
 import NavigationService from '../helpers/NavigationService';
 import { AppContext } from '../components/ContextProvider';
 import ConcealButton from '../components/ccxButton';
+import { sprintf } from 'sprintf-js';
+import Moment from 'moment';
 import {
   maskAddress,
   formatOptions,
@@ -44,13 +45,17 @@ const Wallet = () => {
             <View style={styles.btcPriceWrapper}>
               <Icon
                 containerStyle={styles.btcIcon}
-                name='logo-bitcoin'
+                name={currWallet.locked ? 'md-lock' : 'logo-bitcoin'}
                 type='ionicon'
-                color='#FFFFFF'
+                color={currWallet.locked ? '#FF0000' : '#FFFFFF'}
                 size={16}
               />
-              <Text style={styles.worthBTC}>
-                {(prices.btc * currWallet.balance).toLocaleString(undefined, format8Decimals)}
+              <Text style={currWallet.locked ? [styles.worthBTC, styles.lockedText] : styles.worthBTC}>
+                {
+                  currWallet.locked 
+                  ? sprintf('%s CCX', currWallet.locked.toLocaleString(undefined, format2Decimals))
+                  : (prices.btc * currWallet.balance).toLocaleString(undefined, format8Decimals) 
+                }
               </Text>
             </View>
             <Icon
@@ -297,6 +302,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
     color: '#FFFFFF',
     textAlign: 'center'
+  },
+  lockedText: {
+    color: '#FF0000'
   }
 });
 
