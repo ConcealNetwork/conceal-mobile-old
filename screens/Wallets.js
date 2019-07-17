@@ -3,8 +3,16 @@ import { Icon, Header, CheckBox } from 'react-native-elements';
 import NavigationService from '../helpers/NavigationService';
 import { AppContext } from '../components/ContextProvider';
 import ConcealButton from '../components/ccxButton';
-import { maskAddress } from '../helpers/utils';
 import { AppColors } from '../constants/Colors';
+import {
+  maskAddress,
+  formatOptions,
+  format0Decimals,
+  format2Decimals,
+  format4Decimals,
+  format6Decimals,
+  format8Decimals
+} from '../helpers/utils';
 import {
   Alert,
   Text,
@@ -62,8 +70,8 @@ const Wallets = () => {
               <TouchableOpacity onPress={() => switchWallet(item.address)}>
                 <View>
                   <Text style={styles.address}>{maskAddress(item.address)}</Text>
-                  <Text style={styles.balance}>Balance: {item.total} CCX</Text>
-                  <Text style={(item.locked && item.locked > 0) ? [styles.data, styles.lockedText] : styles.data}>Locked: {item.locked} CCX</Text>
+                  <Text style={styles.balance}>Balance: {item.total.toLocaleString(undefined, format4Decimals)} CCX</Text>
+                  <Text style={(item.locked && item.locked > 0) ? [styles.data, styles.lockedText] : styles.data}>Locked: {item.locked.toLocaleString(undefined, format4Decimals)} CCX</Text>
                   <Text style={styles.data}>{item.status}</Text>
                   <View style={styles.selectedWrapper}>
                     <CheckBox

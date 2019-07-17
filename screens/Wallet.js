@@ -13,6 +13,7 @@ import {
   format0Decimals,
   format2Decimals,
   format4Decimals,
+  format6Decimals,
   format8Decimals
 } from '../helpers/utils';
 
@@ -41,7 +42,7 @@ const Wallet = () => {
             <Text style={styles.worthDollars}>
               $ {(prices.usd * currWallet.balance).toLocaleString(undefined, format4Decimals)}
             </Text>
-            <Text style={styles.amountCCX}>{currWallet.balance.toLocaleString(undefined, format2Decimals)} CCX</Text>
+            <Text style={styles.amountCCX}>{currWallet.balance.toLocaleString(undefined, format4Decimals)} CCX</Text>
             <View style={styles.btcPriceWrapper}>
               <Icon
                 containerStyle={styles.btcIcon}
@@ -52,9 +53,9 @@ const Wallet = () => {
               />
               <Text style={currWallet.locked ? [styles.worthBTC, styles.lockedText] : styles.worthBTC}>
                 {
-                  currWallet.locked 
-                  ? sprintf('%s CCX', currWallet.locked.toLocaleString(undefined, format2Decimals))
-                  : (prices.btc * currWallet.balance).toLocaleString(undefined, format8Decimals) 
+                  currWallet.locked
+                    ? sprintf('%s CCX', currWallet.locked.toLocaleString(undefined, format4Decimals))
+                    : (prices.btc * currWallet.balance).toLocaleString(undefined, format8Decimals)
                 }
               </Text>
             </View>

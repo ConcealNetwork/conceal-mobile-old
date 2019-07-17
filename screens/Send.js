@@ -159,7 +159,7 @@ const SendScreen = () => {
       <ScrollView contentContainerStyle={styles.walletWrapper}>
         <View style={styles.fromWrapper}>
           <Text style={styles.fromAddress}>{maskAddress(currWallet.addr)}</Text>
-          <Text style={styles.fromBalance}>{currWallet.balance.toLocaleString(undefined, format2Decimals)} CCX</Text>
+          <Text style={styles.fromBalance}>{currWallet.balance.toLocaleString(undefined, format4Decimals)} CCX</Text>
           {currWallet.locked
             ? (<View style={styles.lockedWrapper}>
               <Icon
@@ -170,7 +170,7 @@ const SendScreen = () => {
                 size={16}
               />
               <Text style={currWallet.locked ? [styles.worthBTC, styles.lockedText] : styles.worthBTC}>
-                {sprintf('%s CCX', currWallet.locked.toLocaleString(undefined, format2Decimals))}
+                {sprintf('%s CCX', currWallet.locked.toLocaleString(undefined, format4Decimals))}
               </Text>
             </View>)
             : null}
