@@ -267,7 +267,6 @@ const AppContextProvider = props => {
           Object.keys(oldWallets).map(address =>
             !wallets[address] && dispatch({ type: 'DELETE_WALLET', address })
           );
-          console.log(wallets);
           dispatch({ type: 'UPDATE_WALLETS', wallets });
         } else {
           message = res.message;
@@ -289,8 +288,6 @@ const AppContextProvider = props => {
     const { wallets } = state;
     let message;
     dispatch({ type: 'FORM_SUBMITTED', value: true });
-    console.log(wallets);
-    console.log(address);
     if (!wallets[address].keys) {
       Api.getWalletKeys(address, null)
         .then(res => {
@@ -332,14 +329,10 @@ const AppContextProvider = props => {
           message = 'Wallet was succesfully deleted';
           msgType = 'info';
         } else {
-          console.log("error");
-          console.log(res);
           message = res.message;
         }
       })
       .catch(err => {
-        console.log("catch");
-        message = res.message;
         message = `ERROR ${err}`
       })
       .finally(() => {
