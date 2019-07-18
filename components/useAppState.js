@@ -51,8 +51,8 @@ const useAppState = () => {
       minimumPasswordLength: 8,
       qrCodeURL: '',
       twoFACode: '',
-      twoFAEnabled: false,
-      updateWalletsInterval: 10,  // seconds
+      twoFAEnabled: null,
+      updateWalletsInterval: 60,  // seconds
     },
     wallets: {},
     appData: {

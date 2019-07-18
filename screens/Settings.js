@@ -9,8 +9,8 @@ import AppStyles from '../components/Style';
 
 const Settings = () => {
   const { actions, state } = useContext(AppContext);
-  const { logoutUser } = actions;
-  const { network, user } = state;
+  const { logoutUser, check2FA } = actions;
+  const { network, user, userSettings } = state;
 
   const settingsList = [
     {
@@ -27,6 +27,11 @@ const Settings = () => {
       value: network.blockchainHeight.toLocaleString(),
       title: 'Height',
       icon: 'md-pulse'
+    },
+    {
+      value: userSettings.twoFAEnabled ? 'Two Factor Authentication is ON' : 'Two Factor Authentication is OFF',
+      title: 'Visit: "https://conceal.cloud" to change',
+      icon: 'md-lock'
     }
   ];
 
@@ -48,6 +53,10 @@ const Settings = () => {
       />}
     />
   );
+
+  if (userSettings.twoFAEnabled === null) {
+    check2FA();
+  }
 
   return (
     <View style={styles.pageWrapper}>
