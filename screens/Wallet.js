@@ -26,7 +26,7 @@ const Wallet = () => {
   var transactions = [];
 
   if (currWallet && currWallet.transactions) {
-    transactions = currWallet.transactions.reverse();
+    transactions = currWallet.transactions.slice().reverse();
   }
 
   return (
@@ -110,11 +110,11 @@ const Wallet = () => {
                     </Text>
                     <Text style={styles.dataAmount}>
                       {item.amount.toLocaleString(undefined, formatOptions)} CCX (fee: {item.fee})
-                  </Text>
+                    </Text>
                     <Text style={styles.dataAddress}>
                       {maskAddress(item.address)}
                     </Text>
-
+                    {(item.status === "pending") ? (<Text style={styles.dataPending}>PENDING</Text>) : null}
                     <Icon
                       name={item.type === 'received' ? 'md-arrow-down' : 'md-arrow-up'}
                       type='ionicon'
@@ -258,6 +258,9 @@ const styles = StyleSheet.create({
   dataAddress: {
     color: '#FFA500',
     fontSize: 14,
+  },
+  dataPending: {
+    color: "#FF0000"
   },
   txsText: {
     color: '#FFFFFF',

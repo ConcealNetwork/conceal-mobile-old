@@ -267,6 +267,7 @@ const AppContextProvider = props => {
           Object.keys(oldWallets).map(address =>
             !wallets[address] && dispatch({ type: 'DELETE_WALLET', address })
           );
+          console.log(wallets);
           dispatch({ type: 'UPDATE_WALLETS', wallets });
         } else {
           message = res.message;
@@ -413,6 +414,7 @@ const AppContextProvider = props => {
       .then(res => {
         if (res.result === 'success') {
           dispatch({ type: 'PAYMENT_SENT', res });
+          getWallets();
           NavigationService.navigate('Wallet');
           message = 'Payment was succesfully sent to the recipient';
           msgType = 'info';
