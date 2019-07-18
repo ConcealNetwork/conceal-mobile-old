@@ -57,8 +57,8 @@ const SendScreen = () => {
     });
   }
 
-  if (state.appData.sendScreen.toAmmount) {
-    let totalAmount = parseFloat(state.appData.sendScreen.toAmmount);
+  if (state.appData.sendScreen.toAmount) {
+    let totalAmount = parseFloat(state.appData.sendScreen.toAmount);
     totalAmount = totalAmount + 0.0001;
 
     sendSummaryList.push({
@@ -94,9 +94,9 @@ const SendScreen = () => {
   );
 
   isFormValid = () => {
-    if (state.appData.sendScreen.toAddress && state.appData.sendScreen.toAmmount) {
-      var ammountAsFloat = parseFloat(state.appData.sendScreen.toAmmount);
-      return ((ammountAsFloat > 0) && (ammountAsFloat <= (parseFloat(currWallet.balance) - 0.0001)));
+    if (state.appData.sendScreen.toAddress && state.appData.sendScreen.toAmount) {
+      var amountAsFloat = parseFloat(state.appData.sendScreen.toAmount);
+      return ((amountAsFloat > 0) && (amountAsFloat <= (parseFloat(currWallet.balance) - 0.0001)));
     } else {
       return false;
     }
@@ -105,7 +105,7 @@ const SendScreen = () => {
   clearSend = () => {
     setAppData({
       sendScreen: {
-        toAmmount: '',
+        toAmount: '',
         toAddress: '',
         toPaymendId: '',
         toLabel: ''
@@ -124,12 +124,12 @@ const SendScreen = () => {
     });
   };
 
-  getAmmountError = () => {
-    var ammountAsFloat = parseFloat(state.appData.sendScreen.toAmmount || 0);
-    if ((ammountAsFloat <= 0) && (state.appData.sendScreen.toAmmount)) {
-      return "Ammount must be greater then 0"
-    } else if (ammountAsFloat > (parseFloat(currWallet.balance) - 0.0001)) {
-      return "The ammount exceeds wallet balance"
+  getAmountError = () => {
+    var amountAsFloat = parseFloat(state.appData.sendScreen.toAmount || 0);
+    if ((amountAsFloat <= 0) && (state.appData.sendScreen.toAmount)) {
+      return "Amount must be greater then 0"
+    } else if (amountAsFloat > (parseFloat(currWallet.balance) - 0.0001)) {
+      return "The amount exceeds wallet balance"
     } else {
       return "";
     }
@@ -177,17 +177,17 @@ const SendScreen = () => {
         </View>
 
         <ConcealTextInput
-          label={this.getAmmountError()}
+          label={this.getAmountError()}
           keyboardType='numeric'
-          placeholder='Select ammount to send...'
+          placeholder='Select amount to send...'
           containerStyle={styles.sendInput}
-          value={state.appData.sendScreen.toAmmount}
+          value={state.appData.sendScreen.toAmount}
           onChangeText={(text) => {
-            setAppData({ sendScreen: { toAmmount: text } });
+            setAppData({ sendScreen: { toAmount: text } });
           }}
           rightIcon={
             <Icon
-              onPress={() => setAppData({ sendScreen: { toAmmount: (parseFloat(currWallet.balance) - 0.0001).toLocaleString(undefined, format4Decimals) } })}
+              onPress={() => setAppData({ sendScreen: { toAmount: (parseFloat(currWallet.balance) - 0.0001).toLocaleString(undefined, format4Decimals) } })}
               name='md-add'
               type='ionicon'
               color='white'

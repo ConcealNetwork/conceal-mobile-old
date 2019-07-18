@@ -43,7 +43,7 @@ const SendConfirmScreen = () => {
     });
   }
 
-  let totalAmount = parseFloat(state.appData.sendScreen.toAmmount);
+  let totalAmount = parseFloat(state.appData.sendScreen.toAmount);
   totalAmount = totalAmount + 0.0001;
 
   addSummaryItem(sprintf('%s CCX', totalAmount.toLocaleString(undefined, format6Decimals)), 'You are sending', 'md-cash');
@@ -89,7 +89,7 @@ const SendConfirmScreen = () => {
       currWallet.addr,
       state.appData.sendScreen.toAddress,
       state.appData.sendScreen.toPaymendId,
-      state.appData.sendScreen.toAmmount,
+      state.appData.sendScreen.toAmount,
       password
     );
   }

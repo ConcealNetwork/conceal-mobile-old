@@ -133,7 +133,7 @@ const Wallet = () => {
               onPress={() => {
                 setAppData({
                   sendScreen: {
-                    toAmmount: '',
+                    toAmount: '',
                     toAddress: '',
                     toPaymendId: '',
                     toLabel: ''
