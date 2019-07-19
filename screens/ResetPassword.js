@@ -1,11 +1,20 @@
 import React, { useContext } from 'react';
-import { Text, TextInput, View } from 'react-native';
-import { Button } from 'react-native-elements';
+import { Image } from 'react-native-elements';
+import ConcealButton from '../components/ccxButton';
 
 import { AppContext } from '../components/ContextProvider';
 import { useFormInput, useFormValidation } from '../helpers/hooks';
 import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
+import {
+  View,
+  Text,
+  Keyboard,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  TouchableWithoutFeedback
+} from 'react-native';
 
 
 const ResetPassword = props => {
@@ -14,7 +23,7 @@ const ResetPassword = props => {
   const { layout } = state;
   const { formSubmitted, message } = layout;
 
-  const { value: email, bind: bindEmail } = useFormInput('');
+  const { value: email, bind: bindEmail } = useFormInput(global.username);
 
   const formValidation = (
     email !== '' && /\S+@\S+\.\S+/.test(email)
@@ -22,43 +31,69 @@ const ResetPassword = props => {
   const formValid = useFormValidation(formValidation);
 
   return (
-    <View style={[AppStyles.viewContainer, AppStyles.loginView]}>
-      <Text style={AppStyles.title}>RESET PASSWORD</Text>
+    <View style={[AppStyles.viewContainer]}>
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+        <View style={AppStyles.loginView}>
+          <Image
+            source={require('../assets/images/icon.png')}
+            style={{ width: 150, height: 150 }}
+          />
+          <Text style={AppStyles.title}>RESET PASSWORD</Text>
 
-      {message.resetPasswordForm &&
-        <Text style={AppStyles.textDanger}>{message.resetPasswordForm}</Text>
-      }
+          {message.resetPasswordForm &&
+            <Text style={AppStyles.textDanger}>{message.resetPasswordForm}</Text>
+          }
 
-      <TextInput
-        {...bindEmail}
-        style={[AppStyles.inputField, AppStyles.textLarge]}
-        placeholder="E-mail"
-        placeholderTextColor={AppColors.placeholderTextColor}
-        keyboardType="email-address"
-        textContentType="none"
-        secureTextEntry={false}
-      />
+          <TextInput
+            {...bindEmail}
+            style={[AppStyles.inputField, AppStyles.textLarge]}
+            placeholder="E-mail"
+            placeholderTextColor={AppColors.placeholderTextColor}
+            keyboardType="email-address"
+            textContentType="none"
+            secureTextEntry={false}
+          />
 
-      <Button
-        onPress={() => resetPassword({ email, id: 'resetPasswordForm' })}
-        title={formSubmitted ? '' : 'Send E-mail'}
-        accessibilityLabel="Send E-mail Button"
-        disabled={formSubmitted || !formValid}
-        buttonStyle={[AppStyles.submitButton, AppStyles.loginButton]}
-        disabledStyle={AppStyles.submitButtonDisabled}
-        titleStyle={AppStyles.buttonTitle}
-        disabledTitleStyle={AppStyles.buttonTitleDisabled}
-        loading={formSubmitted}
-        loadingStyle={AppStyles.submitButtonLoading}
-        loadingProps={{ color: AppColors.concealOrange }}
-      />
-      <Button
-        onPress={() => hidePanel()}
-        title="Cancel"
-        accessibilityLabel="Cancel Button"
-      />
+          <View style={styles.footer}>
+            <ConcealButton
+              onPress={() => resetPassword({ email, id: 'resetPasswordForm' })}
+              text='Send E-mail'
+              accessibilityLabel="Send E-mail Button"
+              disabled={formSubmitted || !formValid}
+              style={[styles.footerBtn, styles.footerBtnLeft]}
+            />
+
+            <ConcealButton
+              onPress={() => hidePanel()}
+              text="Cancel"
+              style={[styles.footerBtn, styles.footerBtnRight]}
+              accessibilityLabel="Cancel Button"
+              disabled={formSubmitted}
+            />
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
     </View>
   )
 };
+
+const styles = StyleSheet.create({
+  footer: {
+    flex: 1,
+    marginTop: 20,
+    alignItems: 'stretch',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  footerBtn: {
+    flex: 1,
+  },
+  footerBtnRight: {
+    marginLeft: 5,
+  },
+  footerBtnLeft: {
+    marginRight: 5,
+  }
+});
 
 export default ResetPassword;

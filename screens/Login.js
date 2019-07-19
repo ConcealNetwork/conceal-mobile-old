@@ -12,13 +12,14 @@ import ResetPassword from './ResetPassword';
 import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
 import {
+  View,
+  Text,
   Animated,
   Keyboard,
-  Text,
   TextInput,
-  TouchableWithoutFeedback,
-  View,
-  StyleSheet
+  StyleSheet,
+  TouchableOpacity,
+  TouchableWithoutFeedback
 } from 'react-native';
 
 
@@ -76,7 +77,7 @@ const Login = () => {
           <View style={styles.footer}>
             <ConcealButton
               onPress={() => loginUser({ email, password, twoFACode, id: 'loginForm' })}
-              text={'Sign In'}
+              text='Sign In'
               accessibilityLabel="Log In Button"
               disabled={formSubmitted || !formValid}
               style={[styles.footerBtn, styles.footerBtnLeft]}
@@ -92,8 +93,8 @@ const Login = () => {
           </View>
 
           <TouchableOpacity onPress={() => resetPasswordPanel.show()}>
-            <Text>Forgot your password?</Text>
-            <Text>Click here</Text>
+            <Text style={styles.forgotText}>Forgot your password?</Text>
+            <Text style={styles.forgotText}>Click here</Text>
           </TouchableOpacity>
 
           <SlidingUpPanel ref={c => signUpPanel = c} animatedValue={new Animated.Value(0)}>
@@ -119,7 +120,7 @@ const Login = () => {
           </SlidingUpPanel>
         </View>
       </TouchableWithoutFeedback>
-    </View>
+    </View >
   )
 };
 
@@ -139,6 +140,11 @@ const styles = StyleSheet.create({
   },
   footerBtnLeft: {
     marginRight: 5,
+  },
+  forgotText: {
+    textAlign: 'center',
+    color: AppColors.concealOrange,
+    fontSize: 16
   }
 });
 

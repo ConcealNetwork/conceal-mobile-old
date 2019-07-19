@@ -46,6 +46,7 @@ export default StyleSheet.create({
   title: {
     fontFamily: 'Roboto',
     fontSize: 36,
+    textAlign: 'center',
     color: AppColors.concealOrange,
   },
   textDanger: {
