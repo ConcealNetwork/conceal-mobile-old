@@ -13,6 +13,7 @@ const AppContextProvider = props => {
   const [state, dispatch, updatedState] = useAppState();
   const Auth = new AuthHelper(state.appSettings.apiURL);
   const Api = new ApiHelper({ Auth, state });
+  const { appData } = state;
 
   const loginUser = options => {
     const { id } = options;
@@ -258,10 +259,10 @@ const AppContextProvider = props => {
               wallets[key].addr = key;
             });
 
-            if (!global.selectedWallet && defaultAddress) {
-              global.selectedWallet = defaultAddress;
-            } else if (!global.selectedWallet) {
-              global.selectedWallet = Object.keys(wallets)[0];
+            if (!appData.common.selectedWallet && defaultAddress) {
+              appData.common.selectedWallet = defaultAddress;
+            } else if (!appData.common.selectedWallet) {
+              appData.common.selectedWallet = Object.keys(wallets)[0];
             }
           }
           Object.keys(oldWallets).map(address =>
@@ -311,7 +312,7 @@ const AppContextProvider = props => {
 
   const switchWallet = address => {
     logger.log(`SWITCHING WALLET ${address}...`);
-    global.selectedWallet = address;
+    appData.common.selectedWallet = address;
     dispatch({ type: 'SWITCH_WALLET', address });
     NavigationService.navigate('Wallet');
   };
@@ -324,7 +325,7 @@ const AppContextProvider = props => {
     Api.deleteWallet(address)
       .then(res => {
         if (res.result === 'success') {
-          if (global.selectedWallet === address) { global.selectedWallet = null; }
+          if (appData.common.selectedWallet === address) { appData.common.selectedWallet = null; }
           dispatch({ type: 'DELETE_WALLET', address });
           message = 'Wallet was succesfully deleted';
           msgType = 'info';

@@ -26,7 +26,7 @@ import {
 const Wallets = () => {
   const { actions, state } = useContext(AppContext);
   const { createWallet, deleteWallet, switchWallet, setDefaultWallet, getWalletKeys } = actions;
-  const { appSettings, layout, wallets } = state;
+  const { appSettings, layout, wallets, appData } = state;
   const { walletsLoaded } = layout;
 
   const walletsList = Object.keys(wallets)
@@ -66,7 +66,7 @@ const Wallets = () => {
           showsVerticalScrollIndicator={false}
           keyExtractor={item => item.address}
           renderItem={({ item }) =>
-            <View style={(item.addr === global.selectedWallet) ? [styles.flatview, styles.walletSelected] : styles.flatview}>
+            <View style={(item.addr === appData.common.selectedWallet) ? [styles.flatview, styles.walletSelected] : styles.flatview}>
               <TouchableOpacity onPress={() => switchWallet(item.address)}>
                 <View>
                   <Text style={styles.address}>{maskAddress(item.address)}</Text>

@@ -22,8 +22,8 @@ import {
 
 const Receive = () => {
   const { state } = useContext(AppContext);
-  const { appSettings, user, layout, wallets } = state;
-  const currWallet = wallets[global.selectedWallet];
+  const { appSettings, user, layout, wallets, appData } = state;
+  const currWallet = wallets[appData.common.selectedWallet];
 
   onCopyAddress = async (text) => {
     showSuccessToast(text);

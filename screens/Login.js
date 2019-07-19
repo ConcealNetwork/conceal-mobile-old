@@ -91,19 +91,10 @@ const Login = () => {
             />
           </View>
 
-          {/*
-          <Button
-            onPress={() => resetPasswordPanel.show()}
-            title="Reset Password"
-            accessibilityLabel="Reset Password Up Button"
-            disabled={formSubmitted}
-            buttonStyle={[AppStyles.submitButton, AppStyles.loginButton]}
-            disabledStyle={AppStyles.submitButtonDisabled}
-            titleStyle={AppStyles.buttonTitle}
-            disabledTitleStyle={AppStyles.buttonTitleDisabled}
-          />
-          */}
-
+          <TouchableOpacity onPress={() => resetPasswordPanel.show()}>
+            <Text>Forgot your password?</Text>
+            <Text>Click here</Text>
+          </TouchableOpacity>
 
           <SlidingUpPanel ref={c => signUpPanel = c} animatedValue={new Animated.Value(0)}>
             <SignUp

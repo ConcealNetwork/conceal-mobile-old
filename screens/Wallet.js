@@ -21,8 +21,8 @@ import {
 const Wallet = () => {
   const { state, actions } = useContext(AppContext);
   const { setAppData } = actions;
-  const { appSettings, layout, prices, user, wallets } = state;
-  const currWallet = wallets[global.selectedWallet];
+  const { appSettings, layout, prices, user, wallets, appData } = state;
+  const currWallet = wallets[appData.common.selectedWallet];
   var transactions = [];
 
   if (currWallet && currWallet.transactions) {

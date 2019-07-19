@@ -28,8 +28,8 @@ import {
 const SendScreen = () => {
   const { state, actions } = useContext(AppContext);
   const { setAppData } = actions;
-  const { user, wallets } = state;
-  const currWallet = wallets[global.selectedWallet];
+  const { user, wallets, appData } = state;
+  const currWallet = wallets[appData.common.selectedWallet];
 
   const sendSummaryList = [];
 
