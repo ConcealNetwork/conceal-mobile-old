@@ -1,10 +1,10 @@
+import './shim';
 import React, { useState } from 'react';
 import { AsyncStorage } from 'react-native';
 import { AppLoading, Font, Icon } from 'expo';
 import { Platform, StatusBar, View } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import ConcealLoader from './components/ccxLoader';
-
 import AppContextProvider from './components/ContextProvider';
 import AppStyles from './components/Style';
 import NavigationService from './helpers/NavigationService';
