@@ -20,33 +20,6 @@ const EditAddress = () => {
   const { addContact, setAppData } = actions;
   const { layout, user } = state;
 
-  readLabelromClipboard = async () => {
-    const clipboardContent = await Clipboard.getString();
-    setAppData({
-      addressEntry: {
-        label: clipboardContent
-      }
-    });
-  };
-
-  readAddressFromClipboard = async () => {
-    const clipboardContent = await Clipboard.getString();
-    setAppData({
-      addressEntry: {
-        address: clipboardContent
-      }
-    });
-  };
-
-  readPaymentIdFromClipboard = async () => {
-    const clipboardContent = await Clipboard.getString();
-    setAppData({
-      addressEntry: {
-        paymentId: clipboardContent
-      }
-    });
-  };
-
   isFormValid = () => {
     return (state.appData.addressEntry.label && state.appData.addressEntry.address);
   }
@@ -71,45 +44,18 @@ const EditAddress = () => {
           containerStyle={styles.addrInput}
           value={state.appData.addressEntry.label}
           onChangeText={(text) => setAppData({ addressEntry: { label: text } })}
-          rightIcon={
-            <Icon
-              onPress={() => this.readLabelromClipboard()}
-              name='md-copy'
-              type='ionicon'
-              color='white'
-              size={32}
-            />
-          }
         />
         <ConcealTextInput
           placeholder='Enter the address...'
           containerStyle={styles.addrInput}
           value={state.appData.addressEntry.address}
           onChangeText={(text) => setAppData({ addressEntry: { address: text } })}
-          rightIcon={
-            <Icon
-              onPress={() => this.readAddressFromClipboard()}
-              name='md-copy'
-              type='ionicon'
-              color='white'
-              size={32}
-            />
-          }
         />
         <ConcealTextInput
           placeholder='Enter the Payment id...'
           containerStyle={styles.addrInput}
           value={state.appData.addressEntry.paymentId}
           onChangeText={(text) => setAppData({ addressEntry: { paymentId: text } })}
-          rightIcon={
-            <Icon
-              onPress={() => this.readPaymentIdFromClipboard()}
-              name='md-copy'
-              type='ionicon'
-              color='white'
-              size={32}
-            />
-          }
         />
       </View>
       <View style={styles.footer}>

@@ -15,6 +15,7 @@ import {
   Text,
   View,
   Share,
+  Clipboard,
   ScrollView,
   StyleSheet
 } from "react-native";
@@ -26,7 +27,8 @@ const Receive = () => {
   const currWallet = wallets[appData.common.selectedWallet];
 
   onCopyAddress = async (text) => {
-    showSuccessToast(text);
+    Clipboard.setString(text);
+    showSuccessToast('Copied address to the clipboard...');
   }
 
   // You can manually hide the Toast, or it will automatically disappear after a `duration` ms timeout.
@@ -59,7 +61,7 @@ const Receive = () => {
       <View style={styles.footer}>
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnLeft]}
-          onPress={() => this.onCopyAddress("Copied address to the clipboard...")}
+          onPress={() => this.onCopyAddress(currWallet.addr)}
           text="COPY"
         />
         <ConcealButton
