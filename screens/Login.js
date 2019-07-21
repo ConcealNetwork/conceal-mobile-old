@@ -1,33 +1,35 @@
 import React, { useContext } from 'react';
+import ConcealTextInput from '../components/ccxTextInput';
+import ConcealButton from '../components/ccxButton';
+
+import { Image } from 'react-native-elements';
+import SlidingUpPanel from 'rn-sliding-up-panel';
+
+import { AppContext } from '../components/ContextProvider';
+import { useFormInput, useFormValidation } from '../helpers/hooks';
+import SignUp from './SignUp';
+import ResetPassword from './ResetPassword';
+import { AppColors } from '../constants/Colors';
+import AppStyles from '../components/Style';
 import {
   View,
   Text,
   Animated,
   Keyboard,
+  TextInput,
   StyleSheet,
   TouchableOpacity,
   TouchableWithoutFeedback
 } from 'react-native';
-import { Image } from 'react-native-elements';
-import SlidingUpPanel from 'rn-sliding-up-panel';
-
-import SignUp from './SignUp';
-import ResetPassword from './ResetPassword';
-import { AppContext } from '../components/ContextProvider';
-import { useFormInput, useFormValidation } from '../helpers/hooks';
-import ConcealTextInput from '../components/ccxTextInput';
-import ConcealButton from '../components/ccxButton';
-import { AppColors } from '../constants/Colors';
-import AppStyles from '../components/Style';
 
 
 const Login = () => {
   const { actions, state } = useContext(AppContext);
-  const { loginUser, resetPassword, signUpUser } = actions;
-  const { layout, userSettings } = state;
-  const { formSubmitted } = layout;
+  const { loginUser, resetPassword, signUpUser, getUsername } = actions;
+  const { layout, userSettings, appData } = state;
+  const { formSubmitted, message } = layout;
 
-  const { value: email, bind: bindEmail } = useFormInput('');
+  const { value: email, bind: bindEmail } = useFormInput(global.username);
   const { value: password, bind: bindPassword } = useFormInput('');
   const { value: twoFACode, bind: bindTwoFACode } = useFormInput('');
 

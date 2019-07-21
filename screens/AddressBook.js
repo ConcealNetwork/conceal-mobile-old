@@ -1,97 +1,139 @@
 import React, { useContext } from 'react';
-import {
-  Alert,
-  FlatList,
-  Platform,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-import { Icon, Header } from 'react-native-elements';
+import { Icon, Header, Overlay } from 'react-native-elements';
 import NavigationService from '../helpers/NavigationService';
+import ConcealTextInput from '../components/ccxTextInput';
 import ConcealButton from '../components/ccxButton';
 import { AppContext } from '../components/ContextProvider';
 import { maskAddress } from '../helpers/utils';
+import { AppColors } from '../constants/Colors';
+import {
+  Alert,
+  Text,
+  View,
+  FlatList,
+  StyleSheet,
+  Clipboard
+} from 'react-native';
 
+readLabelromClipboard = async () => {
+  const clipboardContent = await Clipboard.getString();
+  setAppData({
+    addressEntry: {
+      label: clipboardContent
+    }
+  });
+};
+
+readAddressFromClipboard = async () => {
+  const clipboardContent = await Clipboard.getString();
+  setAppData({
+    addressEntry: {
+      address: clipboardContent
+    }
+  });
+};
+
+readPaymentIdFromClipboard = async () => {
+  const clipboardContent = await Clipboard.getString();
+  setAppData({
+    addressEntry: {
+      paymentId: clipboardContent
+    }
+  });
+};
 
 const AddressBook = () => {
   const { actions, state } = useContext(AppContext);
-  const { deleteContact } = actions;
+  const { deleteContact, setAppData } = actions;
   const { layout, user } = state;
 
   return (
     <View style={styles.pageWrapper}>
       <Header
+        placement="left"
         containerStyle={styles.appHeader}
-        leftComponent={
-          <Icon
-            onPress={() => NavigationService.goBack()}
-            name={Platform.OS === 'android' ? 'md-arrow-round-back' : 'ios-arrow-back'}
-            type="ionicon"
-            color="white"
-            underlayColor="transparent"
-            size={32}
-          />
-        }
+        leftComponent={<Icon
+          onPress={() => NavigationService.goBack()}
+          name='md-return-left'
+          type='ionicon'
+          color='white'
+          size={32}
+        />}
         centerComponent={{ text: 'Address Book', style: { color: '#fff', fontSize: 20 } }}
-        rightComponent={
-          <Icon
-            onPress={() => NavigationService.navigate('EditAddress')}
-            name={Platform.OS === 'android' ? 'md-add-circle-outline' : 'ios-add-circle-outline'}
-            type="ionicon"
-            color="white"
-            underlayColor="transparent"
-            size={32}
-          />
-        }
+        rightComponent={<Icon
+          onPress={() => {
+            setAppData({
+              addressEntry: {
+                headerText: "Create Address",
+                label: '',
+                address: '',
+                paymentId: '',
+                entryId: null
+              }
+            });
+            NavigationService.navigate('EditAddress');
+          }}
+          name='md-add-circle-outline'
+          type='ionicon'
+          color='white'
+          size={32}
+        />}
       />
       <View style={styles.walletsWrapper}>
         {layout.userLoaded && user.addressBook.length === 0
           ? <Text>
-              You have no contacts saved in your address book.
-              Add one by clicking on the button or when you are sending funds.
+            You have no contacts saved in your address book.
+            Add one by clicking on the button or when you are sending funds.
             </Text>
           : <FlatList
-              data={user.addressBook}
-              showsVerticalScrollIndicator={false}
-              keyExtractor={item => item.entryID.toString()}
-              renderItem={({ item }) =>
-                <View style={styles.flatview}>
-                  <View>
-                    <Text style={styles.addressLabel}>{item.label}</Text>
-                    <Text style={styles.address}>Address: {maskAddress(item.address)}</Text>
-                    {item.paymentID
-                      ? (<Text style={styles.data}>Payment ID: {maskAddress(item.paymentID)}</Text>)
-                      : null
-                    }
-                  </View>
-                  <View style={styles.walletFooter}>
-                    <ConcealButton
-                      style={[styles.footerBtn, styles.footerBtnLeft]}
-                      buttonStyle={styles.btnStyle}
-                      onPress={() => {
-                        Alert.alert(
-                          'Delete Contact',
-                          'You are about to delete this contact! Do you really wish to proceed?',
-                          [
-                            { text: 'OK', onPress: () => deleteContact(item) },
-                            { text: 'Cancel', style: 'cancel' },
-                          ],
-                          { cancelable: false },
-                        );
-                      }}
-                      text="DELETE"
-                    />
-
-                    <ConcealButton
-                      style={[styles.footerBtn, styles.footerBtnRight]}
-                      buttonStyle={styles.btnStyle}
-                      onPress={() => NavigationService.navigate('EditAddress', { item })}
-                      text="EDIT"
-                    />
-                  </View>
+            data={user.addressBook}
+            showsVerticalScrollIndicator={false}
+            keyExtractor={item => item.entryID.toString()}
+            renderItem={({ item }) =>
+              <View style={styles.flatview}>
+                <View>
+                  <Text style={styles.addressLabel}>{item.label}</Text>
+                  <Text style={styles.address}>Address: {maskAddress(item.address)}</Text>
+                  {item.paymentID ? (<Text style={styles.data}>Payment ID: {item.paymentID}</Text>) : null}
                 </View>
-              }
+                <View style={styles.walletFooter}>
+                  <ConcealButton
+                    style={[styles.footerBtn, styles.footerBtnLeft]}
+                    buttonStyle={styles.btnStyle}
+                    onPress={() => {
+                      Alert.alert(
+                        'Delete Contact',
+                        'You are about to delete this contact! Do you really wish to proceed?',
+                        [
+                          { text: 'OK', onPress: () => deleteContact(item) },
+                          { text: 'Cancel', style: 'cancel' },
+                        ],
+                        { cancelable: false },
+                      );
+                    }}
+                    text="DELETE"
+                  />
+
+                  <ConcealButton
+                    style={[styles.footerBtn, styles.footerBtnRight]}
+                    buttonStyle={styles.btnStyle}
+                    onPress={() => {
+                      setAppData({
+                        addressEntry: {
+                          headerText: "Edit Address",
+                          label: item.label,
+                          address: item.address,
+                          paymentId: item.paymentID,
+                          entryId: item.entryID
+                        }
+                      });
+                      NavigationService.navigate('EditAddress');
+                    }}
+                    text="EDIT"
+                  />
+                </View>
+              </View>
+            }
           />
         }
       </View>

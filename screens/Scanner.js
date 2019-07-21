@@ -1,52 +1,54 @@
-import React, { useContext, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import * as Permissions from 'expo-permissions';
-import { BarCodeScanner } from 'expo-barcode-scanner';
+import React, { useContext } from "react";
 import { AppContext } from '../components/ContextProvider';
 import NavigationService from '../helpers/NavigationService';
+import { Text, View, StyleSheet, Button } from 'react-native';
+import Constants from 'expo-constants';
+import * as Permissions from 'expo-permissions';
+import { BarCodeScanner } from 'expo-barcode-scanner';
+import {
+  showErrorToast,
+  showSuccessToast
+} from '../helpers/utils';
 
+const BarcodeScanner = (props) => {
+  const params = props.navigation.state.params
 
-const BarcodeScanner = props => {
-  const { actions, state } = useContext(AppContext);
-  const { updateCameraPermission } = actions;
-  const { appSettings, user } = state;
-  const { navigation } = props;
-  const setAddress = navigation.getParam('setAddress');
-  const setPaymentID = navigation.getParam('setPaymentID', () => {});
-  const setLabel = navigation.getParam('setLabel', () => {});
-  const setAmount = navigation.getParam('setAmount', () => {});
-  const setMessage = navigation.getParam('setMessage', () => {});
+  const { state, actions } = useContext(AppContext);
+  const { setAppData } = actions;
 
-  const [scanned, setScanned] = useState(false);
-
-  const handleBarCodeScanned = ({ data }) => {
-    if (data) {
-      setScanned(true);
-      const [prefix, ...rest] = data.split(':');
-      if (prefix === appSettings.qrCodePrefix) {
-        const addressParams = rest.join(':').split('?');
-        setAddress(addressParams[0]);
-        if (addressParams.length > 1) {
-          const params = addressParams[1].split('&');
-          params.forEach(p => {
-            const param = p.split('=');
-            if (param[0] === 'tx_payment_id') setPaymentID(param[1]);
-            if (param[0] === 'tx_label') setLabel(param[1]);
-            if (param[0] === 'tx_amount') setAmount(param[1]);
-            if (param[0] === 'tx_message') setMessage(param[1]);
-          })
-        }
-      }
+  function constructPayload(codeObject, index, path, data) {
+    if (index < (path.length - 1)) {
+      codeObject[path[index]] = {};
+      constructPayload(codeObject[path[index]], index + 1, path, data);
+    } else if (index < path.length) {
+      codeObject[path[index]] = data;
+      constructPayload(codeObject[path[index]], index + 1, path, data);
     }
+  }
+
+  handleBarCodeScanned = ({ type, data }) => {
+    var codeObject = {};
+    var scannedCode = null;
+
+    if (data.search("conceal:") === 0) {
+      scannedCode = data.substring(8);
+    } else {
+      scannedCode = data;
+    }
+
+    constructPayload(codeObject, 0, params.path, scannedCode);
+    constructPayload(codeObject, 0, ["scanCode", "scanned"], true);
+    setAppData(codeObject);
+    showSuccessToast("Successfully scanned the address");
     NavigationService.goBack();
   };
 
-  const getPermissionsAsync = async () => {
+  getPermissionsAsync = async () => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
-    updateCameraPermission(status === 'granted');
+    setAppData({ scanCode: { hasCameraPermission: status === 'granted' } });
   };
 
-  if (!user.hasCameraPermission) {
+  if (!state.appData.scanCode.hasCameraPermission) {
     getPermissionsAsync();
     return null;
   } else {
@@ -58,12 +60,12 @@ const BarcodeScanner = props => {
           justifyContent: 'flex-end',
         }}>
         <BarCodeScanner
-          onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+          onBarCodeScanned={state.appData.scanCode.scanned ? undefined : this.handleBarCodeScanned}
           style={StyleSheet.absoluteFillObject}
         />
       </View>
     );
   }
-};
+}
 
 export default BarcodeScanner;
