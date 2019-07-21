@@ -6,6 +6,8 @@ import { showMessage } from '../helpers/utils';
 import AuthHelper from '../helpers/AuthHelper';
 import ApiHelper from '../helpers/ApiHelper';
 import { logger } from '../helpers/Logger';
+
+
 export const AppContext = React.createContext();
 
 
@@ -16,32 +18,26 @@ const AppContextProvider = props => {
   const { appData } = state;
 
   const loginUser = options => {
-    const { id } = options;
-    if (options.twoFACode) {
-      options.uuid = Expo.Constants.installationId;
-    }
+    if (options.twoFACode) options.uuid = Expo.Constants.installationId;
     let message;
-    let msgType;
     dispatch({ type: 'FORM_SUBMITTED', value: true });
     Auth.setUsername(options.email);
     Auth.login(options)
       .then(res => {
         if (res.result === 'success') {
           logger.log('USER_LOGGED_IN...');
-          dispatch({ type: 'USER_LOGGED_IN', password: options.password });
+          dispatch({ type: 'USER_LOGGED_IN' });
         } else {
           message = res.message;
         }
         dispatch({ type: 'FORM_SUBMITTED', value: false });
       })
       .catch(err => showMessage(`ERROR ${err}`))
-      .finally(() => {
-        showMessage(message, msgType);
-      });
+      .finally(() => showMessage(message));
   };
 
   const signUpUser = options => {
-    const { userName, email, password, id } = options;
+    const { userName, email, password } = options;
     let message;
     let msgType;
     dispatch({ type: 'FORM_SUBMITTED', value: true });
@@ -51,7 +47,7 @@ const AppContextProvider = props => {
         if (res.result === 'success') {
           Auth.setUsername(email);
           message = 'Please check your email and follow the instructions to activate your account.';
-          msgType = "info";
+          msgType = 'info';
         } else {
           message = res.message;
         }
@@ -64,7 +60,7 @@ const AppContextProvider = props => {
   };
 
   const resetPassword = options => {
-    const { email, id } = options;
+    const { email } = options;
     let message;
     let msgType;
     Api.resetPassword(email)
@@ -81,13 +77,11 @@ const AppContextProvider = props => {
         }
       })
       .catch(err => { message = `ERROR ${err}` })
-      .finally(() => {
-        showMessage(message, msgType);
-      });
+      .finally(() => showMessage(message, msgType));
   };
 
   const resetPasswordConfirm = options => {
-    const { password, token, id } = options;
+    const { password, token } = options;
     let message;
     let msgType;
     dispatch({ type: 'FORM_SUBMITTED', value: true });
@@ -139,10 +133,11 @@ const AppContextProvider = props => {
         if (res.result === 'success') {
           getUser();
           if (extras) extras.forEach(fn => fn());
-          message = 'Contact was added / edited successfully';
+          message = 'Contact successfully saved';
           msgType = 'info';
         } else {
           message = res.message;
+          msgType = 'error';
         }
       })
       .catch(err => { message = `ERROR ${err}` })
@@ -161,10 +156,11 @@ const AppContextProvider = props => {
       .then(res => {
         if (res.result === 'success') {
           getUser();
-          message = 'Contact was deleted successfully';
+          message = 'Contact successfully deleted';
           msgType = 'info';
         } else {
           message = res.message;
+          msgType = 'error';
         }
       })
       .catch(err => { message = `ERROR ${err}` })
@@ -376,7 +372,7 @@ const AppContextProvider = props => {
     logger.log('GETTING BLOCKCHAIN HEIGHT...');
     Api.getBlockchainHeight()
       .then(res => dispatch({ type: 'UPDATE_BLOCKCHAIN_HEIGHT', blockchainHeight: res.message.height }))
-      .catch(err => { message = `ERROR ${err}` })
+      .catch(err => logger.log(`ERROR ${err}`, 'error'));
   };
 
   const getMarketPrices = () => {
@@ -384,10 +380,8 @@ const AppContextProvider = props => {
     const { markets } = state;
     Object.keys(markets).forEach(market => {
       Api.getMarketPrices(markets[market].apiURL)
-        .then(res => {
-          dispatch({ type: 'UPDATE_MARKET', market, marketData: res })
-        })
-        .catch(err => { message = `ERROR ${err}` })
+        .then(res => dispatch({ type: 'UPDATE_MARKET', market, marketData: res }))
+        .catch(err => logger.log(`ERROR ${err}`, 'error'));
     });
   };
 
@@ -396,7 +390,7 @@ const AppContextProvider = props => {
     const { appSettings } = state;
     Api.getPrices(appSettings.coingeckoAPI)
       .then(res => dispatch({ type: 'UPDATE_PRICES', pricesData: res }))
-      .catch(err => { message = `ERROR ${err}` })
+      .catch(err => logger.log(`ERROR ${err}`, 'error'));
   };
 
   const sendPayment = (wallet, address, paymentID, amount, aMessage, password) => {
@@ -421,6 +415,8 @@ const AppContextProvider = props => {
         showMessage(message, msgType);
       });
   };
+
+  const updateCameraPermission = grant => dispatch({ type: 'UPDATE_CAMERA_PERMISSION', grant });
 
   const setAppData = (appData) => {
     logger.log('SETTING APP DATA...');
@@ -451,7 +447,8 @@ const AppContextProvider = props => {
     setDefaultWallet,
     getWalletKeys,
     setAppData,
-    getUsername
+    getUsername,
+    updateCameraPermission,
   };
 
   useEffect(() => {

@@ -18,7 +18,7 @@ const useAppState = () => {
       redirectToReferrer: false,
       sendTxResponse: null,
       userLoaded: false,
-      walletsLoaded: false
+      walletsLoaded: false,
     },
     markets: {
       stex: {
@@ -45,7 +45,8 @@ const useAppState = () => {
       addressBook: [],
       loggedIn: false,
       userName: '',
-      password: ''
+      password: '',
+      hasCameraPermission: false,
     },
     userSettings: {
       minimumPasswordLength: 8,
@@ -219,6 +220,15 @@ const useAppState = () => {
           },
         };
         break;
+      case 'UPDATE_CAMERA_PERMISSION':
+        result = {
+          ...state,
+          user: {
+            ...state.user,
+            hasCameraPermission: action.grant,
+          },
+        };
+        break;
       case 'UPDATE_BLOCKCHAIN_HEIGHT':
         result = {
           ...state,
@@ -250,16 +260,7 @@ const useAppState = () => {
           ...state,
           prices: {
             ...state.prices,
-            ...pricesData.conceal
-          },
-        };
-        break;
-      case 'UPDATE_MARKET_DATA':
-        result = {
-          ...state,
-          marketData: {
-            ...state.marketData,
-            ...action.marketData,
+            ...pricesData.conceal,
           },
         };
         break;
