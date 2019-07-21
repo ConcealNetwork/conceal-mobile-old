@@ -135,6 +135,14 @@ const SendScreen = () => {
     }
   }
 
+  setAddress = (label, address, paymentID, entryID) => {
+    setAppData({
+      sendScreen: {
+        toAddress: address
+      }
+    });
+  }
+
   return (
     <View style={styles.pageWrapper}>
       <Header
@@ -213,7 +221,7 @@ const SendScreen = () => {
                       entryId: null
                     }
                   });
-                  NavigationService.navigate('EditAddress');
+                  NavigationService.navigate('EditAddress', { callback: this.setAddress });
                 }}
                 name='md-add'
                 type='ionicon'

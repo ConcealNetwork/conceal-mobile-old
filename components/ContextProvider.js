@@ -129,7 +129,7 @@ const AppContextProvider = props => {
       });
   };
 
-  const addContact = (contact, extras) => {
+  const addContact = (contact, extras, callback) => {
     const { label, address, paymentID, entryID, edit, id } = contact;
     let message;
     let msgType;
@@ -139,6 +139,7 @@ const AppContextProvider = props => {
         if (res.result === 'success') {
           getUser();
           if (extras) extras.forEach(fn => fn());
+          if (callback) callback(label, address, paymentID, entryID);
           message = 'Contact was added / edited successfully';
           msgType = 'info';
         } else {

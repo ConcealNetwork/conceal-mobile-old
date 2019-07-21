@@ -15,7 +15,9 @@ import {
   Clipboard
 } from 'react-native';
 
-const EditAddress = () => {
+const EditAddress = (props) => {
+  const params = props.navigation.state.params;
+
   const { actions, state } = useContext(AppContext);
   const { addContact, setAppData } = actions;
   const { layout, user } = state;
@@ -63,13 +65,17 @@ const EditAddress = () => {
           style={[styles.footerBtn, styles.footerBtnLeft]}
           disabled={!this.isFormValid()}
           onPress={() => {
-            addContact({
-              label: state.appData.addressEntry.label,
-              address: state.appData.addressEntry.address,
-              paymentID: state.appData.addressEntry.paymentId,
-              entryID: state.appData.addressEntry.entryId,
-              edit: state.appData.addressEntry.entryId !== null
-            });
+            addContact(
+              {
+                label: state.appData.addressEntry.label,
+                address: state.appData.addressEntry.address,
+                paymentID: state.appData.addressEntry.paymentId,
+                entryID: state.appData.addressEntry.entryId,
+                edit: state.appData.addressEntry.entryId !== null,
+              },
+              null,
+              params.callback
+            );
             NavigationService.goBack();
           }}
           text="SAVE"
