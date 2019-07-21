@@ -4,15 +4,18 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "postinstall": "rn-nodeify --install buffer --hack"
   },
   "dependencies": {
+    "buffer": "^4.9.1",
     "expo": "^33.0.7",
     "expo-barcode-scanner": "^5.0.1",
     "intl": "^1.2.5",
     "jwt-decode": "^2.2.0",
     "merge-json": "0.1.0-b.3",
     "moment": "^2.24.0",
+    "multicoin-address-validator": "git+https://github.com/bomb-on/multicoin-address-validator.git",
     "react": "16.8.3",
     "react-native": "https://github.com/expo/react-native/archive/sdk-33.0.0.tar.gz",
     "react-native-elements": "^1.1.0",
@@ -24,7 +27,8 @@
     "sprintf-js": "^1.1.2"
   },
   "devDependencies": {
-    "babel-preset-expo": "^5.0.0"
+    "babel-preset-expo": "^5.0.0",
+    "rn-nodeify": "github:tradle/rn-nodeify"
   },
   "private": true
 }

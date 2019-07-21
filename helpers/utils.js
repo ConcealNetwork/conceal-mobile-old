@@ -1,9 +1,10 @@
+import { Share } from 'react-native';
+import Toast from 'react-native-root-toast';
 import { appSettings } from '../constants/appSettings';
 import { AppColors } from '../constants/Colors';
-import Toast from 'react-native-root-toast';
-import { Share } from "react-native";
 
-export const shareContent = async (content) => {
+
+export const shareContent = async content => {
   try {
     const result = await Share.share({ message: content });
 
@@ -19,7 +20,7 @@ export const shareContent = async (content) => {
   } catch (error) {
     showErrorToast(error.message);
   }
-}
+};
 
 export const maskAddress = (address, maskingChar = '.', maskedChars = 8, charsPre = 7, charsPost = 7) => {
   if (address) {
@@ -49,10 +50,10 @@ export const showMessage = (message, msgType) => {
       }
     }
   }
-}
+};
 
-export const showErrorToast = (message) => {
-  let toast = Toast.show(message, {
+export const showErrorToast = message =>
+  Toast.show(message, {
     backgroundColor: AppColors.concealErrorColor,
     duration: Toast.durations.LONG,
     opacity: 1,
@@ -62,10 +63,9 @@ export const showErrorToast = (message) => {
     shadow: true,
     delay: 100
   });
-};
 
-export const showSuccessToast = (message) => {
-  let toast = Toast.show(message, {
+export const showSuccessToast = message =>
+  Toast.show(message, {
     backgroundColor: AppColors.concealInfoColor,
     duration: Toast.durations.SHORT,
     opacity: 1,
@@ -75,8 +75,13 @@ export const showSuccessToast = (message) => {
     shadow: true,
     delay: 100
   });
-};
 
+export const formatDecimals = (s, nr=appSettings.coinDecimals) => s
+  ? s.toLocaleString(
+      undefined,
+      { minimumFractionDigits: nr, maximumFractionDigits: nr },
+    )
+  : 0;
 export const format0Decimals = { minimumFractionDigits: 0, maximumFractionDigits: 0 };
 export const format2Decimals = { minimumFractionDigits: 0, maximumFractionDigits: 2 };
 export const format4Decimals = { minimumFractionDigits: 0, maximumFractionDigits: 4 };

@@ -1,88 +1,131 @@
 import React, { useContext } from 'react';
-import { Icon, Header, Overlay } from 'react-native-elements';
+import { Platform, StyleSheet, View } from 'react-native';
+import { Icon, Header } from 'react-native-elements';
+import WAValidator from 'multicoin-address-validator';
 import NavigationService from '../helpers/NavigationService';
 import ConcealTextInput from '../components/ccxTextInput';
 import ConcealButton from '../components/ccxButton';
 import { AppContext } from '../components/ContextProvider';
-import { maskAddress } from '../helpers/utils';
-import { AppColors } from '../constants/Colors';
-import {
-  Alert,
-  Text,
-  View,
-  FlatList,
-  StyleSheet,
-  Clipboard
-} from 'react-native';
+import { useClipboard, useFormInput, useFormValidation } from '../helpers/hooks';
 
-const EditAddress = (props) => {
-  const params = props.navigation.state.params;
 
-  const { actions, state } = useContext(AppContext);
-  const { addContact, setAppData } = actions;
-  const { layout, user } = state;
+const EditAddress = props => {
+  const { actions } = useContext(AppContext);
+  const { addContact } = actions;
+  const { navigation } = props;
+  const currentAddress = navigation.getParam('item', {});
 
-  isFormValid = () => {
-    return (state.appData.addressEntry.label && state.appData.addressEntry.address);
-  }
+  const { value: label, bind: bindLabel, setValue: setLabel } = useFormInput(currentAddress.label || '');
+  const { value: address, bind: bindAddress, setValue: setAddress } = useFormInput(currentAddress.address || '');
+  const { value: paymentID, bind: bindPaymentID, setValue: setPaymentID } = useFormInput(currentAddress.paymentID || '');
+
+  const [clipboard, setClipboard] = useClipboard();
+
+  const formValidation = currentAddress.address
+    ? (
+      label.length > 0 &&
+      WAValidator.validate(address, 'CCX') &&
+      (paymentID === '' || paymentID.length === 64) &&
+      !(label === currentAddress.label && address === currentAddress.address && paymentID === currentAddress.paymentID)
+    )
+    : (
+      label.length > 0 &&
+      WAValidator.validate(address, 'CCX') &&
+      (paymentID === '' || paymentID.length === 64)
+    );
+  const formValid = useFormValidation(formValidation);
 
   return (
     <View style={styles.pageWrapper}>
       <Header
-        placement="left"
         containerStyle={styles.appHeader}
-        leftComponent={<Icon
-          onPress={() => NavigationService.goBack()}
-          name='md-return-left'
-          type='ionicon'
-          color='white'
-          size={32}
-        />}
-        centerComponent={{ text: state.appData.addressEntry.headerText, style: { color: '#fff', fontSize: 20 } }}
+        leftComponent={
+          <Icon
+            onPress={() => NavigationService.goBack()}
+            name={Platform.OS === 'android' ? 'md-arrow-round-back' : 'ios-arrow-back'}
+            type="ionicon"
+            color="white"
+            underlayColor="transparent"
+            size={32}
+          />
+        }
+        centerComponent={{
+          text: currentAddress.address ? 'Edit Contact' : 'Add Contact',
+          style: { color: '#fff', fontSize: 20 },
+        }}
       />
       <View style={styles.addressWrapper}>
         <ConcealTextInput
-          placeholder='Enter Label for the address...'
+          {...bindLabel}
+          placeholder='Contact Label'
           containerStyle={styles.addrInput}
-          value={state.appData.addressEntry.label}
-          onChangeText={(text) => setAppData({ addressEntry: { label: text } })}
+          minLength={1}
+          rightIcon={
+            <Icon
+              onPress={() => setLabel(clipboard)}
+              name={Platform.OS === 'android' ? 'md-copy' : 'ios-copy'}
+              type="ionicon"
+              color="white"
+              underlayColor="transparent"
+              size={32}
+            />
+          }
         />
         <ConcealTextInput
-          placeholder='Enter the address...'
+          {...bindAddress}
+          placeholder='Address'
           containerStyle={styles.addrInput}
-          value={state.appData.addressEntry.address}
-          onChangeText={(text) => setAppData({ addressEntry: { address: text } })}
+          minLength={98}
+          maxLength={98}
+          rightIcon={
+            <Icon
+              onPress={() => setAddress(clipboard)}
+              name={Platform.OS === 'android' ? 'md-copy' : 'ios-copy'}
+              type="ionicon"
+              color="white"
+              underlayColor="transparent"
+              size={32}
+            />
+          }
         />
         <ConcealTextInput
-          placeholder='Enter the Payment id...'
+          {...bindPaymentID}
+          placeholder='Payment ID'
           containerStyle={styles.addrInput}
-          value={state.appData.addressEntry.paymentId}
-          onChangeText={(text) => setAppData({ addressEntry: { paymentId: text } })}
+          maxLength={64}
+          rightIcon={
+            <Icon
+              onPress={() => setPaymentID(clipboard)}
+              name={Platform.OS === 'android' ? 'md-copy' : 'ios-copy'}
+              type="ionicon"
+              color="white"
+              underlayColor="transparent"
+              size={32}
+            />
+          }
         />
       </View>
       <View style={styles.footer}>
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnLeft]}
-          disabled={!this.isFormValid()}
+          disabled={!formValid}
           onPress={() => {
-            addContact(
-              {
-                label: state.appData.addressEntry.label,
-                address: state.appData.addressEntry.address,
-                paymentID: state.appData.addressEntry.paymentId,
-                entryID: state.appData.addressEntry.entryId,
-                edit: state.appData.addressEntry.entryId !== null,
-              },
-              null,
-              params.callback
-            );
+            addContact({
+              label,
+              address,
+              paymentID,
+              entryID: currentAddress.entryID || null,
+              edit: !!(Object.keys(currentAddress).length > 0),
+            });
             NavigationService.goBack();
           }}
           text="SAVE"
         />
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnRight]}
-          onPress={() => NavigationService.navigate('Scanner', { path: ["addressEntry", "address"] })}
+          onPress={() =>
+            NavigationService.navigate('Scanner', { setLabel, setAddress, setPaymentID })
+          }
           text="SCAN QR"
         />
       </View>
@@ -150,15 +193,11 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 40,
     marginTop: 10,
-    color: '#FFFFFF',
     borderWidth: 0,
     borderRadius: 0,
     borderBottomWidth: 2,
     borderColor: '#FFA500',
     backgroundColor: 'rgba(0, 0, 0, 0)'
-  },
-  footerBtn: {
-    flex: 1,
   },
   footerBtnRight: {
     marginLeft: 5,
