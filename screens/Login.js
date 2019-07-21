@@ -27,7 +27,7 @@ const Login = () => {
   const { layout, userSettings } = state;
   const { formSubmitted } = layout;
 
-  const { value: email, bind: bindEmail } = useFormInput('');
+  const { value: email, bind: bindEmail } = useFormInput(global.username);
   const { value: password, bind: bindPassword } = useFormInput('');
   const { value: twoFACode, bind: bindTwoFACode } = useFormInput('');
 
