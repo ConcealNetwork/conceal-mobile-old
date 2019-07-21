@@ -1,105 +1,112 @@
 import React, { useContext } from 'react';
-import { Platform, StyleSheet, View } from 'react-native';
-import { Icon, Header } from 'react-native-elements';
-import WAValidator from 'multicoin-address-validator';
+import { Icon, Header, Overlay } from 'react-native-elements';
 import NavigationService from '../helpers/NavigationService';
 import ConcealTextInput from '../components/ccxTextInput';
 import ConcealButton from '../components/ccxButton';
 import { AppContext } from '../components/ContextProvider';
-import { useClipboard, useFormInput, useFormValidation } from '../helpers/hooks';
+import { maskAddress } from '../helpers/utils';
+import { AppColors } from '../constants/Colors';
+import {
+  Alert,
+  Text,
+  View,
+  FlatList,
+  StyleSheet,
+  Clipboard
+} from 'react-native';
 
+const EditAddress = () => {
+  const { actions, state } = useContext(AppContext);
+  const { addContact, setAppData } = actions;
+  const { layout, user } = state;
 
-const EditAddress = props => {
-  const { actions } = useContext(AppContext);
-  const { addContact } = actions;
-  const { navigation } = props;
-  const currentAddress = navigation.getParam('item', {});
+  readLabelromClipboard = async () => {
+    const clipboardContent = await Clipboard.getString();
+    setAppData({
+      addressEntry: {
+        label: clipboardContent
+      }
+    });
+  };
 
-  const { value: label, bind: bindLabel, setValue: setLabel } = useFormInput(currentAddress.label || '');
-  const { value: address, bind: bindAddress, setValue: setAddress } = useFormInput(currentAddress.address || '');
-  const { value: paymentID, bind: bindPaymentID, setValue: setPaymentID } = useFormInput(currentAddress.paymentID || '');
+  readAddressFromClipboard = async () => {
+    const clipboardContent = await Clipboard.getString();
+    setAppData({
+      addressEntry: {
+        address: clipboardContent
+      }
+    });
+  };
 
-  const [clipboard, setClipboard] = useClipboard();
+  readPaymentIdFromClipboard = async () => {
+    const clipboardContent = await Clipboard.getString();
+    setAppData({
+      addressEntry: {
+        paymentId: clipboardContent
+      }
+    });
+  };
 
-  const formValidation = currentAddress.address
-    ? (
-      label.length > 0 &&
-      WAValidator.validate(address, 'CCX') &&
-      (paymentID === '' || paymentID.length === 64) &&
-      !(label === currentAddress.label && address === currentAddress.address && paymentID === currentAddress.paymentID)
-    )
-    : (
-      label.length > 0 &&
-      WAValidator.validate(address, 'CCX') &&
-      (paymentID === '' || paymentID.length === 64)
-    );
-  const formValid = useFormValidation(formValidation);
+  isFormValid = () => {
+    return (state.appData.addressEntry.label && state.appData.addressEntry.address);
+  }
 
   return (
     <View style={styles.pageWrapper}>
       <Header
+        placement="left"
         containerStyle={styles.appHeader}
-        leftComponent={
-          <Icon
-            onPress={() => NavigationService.goBack()}
-            name={Platform.OS === 'android' ? 'md-arrow-round-back' : 'ios-arrow-back'}
-            type="ionicon"
-            color="white"
-            underlayColor="transparent"
-            size={32}
-          />
-        }
-        centerComponent={{
-          text: currentAddress.address ? 'Edit Contact' : 'Add Contact',
-          style: { color: '#fff', fontSize: 20 },
-        }}
+        leftComponent={<Icon
+          onPress={() => NavigationService.goBack()}
+          name='md-return-left'
+          type='ionicon'
+          color='white'
+          size={32}
+        />}
+        centerComponent={{ text: state.appData.addressEntry.headerText, style: { color: '#fff', fontSize: 20 } }}
       />
       <View style={styles.addressWrapper}>
         <ConcealTextInput
-          {...bindLabel}
-          placeholder='Contact Label'
+          placeholder='Enter Label for the address...'
           containerStyle={styles.addrInput}
-          minLength={1}
+          value={state.appData.addressEntry.label}
+          onChangeText={(text) => setAppData({ addressEntry: { label: text } })}
           rightIcon={
             <Icon
-              onPress={() => setLabel(clipboard)}
-              name={Platform.OS === 'android' ? 'md-copy' : 'ios-copy'}
-              type="ionicon"
-              color="white"
-              underlayColor="transparent"
+              onPress={() => this.readLabelromClipboard()}
+              name='md-copy'
+              type='ionicon'
+              color='white'
               size={32}
             />
           }
         />
         <ConcealTextInput
-          {...bindAddress}
-          placeholder='Address'
+          placeholder='Enter the address...'
           containerStyle={styles.addrInput}
-          minLength={98}
-          maxLength={98}
+          value={state.appData.addressEntry.address}
+          onChangeText={(text) => setAppData({ addressEntry: { address: text } })}
           rightIcon={
             <Icon
-              onPress={() => setAddress(clipboard)}
-              name={Platform.OS === 'android' ? 'md-copy' : 'ios-copy'}
-              type="ionicon"
-              color="white"
-              underlayColor="transparent"
+              onPress={() => this.readAddressFromClipboard()}
+              name='md-copy'
+              type='ionicon'
+              color='white'
               size={32}
             />
           }
         />
         <ConcealTextInput
-          {...bindPaymentID}
-          placeholder='Payment ID'
+          placeholder='Enter the Payment id...'
           containerStyle={styles.addrInput}
-          maxLength={64}
+          value={state.appData.addressEntry.paymentId}
+          onChangeText={(text) => setAppData({ addressEntry: { paymentId: text } })}
           rightIcon={
             <Icon
-              onPress={() => setPaymentID(clipboard)}
-              name={Platform.OS === 'android' ? 'md-copy' : 'ios-copy'}
-              type="ionicon"
-              color="white"
-              underlayColor="transparent"
+              onPress={() => this.readPaymentIdFromClipboard()}
+              name='md-copy'
+              type='ionicon'
+              color='white'
               size={32}
             />
           }
@@ -108,14 +115,14 @@ const EditAddress = props => {
       <View style={styles.footer}>
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnLeft]}
-          disabled={!formValid}
+          disabled={!this.isFormValid()}
           onPress={() => {
             addContact({
-              label,
-              address,
-              paymentID,
-              entryID: currentAddress.entryID || null,
-              edit: !!(Object.keys(currentAddress).length > 0),
+              label: state.appData.addressEntry.label,
+              address: state.appData.addressEntry.address,
+              paymentID: state.appData.addressEntry.paymentId,
+              entryID: state.appData.addressEntry.entryId,
+              edit: state.appData.addressEntry.entryId !== null
             });
             NavigationService.goBack();
           }}
@@ -123,9 +130,7 @@ const EditAddress = props => {
         />
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnRight]}
-          onPress={() =>
-            NavigationService.navigate('Scanner', { setLabel, setAddress, setPaymentID })
-          }
+          onPress={() => NavigationService.navigate('Scanner', { path: ["addressEntry", "address"] })}
           text="SCAN QR"
         />
       </View>
@@ -193,11 +198,15 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 40,
     marginTop: 10,
+    color: '#FFFFFF',
     borderWidth: 0,
     borderRadius: 0,
     borderBottomWidth: 2,
     borderColor: '#FFA500',
     backgroundColor: 'rgba(0, 0, 0, 0)'
+  },
+  footerBtn: {
+    flex: 1,
   },
   footerBtnRight: {
     marginLeft: 5,
