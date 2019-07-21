@@ -1,89 +1,89 @@
 import React, { useContext } from 'react';
 import { Icon, Header, ListItem } from 'react-native-elements';
-import { ScrollView, Text, View, StyleSheet, FlatList } from 'react-native';
-import { format0Decimals, format2Decimals, format4Decimals, format8Decimals } from '../helpers/utils';
+import {View, StyleSheet, FlatList, Platform} from 'react-native';
 import NavigationService from '../helpers/NavigationService';
-import { ActivityIndicator } from 'react-native';
 import { AppContext } from '../components/ContextProvider';
 import { AppColors } from '../constants/Colors';
-import { sprintf } from 'sprintf-js';
+import { formatDecimals } from '../helpers/utils';
+
 
 const Market = () => {
-  const { actions, state } = useContext(AppContext);
-  const { network, user, prices } = state;
-  const { logoutUser } = actions;
+  const { state } = useContext(AppContext);
+  const { prices } = state;
 
-  const list = [
+  const marketData = [
     {
-      value: sprintf('$ %s', prices.usd.toLocaleString(undefined, format4Decimals)),
+      value: `$ ${formatDecimals(prices.usd, 4)}`,
       title: 'CCX to USD',
       icon: 'logo-usd'
     },
     {
-      value: prices.btc.toLocaleString(undefined, format8Decimals),
+      value: formatDecimals(prices.btc, 8),
       title: 'CCX to BTC',
       icon: 'logo-bitcoin'
     },
     {
-      value: sprintf('$ %s', prices.usd_market_cap.toLocaleString(undefined, format0Decimals)),
+      value: `$ ${formatDecimals(prices.usd_market_cap, 2)}`,
       title: 'Marketcap (USD)',
       icon: 'md-cash'
     },
     {
-      value: sprintf('$ %s', prices.usd_24h_vol.toLocaleString(undefined, format0Decimals)),
+      value: `$ ${formatDecimals(prices.usd_24h_vol, 2)}`,
       title: '24h Volume (USD)',
       icon: 'md-rocket'
     },
     {
-      value: sprintf('%s %%', prices.btc_24h_change.toLocaleString(undefined, format2Decimals)),
+      value: `${formatDecimals(prices.btc_24h_change, 2)}%`,
       title: '24h Change (BTC)',
       icon: 'md-pricetag'
     },
     {
-      value: sprintf('%s %%', prices.usd_24h_change.toLocaleString(undefined, format2Decimals)),
+      value: `${formatDecimals(prices.usd_24h_change, 2)}%`,
       title: '24h Change (USD)',
       icon: 'md-pricetag'
     }
   ];
 
-  // key extractor for the list
-  keyExtractor = (item, index) => index.toString();
-
-  renderItem = ({ item }) => (
+  const renderItem = ({ item }) => (
     <ListItem
-      title={item.value}
-      subtitle={item.title}
-      titleStyle={styles.settingsText}
-      subtitleStyle={styles.settingsLabel}
-      containerStyle={styles.settingsItem}
-      leftIcon={<Icon
-        name={item.icon}
-        type='ionicon'
-        color='white'
-        size={26}
-      />}
+      title={item.title}
+      subtitle={item.value}
+      titleStyle={styles.marketTitle}
+      subtitleStyle={styles.marketLabel}
+      containerStyle={styles.marketItem}
+      leftIcon={
+        <Icon
+          name={item.icon}
+          type="ionicon"
+          color="white"
+          size={26}
+          fixedWidth
+        />
+      }
     />
   );
 
   return (
     <View style={styles.pageWrapper}>
       <Header
-        placement="left"
         containerStyle={styles.appHeader}
-        leftComponent={<Icon
-          onPress={() => NavigationService.goBack()}
-          name='md-return-left'
-          type='ionicon'
-          color='white'
-          size={32}
-        />}
+        leftComponent={
+          <Icon
+            onPress={() => NavigationService.goBack()}
+            name={Platform.OS === 'android' ? 'md-arrow-round-back' : 'ios-arrow-back'}
+            type="ionicon"
+            color="white"
+            underlayColor="transparent"
+            size={32}
+          />
+        }
         centerComponent={{ text: 'Market Data', style: { color: '#fff', fontSize: 20 } }}
       />
       <FlatList
-        data={list}
-        style={styles.settingsList}
-        renderItem={this.renderItem}
-        keyExtractor={this.keyExtractor}
+        data={marketData}
+        style={styles.marketList}
+        renderItem={renderItem}
+        keyExtractor={(item, index) => index.toString()}
       />
     </View>
   )
@@ -92,24 +92,30 @@ const Market = () => {
 const styles = StyleSheet.create({
   pageWrapper: {
     flex: 1,
-    backgroundColor: 'rgb(40, 45, 49)'
+    backgroundColor: 'rgb(40, 45, 49)',
   },
   appHeader: {
     borderBottomWidth: 1,
     backgroundColor: '#212529',
-    borderBottomColor: '#343a40'
+    borderBottomColor: '#343a40',
   },
-  settingsLabel: {
-    color: AppColors.concealOrange
+  marketTitle: {
+    fontSize: 11,
+    color: AppColors.concealOrange,
   },
-  settingsText: {
-    color: AppColors.concealTextColor
+  marketLabel: {
+    fontSize: 18,
+    color: AppColors.concealTextColor,
   },
-  settingsList: {
+  marketText: {
+    fontSize: 14,
+    color: AppColors.concealTextColor,
+  },
+  marketList: {
     margin: 10,
-    backgroundColor: AppColors.concealBackground
+    backgroundColor: AppColors.concealBackground,
   },
-  settingsItem: {
+  marketItem: {
     backgroundColor: '#212529',
     borderWidth: 0,
     borderBottomWidth: 1,

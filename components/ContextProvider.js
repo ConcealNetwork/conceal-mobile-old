@@ -372,7 +372,7 @@ const AppContextProvider = props => {
     logger.log('GETTING BLOCKCHAIN HEIGHT...');
     Api.getBlockchainHeight()
       .then(res => dispatch({ type: 'UPDATE_BLOCKCHAIN_HEIGHT', blockchainHeight: res.message.height }))
-      .catch(err => { message = `ERROR ${err}` })
+      .catch(err => logger.log(`ERROR ${err}`, 'error'));
   };
 
   const getMarketPrices = () => {
@@ -380,10 +380,8 @@ const AppContextProvider = props => {
     const { markets } = state;
     Object.keys(markets).forEach(market => {
       Api.getMarketPrices(markets[market].apiURL)
-        .then(res => {
-          dispatch({ type: 'UPDATE_MARKET', market, marketData: res })
-        })
-        .catch(err => { message = `ERROR ${err}` })
+        .then(res => dispatch({ type: 'UPDATE_MARKET', market, marketData: res }))
+        .catch(err => logger.log(`ERROR ${err}`, 'error'));
     });
   };
 
@@ -392,7 +390,7 @@ const AppContextProvider = props => {
     const { appSettings } = state;
     Api.getPrices(appSettings.coingeckoAPI)
       .then(res => dispatch({ type: 'UPDATE_PRICES', pricesData: res }))
-      .catch(err => { message = `ERROR ${err}` })
+      .catch(err => logger.log(`ERROR ${err}`, 'error'));
   };
 
   const sendPayment = (wallet, address, paymentID, amount, aMessage, password) => {

@@ -250,16 +250,7 @@ const useAppState = () => {
           ...state,
           prices: {
             ...state.prices,
-            ...pricesData.conceal
-          },
-        };
-        break;
-      case 'UPDATE_MARKET_DATA':
-        result = {
-          ...state,
-          marketData: {
-            ...state.marketData,
-            ...action.marketData,
+            ...pricesData.conceal,
           },
         };
         break;

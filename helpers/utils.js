@@ -76,6 +76,12 @@ export const showSuccessToast = message =>
     delay: 100
   });
 
+export const formatDecimals = (s, nr) => s
+  ? s.toLocaleString(
+      undefined,
+      { minimumFractionDigits: nr, maximumFractionDigits: nr },
+    )
+  : '';
 export const format0Decimals = { minimumFractionDigits: 0, maximumFractionDigits: 0 };
 export const format2Decimals = { minimumFractionDigits: 0, maximumFractionDigits: 2 };
 export const format4Decimals = { minimumFractionDigits: 0, maximumFractionDigits: 4 };
