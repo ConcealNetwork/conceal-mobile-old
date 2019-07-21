@@ -1,16 +1,17 @@
 import React, { useContext } from 'react';
+import {
+  Alert,
+  FlatList,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { Icon, Header } from 'react-native-elements';
 import NavigationService from '../helpers/NavigationService';
 import ConcealButton from '../components/ccxButton';
 import { AppContext } from '../components/ContextProvider';
 import { maskAddress } from '../helpers/utils';
-import {
-  Alert,
-  Text,
-  View,
-  FlatList,
-  StyleSheet,
-} from 'react-native';
 
 
 const AddressBook = () => {
@@ -21,23 +22,28 @@ const AddressBook = () => {
   return (
     <View style={styles.pageWrapper}>
       <Header
-        placement="left"
         containerStyle={styles.appHeader}
-        leftComponent={<Icon
-          onPress={() => NavigationService.goBack()}
-          name="md-return-left"
-          type="ionicon"
-          color="white"
-          size={32}
-        />}
+        leftComponent={
+          <Icon
+            onPress={() => NavigationService.goBack()}
+            name={Platform.OS === 'android' ? 'md-arrow-round-back' : 'ios-arrow-back'}
+            type="ionicon"
+            color="white"
+            underlayColor="transparent"
+            size={32}
+          />
+        }
         centerComponent={{ text: 'Address Book', style: { color: '#fff', fontSize: 20 } }}
-        rightComponent={<Icon
-          onPress={() => NavigationService.navigate('EditAddress')}
-          name="md-add-circle-outline"
-          type="ionicon"
-          color="white"
-          size={32}
-        />}
+        rightComponent={
+          <Icon
+            onPress={() => NavigationService.navigate('EditAddress')}
+            name={Platform.OS === 'android' ? 'md-add-circle-outline' : 'ios-add-circle-outline'}
+            type="ionicon"
+            color="white"
+            underlayColor="transparent"
+            size={32}
+          />
+        }
       />
       <View style={styles.walletsWrapper}>
         {layout.userLoaded && user.addressBook.length === 0
@@ -54,7 +60,10 @@ const AddressBook = () => {
                   <View>
                     <Text style={styles.addressLabel}>{item.label}</Text>
                     <Text style={styles.address}>Address: {maskAddress(item.address)}</Text>
-                    {item.paymentID ? (<Text style={styles.data}>Payment ID: {item.paymentID}</Text>) : null}
+                    {item.paymentID
+                      ? (<Text style={styles.data}>Payment ID: {maskAddress(item.paymentID)}</Text>)
+                      : null
+                    }
                   </View>
                   <View style={styles.walletFooter}>
                     <ConcealButton

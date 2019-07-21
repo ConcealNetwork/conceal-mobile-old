@@ -416,6 +416,8 @@ const AppContextProvider = props => {
       });
   };
 
+  const updateCameraPermission = grant => dispatch({ type: 'UPDATE_CAMERA_PERMISSION', grant });
+
   const setAppData = (appData) => {
     logger.log('SETTING APP DATA...');
     dispatch({ type: 'SET_APP_DATA', appData });
@@ -445,7 +447,8 @@ const AppContextProvider = props => {
     setDefaultWallet,
     getWalletKeys,
     setAppData,
-    getUsername
+    getUsername,
+    updateCameraPermission,
   };
 
   useEffect(() => {

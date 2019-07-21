@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { Platform, StyleSheet, View } from 'react-native';
 import { Icon, Header } from 'react-native-elements';
 import WAValidator from 'multicoin-address-validator';
 import NavigationService from '../helpers/NavigationService';
@@ -38,18 +38,21 @@ const EditAddress = props => {
   return (
     <View style={styles.pageWrapper}>
       <Header
-        placement="left"
         containerStyle={styles.appHeader}
         leftComponent={
           <Icon
             onPress={() => NavigationService.goBack()}
-            name="md-return-left"
+            name={Platform.OS === 'android' ? 'md-arrow-round-back' : 'ios-arrow-back'}
             type="ionicon"
             color="white"
+            underlayColor="transparent"
             size={32}
           />
         }
-        centerComponent={{ text: currentAddress.address, style: { color: '#fff', fontSize: 20 } }}
+        centerComponent={{
+          text: currentAddress.address ? 'Edit Contact' : 'Add Contact',
+          style: { color: '#fff', fontSize: 20 },
+        }}
       />
       <View style={styles.addressWrapper}>
         <ConcealTextInput
@@ -60,9 +63,10 @@ const EditAddress = props => {
           rightIcon={
             <Icon
               onPress={() => setLabel(clipboard)}
-              name="md-copy"
+              name={Platform.OS === 'android' ? 'md-copy' : 'ios-copy'}
               type="ionicon"
               color="white"
+              underlayColor="transparent"
               size={32}
             />
           }
@@ -76,9 +80,10 @@ const EditAddress = props => {
           rightIcon={
             <Icon
               onPress={() => setAddress(clipboard)}
-              name="md-copy"
+              name={Platform.OS === 'android' ? 'md-copy' : 'ios-copy'}
               type="ionicon"
               color="white"
+              underlayColor="transparent"
               size={32}
             />
           }
@@ -91,9 +96,10 @@ const EditAddress = props => {
           rightIcon={
             <Icon
               onPress={() => setPaymentID(clipboard)}
-              name="md-copy"
+              name={Platform.OS === 'android' ? 'md-copy' : 'ios-copy'}
               type="ionicon"
               color="white"
+              underlayColor="transparent"
               size={32}
             />
           }
@@ -117,7 +123,9 @@ const EditAddress = props => {
         />
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnRight]}
-          onPress={() => NavigationService.navigate('Scanner', { path: ['addressEntry', 'address'] })}
+          onPress={() =>
+            NavigationService.navigate('Scanner', { setLabel, setAddress, setPaymentID })
+          }
           text="SCAN QR"
         />
       </View>

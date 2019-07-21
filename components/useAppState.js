@@ -18,7 +18,7 @@ const useAppState = () => {
       redirectToReferrer: false,
       sendTxResponse: null,
       userLoaded: false,
-      walletsLoaded: false
+      walletsLoaded: false,
     },
     markets: {
       stex: {
@@ -45,7 +45,8 @@ const useAppState = () => {
       addressBook: [],
       loggedIn: false,
       userName: '',
-      password: ''
+      password: '',
+      hasCameraPermission: false,
     },
     userSettings: {
       minimumPasswordLength: 8,
@@ -216,6 +217,15 @@ const useAppState = () => {
           layout: {
             ...state.layout,
             sendTxResponse: action.sendTxResponse,
+          },
+        };
+        break;
+      case 'UPDATE_CAMERA_PERMISSION':
+        result = {
+          ...state,
+          user: {
+            ...state.user,
+            hasCameraPermission: action.grant,
           },
         };
         break;

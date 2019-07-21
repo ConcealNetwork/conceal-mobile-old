@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Icon, Header, ListItem } from 'react-native-elements';
-import {View, StyleSheet, FlatList, Platform} from 'react-native';
+import { FlatList, Platform, StyleSheet, View } from 'react-native';
 import NavigationService from '../helpers/NavigationService';
 import { AppContext } from '../components/ContextProvider';
 import { AppColors } from '../constants/Colors';
@@ -15,32 +15,32 @@ const Market = () => {
     {
       value: `$ ${formatDecimals(prices.usd, 4)}`,
       title: 'CCX to USD',
-      icon: 'logo-usd'
+      icon: 'logo-usd',
     },
     {
       value: formatDecimals(prices.btc, 8),
       title: 'CCX to BTC',
-      icon: 'logo-bitcoin'
+      icon: 'logo-bitcoin',
     },
     {
       value: `$ ${formatDecimals(prices.usd_market_cap, 2)}`,
       title: 'Marketcap (USD)',
-      icon: 'md-cash'
+      icon: Platform.OS === 'android' ? 'md-cash' : 'ios-cash',
     },
     {
       value: `$ ${formatDecimals(prices.usd_24h_vol, 2)}`,
       title: '24h Volume (USD)',
-      icon: 'md-rocket'
+      icon: Platform.OS === 'android' ? 'md-rocket' : 'ios-rocket',
     },
     {
       value: `${formatDecimals(prices.btc_24h_change, 2)}%`,
       title: '24h Change (BTC)',
-      icon: 'md-pricetag'
+      icon: Platform.OS === 'android' ? 'md-pricetag' : 'ios-pricetag',
     },
     {
       value: `${formatDecimals(prices.usd_24h_change, 2)}%`,
       title: '24h Change (USD)',
-      icon: 'md-pricetag'
+      icon: Platform.OS === 'android' ? 'md-pricetag' : 'ios-pricetag',
     }
   ];
 
