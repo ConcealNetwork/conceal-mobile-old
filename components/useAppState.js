@@ -39,7 +39,11 @@ const useAppState = () => {
     },
     prices: {
       usd: 0,
-      btc: 0
+      btc: 0,
+      usd_24h_vol: 0,
+      usd_market_cap: 0,
+      btc_24h_change: 0,
+      usd_24h_change: 0
     },
     user: {
       addressBook: [],
