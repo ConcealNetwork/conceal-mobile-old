@@ -120,7 +120,7 @@ const Login = () => {
           </SlidingUpPanel>
         </View>
       </TouchableWithoutFeedback>
-    </View >
+    </View>
   )
 };
 

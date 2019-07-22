@@ -244,7 +244,7 @@ const AppContextProvider = props => {
 
   const getWallets = () => {
     logger.log('GETTING WALLETS...');
-    let message;
+    let message = null;
     let msgType;
     Api.getWallets()
       .then(res => {
@@ -270,14 +270,11 @@ const AppContextProvider = props => {
             !wallets[address] && dispatch({ type: 'DELETE_WALLET', address })
           );
           dispatch({ type: 'UPDATE_WALLETS', wallets });
-        } else {
-          message = res.message;
-          if (Object.keys(updatedState.current.wallets).length > 0) {
-            dispatch({ type: 'DELETE_WALLETS' });
-          }
         }
       })
-      .catch(err => { message = `ERROR ${err}` })
+      .catch(err => {
+        message = `ERROR ${err}`
+      })
       .finally(() => {
         dispatch({ type: 'WALLETS_LOADED' });
         dispatch({ type: 'APP_UPDATED' });

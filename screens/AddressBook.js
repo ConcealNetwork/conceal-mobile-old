@@ -81,11 +81,13 @@ const AddressBook = () => {
       />
       <View style={styles.walletsWrapper}>
         {layout.userLoaded && user.addressBook.length === 0
-          ? <Text>
-            You have no contacts saved in your address book.
-            Add one by clicking on the button or when you are sending funds.
+          ? (<View style={styles.emptyAddressBookWrapper}>
+            <Text style={styles.emptyAddressBookText}>
+              You have no contacts saved in your address book.
+              Add one by clicking on the button or when you are sending funds.
             </Text>
-          : <FlatList
+          </View>)
+          : (<FlatList
             data={user.addressBook}
             showsVerticalScrollIndicator={false}
             keyExtractor={item => item.entryID.toString()}
@@ -134,7 +136,7 @@ const AddressBook = () => {
                 </View>
               </View>
             }
-          />
+          />)
         }
       </View>
     </View>
@@ -224,7 +226,18 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#FFFFFF'
-  }
+  },
+  emptyAddressBookWrapper: {
+    flex: 1,
+    padding: 20,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  emptyAddressBookText: {
+    fontSize: 18,
+    color: '#FFFFFF',
+    textAlign: 'center'
+  },
 });
 
 export default AddressBook;

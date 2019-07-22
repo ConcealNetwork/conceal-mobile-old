@@ -38,7 +38,7 @@ const Wallets = () => {
     }, []);
 
   return (
-    <View>
+    <View style={styles.pageWrapper}>
       <Header
         placement="left"
         containerStyle={styles.appHeader}
@@ -60,70 +60,77 @@ const Wallets = () => {
           />) : null}
       />
       <View style={styles.walletsWrapper}>
-        <FlatList
-          style={styles.flatList}
-          data={walletsList}
-          showsVerticalScrollIndicator={false}
-          keyExtractor={item => item.address}
-          renderItem={({ item }) =>
-            <View style={(item.addr === appData.common.selectedWallet) ? [styles.flatview, styles.walletSelected] : styles.flatview}>
-              <TouchableOpacity onPress={() => switchWallet(item.address)}>
-                <View>
-                  <Text style={styles.address}>{maskAddress(item.address)}</Text>
-                  <Text style={styles.balance}>Balance: {item.total.toLocaleString(undefined, format4Decimals)} CCX</Text>
-                  <Text style={(item.locked && item.locked > 0) ? [styles.data, styles.lockedText] : styles.data}>Locked: {item.locked.toLocaleString(undefined, format4Decimals)} CCX</Text>
-                  <Text style={styles.data}>{item.status}</Text>
-                  <View style={styles.selectedWrapper}>
-                    <CheckBox
-                      center
-                      size={36}
-                      checkedIcon='dot-circle-o'
-                      uncheckedIcon='circle-o'
-                      checked={item.default}
-                      onPress={() => setDefaultWallet(item.address)}
-                    />
+        {layout.userLoaded && walletsList.length === 0
+          ? (<View style={styles.emptyWalletsWrapper}>
+            <Text style={styles.emptyWalletsText}>
+              You have no wallets currently. Please create a wallet by clicking on the button, to start using Conceal Mobile.
+            </Text>
+          </View>)
+          : (<FlatList
+            style={styles.flatList}
+            data={walletsList}
+            showsVerticalScrollIndicator={false}
+            keyExtractor={item => item.address}
+            renderItem={({ item }) =>
+              <View style={(item.addr === appData.common.selectedWallet) ? [styles.flatview, styles.walletSelected] : styles.flatview}>
+                <TouchableOpacity onPress={() => switchWallet(item.address)}>
+                  <View>
+                    <Text style={styles.address}>{maskAddress(item.address)}</Text>
+                    <Text style={styles.balance}>Balance: {item.total.toLocaleString(undefined, format4Decimals)} CCX</Text>
+                    <Text style={(item.locked && item.locked > 0) ? [styles.data, styles.lockedText] : styles.data}>Locked: {item.locked.toLocaleString(undefined, format4Decimals)} CCX</Text>
+                    <Text style={styles.data}>{item.status}</Text>
+                    <View style={styles.selectedWrapper}>
+                      <CheckBox
+                        center
+                        size={36}
+                        checkedIcon='dot-circle-o'
+                        uncheckedIcon='circle-o'
+                        checked={item.default}
+                        onPress={() => setDefaultWallet(item.address)}
+                      />
+                    </View>
                   </View>
-                </View>
-              </TouchableOpacity>
-              <View style={styles.walletFooter}>
-                <ConcealButton
-                  style={[!(walletsLoaded && (item.total > 0)) ? styles.footerBtn : styles.footerBtnDisabled, styles.footerBtnLeft]}
-                  disabled={(walletsLoaded && (item.total > 0))}
-                  buttonStyle={styles.btnStyle}
-                  onPress={() => {
-                    Alert.alert(
-                      'Delete Wallet',
-                      'You are about to delete this wallet PERMANENTLY! Do you really wish to proceed?',
-                      [
-                        { text: 'OK', onPress: () => deleteWallet(item.address) },
-                        { text: 'Cancel', style: 'cancel' },
-                      ],
-                      { cancelable: false },
-                    );
-                  }}
-                  text="DELETE"
-                />
+                </TouchableOpacity>
+                <View style={styles.walletFooter}>
+                  <ConcealButton
+                    style={[!(walletsLoaded && (item.total > 0)) ? styles.footerBtn : styles.footerBtnDisabled, styles.footerBtnLeft]}
+                    disabled={(walletsLoaded && (item.total > 0))}
+                    buttonStyle={styles.btnStyle}
+                    onPress={() => {
+                      Alert.alert(
+                        'Delete Wallet',
+                        'You are about to delete this wallet PERMANENTLY! Do you really wish to proceed?',
+                        [
+                          { text: 'OK', onPress: () => deleteWallet(item.address) },
+                          { text: 'Cancel', style: 'cancel' },
+                        ],
+                        { cancelable: false },
+                      );
+                    }}
+                    text="DELETE"
+                  />
 
-                <ConcealButton
-                  style={[styles.footerBtn, styles.footerBtnRight]}
-                  buttonStyle={styles.btnStyle}
-                  onPress={() => {
-                    Alert.alert(
-                      'Export Keys',
-                      'You are about to export the keys. Do you really wish to proceed?',
-                      [
-                        { text: 'OK', onPress: () => getWalletKeys(item.address, true) },
-                        { text: 'Cancel', style: 'cancel' },
-                      ],
-                      { cancelable: false },
-                    );
-                  }}
-                  text="EXPORT"
-                />
+                  <ConcealButton
+                    style={[styles.footerBtn, styles.footerBtnRight]}
+                    buttonStyle={styles.btnStyle}
+                    onPress={() => {
+                      Alert.alert(
+                        'Export Keys',
+                        'You are about to export the keys. Do you really wish to proceed?',
+                        [
+                          { text: 'OK', onPress: () => getWalletKeys(item.address, true) },
+                          { text: 'Cancel', style: 'cancel' },
+                        ],
+                        { cancelable: false },
+                      );
+                    }}
+                    text="EXPORT"
+                  />
+                </View>
               </View>
-            </View>
-          }
-        />
+            }
+          />)
+        }
       </View>
     </View>
   );
@@ -179,6 +186,7 @@ const styles = StyleSheet.create({
     margin: 5
   },
   walletsWrapper: {
+    flex: 1,
     padding: 10
   },
   walletFooter: {
@@ -221,6 +229,17 @@ const styles = StyleSheet.create({
   },
   lockedText: {
     color: '#FF0000'
+  },
+  emptyWalletsWrapper: {
+    flex: 1,
+    padding: 20,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  emptyWalletsText: {
+    fontSize: 18,
+    color: '#FFFFFF',
+    textAlign: 'center'
   }
 });
 

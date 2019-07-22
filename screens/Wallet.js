@@ -17,10 +17,9 @@ import {
   format8Decimals
 } from '../helpers/utils';
 
-
 const Wallet = () => {
   const { state, actions } = useContext(AppContext);
-  const { setAppData } = actions;
+  const { setAppData, createWallet } = actions;
   const { appSettings, layout, prices, user, wallets, appData } = state;
   const currWallet = wallets[appData.common.selectedWallet];
   var transactions = [];
@@ -36,8 +35,8 @@ const Wallet = () => {
         containerStyle={styles.appHeader}
         centerComponent={{ text: 'Selected Wallet', style: { color: '#fff', fontSize: 20 } }}
       />
-      {currWallet &&
-        <>
+      {currWallet
+        ? (<View style={styles.walletWrapper}>
           <View style={styles.accountOverview}>
             <Text style={styles.worthDollars}>
               $ {(prices.usd * currWallet.balance).toLocaleString(undefined, format4Decimals)}
@@ -150,7 +149,17 @@ const Wallet = () => {
               text="RECEIVE"
             />
           </View>
-        </>
+        </View>) :
+        (<View style={styles.emptyWalletWrapper}>
+          <Text style={styles.emptyWalletText}>
+            You have no active wallets. Please create a one to start using Conceal Mobile
+          </Text>
+          <ConcealButton
+            style={styles.crateWalletBtn}
+            onPress={() => createWallet()}
+            text="CREATE WALLET"
+          />
+        </View>)
       }
     </View>
   );
@@ -302,13 +311,32 @@ const styles = StyleSheet.create({
     paddingTop: 2,
   },
   emptyTransactionsText: {
-    fontSize: 16,
+    fontSize: 18,
     marginTop: 20,
     color: '#FFFFFF',
     textAlign: 'center'
   },
   lockedText: {
     color: '#FF0000'
+  },
+  emptyWalletWrapper: {
+    flex: 1,
+    padding: 20,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  emptyWalletText: {
+    fontSize: 18,
+    color: '#FFFFFF',
+    textAlign: 'center'
+  },
+  crateWalletBtn: {
+    marginTop: 30,
+    paddingLeft: 15,
+    paddingRight: 15
+  },
+  walletWrapper: {
+    flex: 1
   }
 });
 
