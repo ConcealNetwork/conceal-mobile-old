@@ -148,7 +148,7 @@ export default class ApiHelper {
       'Content-Type': 'application/json',
     };
 
-    // alsways set the installationId
+    // always set the installationId
     headers.uuid = Expo.Constants.installationId;
 
     const f = (url, { headers, ...options }) =>

@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
     top: 70,
   },
   transactionsWrapper: {
-    top: 260,
+    top: 180,
     left: 10,
     right: 10,
     bottom: 70,
