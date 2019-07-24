@@ -66,7 +66,7 @@ const SignUp = props => {
       <View style={styles.footer}>
         <ConcealButton
           onPress={() => signUpUser({ userName, email, password, id: 'signUpForm' })}
-          text={formSubmitted ? '' : 'Sign Up'}
+          text="Sign Up"
           accessibilityLabel="Sign Up Button"
           disabled={formSubmitted || !formValid}
           style={[styles.footerBtn, styles.footerBtnLeft]}
@@ -77,6 +77,7 @@ const SignUp = props => {
         <ConcealButton
           onPress={() => hidePanel()}
           text="Cancel"
+          disabled={formSubmitted}
           style={[styles.footerBtn, styles.footerBtnRight]}
           accessibilityLabel="Cancel Button"
         />

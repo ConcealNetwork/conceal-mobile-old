@@ -1,9 +1,9 @@
 import React, { Component, useContext } from 'react';
 import { AppContext } from '../components/ContextProvider';
 import {
-  StyleSheet,
   View,
   Modal,
+  StyleSheet,
   ActivityIndicator
 } from 'react-native';
 
@@ -12,17 +12,20 @@ const ConcealLoader = props => {
   const { layout } = state;
   const { formSubmitted } = layout;
 
+  // set the flag if the content is loading or if we are waiting for form submission
+  const isLoading = formSubmitted || (state.user.loggedIn && (!state.layout.userLoaded || !state.layout.walletsLoaded));
+
   return (
     <Modal
       transparent={true}
       animationType={'none'}
-      visible={formSubmitted}
+      visible={isLoading}
       onRequestClose={() => { }}>
       <View style={styles.modalBackground}>
         <View style={styles.activityIndicatorWrapper}>
           <ActivityIndicator
             size="large"
-            animating={formSubmitted}
+            animating={isLoading}
           />
         </View>
       </View>

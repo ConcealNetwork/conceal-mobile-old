@@ -1,11 +1,10 @@
 import React, { useContext, useEffect } from 'react';
-import { ActivityIndicator, StatusBar, View } from 'react-native';
-
+import { StatusBar, View, Text, StyleSheet } from 'react-native';
 import { AppContext } from '../components/ContextProvider';
 import AuthHelper from '../helpers/AuthHelper';
 import NavigationService from '../helpers/NavigationService';
 import { logger } from '../helpers/Logger';
-import styles from '../components/Style';
+import AppStyles from '../components/Style';
 
 
 const AuthLoading = () => {
@@ -22,13 +21,10 @@ const AuthLoading = () => {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <View>
-        <ActivityIndicator />
-        <StatusBar barStyle="default" />
-      </View>
+    <View style={[AppStyles.appContainer, styles.textWrapper]}>
+      <Text style={styles.loadingText}>Loading, please wait...</Text>
     </View>
-)
+  )
 };
 
 const ForwardRef = React.forwardRef((props, ref) => (
@@ -37,8 +33,19 @@ const ForwardRef = React.forwardRef((props, ref) => (
   </AppContext.Consumer>
 ));
 
+const styles = StyleSheet.create({
+  textWrapper: {
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  loadingText: {
+    fontSize: 18,
+    color: "#FFFFFF"
+  }
+});
+
 export default ({ navigation }) => (
-  <View style={styles.container}>
+  <View style={AppStyles.appContainer}>
     <ForwardRef navigation={navigation} />
   </View>
 )
