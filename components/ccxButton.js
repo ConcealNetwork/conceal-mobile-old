@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'react-native-elements';
 import { AppColors } from '../constants/Colors';
-import { StyleSheet } from 'react-native';
+import EStyleSheet from 'react-native-extended-stylesheet';
 
 export default function ConcealButton({
   disabledTitleStyle,
@@ -76,9 +76,9 @@ export default function ConcealButton({
   );
 }
 
-const styles = StyleSheet.create({
+const styles = EStyleSheet.create({
   button: {
-    height: 45,
+    height: '45rem',
     borderWidth: 1,
     borderColor: AppColors.concealOrange,
     backgroundColor: "transparent"
@@ -88,7 +88,8 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent"
   },
   btnText: {
-    color: "#AAA"
+    color: "#AAA",
+    fontSize: '14rem'
   },
   btnDisabledText: {
     color: "#666"

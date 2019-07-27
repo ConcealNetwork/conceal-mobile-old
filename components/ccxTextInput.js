@@ -1,7 +1,7 @@
 import React from 'react';
 import { Input } from 'react-native-elements';
 import { AppColors } from '../constants/Colors';
-import { StyleSheet } from 'react-native';
+import EStyleSheet from 'react-native-extended-stylesheet';
 
 export default function ConcealTextInput({
   onChangeText,
@@ -79,13 +79,13 @@ export default function ConcealTextInput({
   );
 }
 
-const styles = StyleSheet.create({
+const styles = EStyleSheet.create({
   Container: {
     width: '100%',
-    height: 40,
-    marginTop: 5,
+    height: '40rem',
+    marginTop: '5rem',
     borderWidth: 0,
-    marginBottom: 5
+    marginBottom: '5rem'
   },
   InputContainer: {
     borderWidth: 0,
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgb(55, 55, 55)'
   },
   Input: {
-    fontSize: 20,
+    fontSize: '20rem',
     color: 'rgb(255, 255, 255)'
   },
   label: {

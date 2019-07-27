@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import ConcealTextInput from '../components/ccxTextInput';
 import ConcealButton from '../components/ccxButton';
+import EStyleSheet from 'react-native-extended-stylesheet';
 
 import { Image } from 'react-native-elements';
 import SlidingUpPanel from 'rn-sliding-up-panel';
@@ -11,13 +12,13 @@ import SignUp from './SignUp';
 import ResetPassword from './ResetPassword';
 import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
+import { getAspectRatio } from '../helpers/utils';
 import {
   View,
   Text,
   Animated,
   Keyboard,
   TextInput,
-  StyleSheet,
   TouchableOpacity,
   TouchableWithoutFeedback
 } from 'react-native';
@@ -49,7 +50,7 @@ const Login = () => {
         <View style={AppStyles.loginView}>
           <Image
             source={require('../assets/images/icon.png')}
-            style={{ width: 150, height: 150 }}
+            style={{ width: 150 * getAspectRatio(), height: 150 * getAspectRatio() }}
           />
           <Text style={AppStyles.title}>SIGN IN</Text>
           <ConcealTextInput
@@ -124,10 +125,10 @@ const Login = () => {
   )
 };
 
-const styles = StyleSheet.create({
+const styles = EStyleSheet.create({
   footer: {
     flex: 1,
-    marginTop: 20,
+    marginTop: '20rem',
     alignItems: 'stretch',
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -136,15 +137,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   footerBtnRight: {
-    marginLeft: 5,
+    marginLeft: '5rem',
   },
   footerBtnLeft: {
-    marginRight: 5,
+    marginRight: '5rem',
   },
   forgotText: {
     textAlign: 'center',
     color: AppColors.concealOrange,
-    fontSize: 16
+    fontSize: '16rem'
   }
 });
 
