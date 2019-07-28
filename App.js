@@ -39,6 +39,9 @@ const App = props => {
       }),
       AsyncStorage.getItem('@conceal:id_username').then(res => {
         global.username = res;
+      }),
+      AsyncStorage.getItem('@conceal:id_rememberme').then(res => {
+        global.rememberme = (res === "TRUE");
       })
     ]);
   };

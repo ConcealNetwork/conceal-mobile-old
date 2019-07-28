@@ -73,7 +73,7 @@ const AddressBook = () => {
                 entryId: null
               }
             });
-            NavigationService.navigate('EditAddress');
+            NavigationService.navigate('EditAddress', { callback: null });
           }}
           name='md-add-circle-outline'
           type='ionicon'
