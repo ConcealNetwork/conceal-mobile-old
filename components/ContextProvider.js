@@ -24,7 +24,7 @@ const AppContextProvider = props => {
     let message;
     let msgType;
     dispatch({ type: 'FORM_SUBMITTED', value: true });
-    Auth.setRememberme(options.rememberMe);
+    Auth.setRememberme(options.rememberMe ? "TRUE" : "FALSE");
     if (options.rememberMe) {
       Auth.setUsername(options.email);
     } else {

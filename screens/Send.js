@@ -195,7 +195,7 @@ const SendScreen = () => {
           }}
           rightIcon={
             <Icon
-              onPress={() => setAppData({ sendScreen: { toAmount: (parseFloat(currWallet.balance) - 0.0001).toLocaleString(undefined, format4Decimals) } })}
+              onPress={() => setAppData({ sendScreen: { toAmount: (parseFloat(currWallet.balance) - 0.0001).toLocaleString(undefined, format8Decimals) } })}
               name='md-add'
               type='ionicon'
               color='white'
