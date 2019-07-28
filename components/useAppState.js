@@ -77,8 +77,7 @@ const useAppState = () => {
         headerText: null
       },
       login: {
-        userName: '',
-        rememberMe: null
+        userName: ''
       },
       common: {
         selectedWallet: null
