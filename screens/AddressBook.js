@@ -4,14 +4,16 @@ import NavigationService from '../helpers/NavigationService';
 import ConcealTextInput from '../components/ccxTextInput';
 import ConcealButton from '../components/ccxButton';
 import { AppContext } from '../components/ContextProvider';
+import EStyleSheet from 'react-native-extended-stylesheet';
 import { maskAddress } from '../helpers/utils';
+import AppStyles from '../components/Style';
 import { AppColors } from '../constants/Colors';
+import { getAspectRatio } from '../helpers/utils';
 import {
   Alert,
   Text,
   View,
   FlatList,
-  StyleSheet,
   Clipboard
 } from 'react-native';
 
@@ -48,18 +50,18 @@ const AddressBook = () => {
   const { layout, user } = state;
 
   return (
-    <View style={styles.pageWrapper}>
+    <View style={AppStyles.pageWrapper}>
       <Header
         placement="left"
-        containerStyle={styles.appHeader}
+        containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
           onPress={() => NavigationService.goBack()}
           name='md-return-left'
           type='ionicon'
           color='white'
-          size={32}
+          size={32 * getAspectRatio()}
         />}
-        centerComponent={{ text: 'Address Book', style: { color: '#fff', fontSize: 20 } }}
+        centerComponent={{ text: 'Address Book', style: AppStyles.appHeaderText }}
         rightComponent={<Icon
           onPress={() => {
             setAppData({
@@ -76,7 +78,7 @@ const AddressBook = () => {
           name='md-add-circle-outline'
           type='ionicon'
           color='white'
-          size={32}
+          size={32 * getAspectRatio()}
         />}
       />
       <View style={styles.walletsWrapper}>
@@ -143,35 +145,25 @@ const AddressBook = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  pageWrapper: {
-    flex: 1,
-    backgroundColor: 'rgb(40, 45, 49)'
-  },
-  appHeader: {
-    borderBottomWidth: 1,
-    backgroundColor: '#212529',
-    borderBottomColor: '#343a40'
-  },
+const styles = EStyleSheet.create({
   buttonsWrapper: {
     position: 'absolute',
     right: 20
   },
   icon: {
     color: 'orange'
-    //color: '#CCC'
   },
   flatview: {
     backgroundColor: '#212529',
     justifyContent: 'center',
-    borderRadius: 10,
-    marginBottom: 5,
-    marginTop: 5,
-    padding: 20,
+    borderRadius: '10rem',
+    marginBottom: '5rem',
+    marginTop: '5rem',
+    padding: '20rem',
   },
   addressLabel: {
     color: '#FFFFFF',
-    fontSize: 18
+    fontSize: '18rem'
   },
   address: {
     color: '#FFA500'
@@ -183,16 +175,16 @@ const styles = StyleSheet.create({
     margin: 5
   },
   walletsWrapper: {
-    top: 90,
-    left: 10,
-    right: 10,
+    top: '90rem',
+    left: '10rem',
+    right: '10rem',
     bottom: 0,
     position: 'absolute'
   },
   footer: {
-    bottom: 10,
-    left: 20,
-    right: 20,
+    bottom: '10rem',
+    left: '20rem',
+    right: '20rem',
     position: 'absolute',
     flex: 1,
     alignItems: 'stretch',
@@ -207,8 +199,8 @@ const styles = StyleSheet.create({
   },
   footerBtn: {
     flex: 1,
-    height: 40,
-    marginTop: 10,
+    height: '40rem',
+    marginTop: '10rem',
     borderWidth: 0,
     borderRadius: 0,
     borderBottomWidth: 2,
@@ -219,22 +211,22 @@ const styles = StyleSheet.create({
     borderWidth: 0
   },
   footerBtnRight: {
-    marginLeft: 5
+    marginLeft: '5rem'
   },
   footerBtnLeft: {
-    marginRight: 5
+    marginRight: '5rem'
   },
   buttonText: {
     color: '#FFFFFF'
   },
   emptyAddressBookWrapper: {
     flex: 1,
-    padding: 20,
+    padding: '20rem',
     alignItems: 'center',
     justifyContent: 'center'
   },
   emptyAddressBookText: {
-    fontSize: 18,
+    fontSize: '18rem',
     color: '#FFFFFF',
     textAlign: 'center'
   },

@@ -12,10 +12,24 @@ export default EStyleSheet.create({
     padding: '15rem',
     backgroundColor: AppColors.concealBlack,
   },
-  appHeader: {
-    borderBottomWidth: 1,
-    backgroundColor: '#212529',
-    borderBottomColor: '#343a40',
+  pageWrapper: {
+    flex: 1,
+    backgroundColor: 'rgb(40, 45, 49)'
+  },
+  '@media (max-width: 499)': {
+    appHeader: {
+      borderBottomWidth: 1,
+      backgroundColor: '#212529',
+      borderBottomColor: '#343a40',
+    }
+  },
+  '@media (min-width: 500)': {
+    appHeader: {
+      height: '50rem',
+      borderBottomWidth: 1,
+      backgroundColor: '#212529',
+      borderBottomColor: '#343a40',
+    }
   },
   appHeaderText: {
     color: '#fff',
