@@ -414,7 +414,7 @@ const AppContextProvider = props => {
           dispatch({ type: 'PAYMENT_SENT', res });
           getWallets();
           NavigationService.navigate('Wallet');
-          message = 'Payment was succesfully sent to the recipient';
+          message = 'Payment was successfully sent to the recipient';
           msgType = 'info';
         } else {
           message = res.message;
