@@ -429,6 +429,13 @@ const AppContextProvider = props => {
     return Auth.getUsername();
   };
 
+  const getRememberme = () => {
+    return Auth.getUsername();
+  };
+
+  const setRememberme = (value) => {
+    return Auth.setRememberme(value);
+  };
 
   const actions = {
     loginUser,
@@ -449,7 +456,9 @@ const AppContextProvider = props => {
     setDefaultWallet,
     getWalletKeys,
     setAppData,
-    getUsername
+    getUsername,
+    getRememberme,
+    setRememberme
   };
 
   useEffect(() => {

@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import ConcealTextInput from '../components/ccxTextInput';
 import ConcealButton from '../components/ccxButton';
 
-import { Image } from 'react-native-elements';
+import { Image, CheckBox } from 'react-native-elements';
 import SlidingUpPanel from 'rn-sliding-up-panel';
 
 import { AppContext } from '../components/ContextProvider';
@@ -25,11 +25,11 @@ import {
 
 const Login = () => {
   const { actions, state } = useContext(AppContext);
-  const { loginUser, resetPassword, signUpUser, getUsername } = actions;
+  const { loginUser, resetPassword, signUpUser, setRememberme, setAppData } = actions;
   const { layout, userSettings, appData } = state;
   const { formSubmitted, message } = layout;
 
-  const { value: email, bind: bindEmail } = useFormInput(global.username);
+  const { value: email, bind: bindEmail } = useFormInput(global.rememberme ? global.username : '');
   const { value: password, bind: bindPassword } = useFormInput('');
   const { value: twoFACode, bind: bindTwoFACode } = useFormInput('');
 
@@ -72,6 +72,19 @@ const Login = () => {
             keyboardType="numeric"
             textContentType="none"
             inputStyle={AppStyles.loginInput}
+          />
+          <CheckBox
+            title='Remember username'
+            checked={global.rememberme}
+            textStyle={styles.checkBoxText}
+            containerStyle={styles.checkBoxContainer}
+            checkedColor={AppColors.concealOrange}
+            uncheckedColor={AppColors.concealOrange}
+            onPress={() => {
+              global.rememberme = !global.rememberme;
+              setRememberme(global.rememberme ? "TRUE" : "FALSE");
+              setAppData({ login: { rememberMe: global.rememberme } });
+            }}
           />
 
           <View style={styles.footer}>
@@ -145,6 +158,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: AppColors.concealOrange,
     fontSize: 16
+  },
+  checkBoxContainer: {
+    borderColor: AppColors.concealBorderColor,
+    backgroundColor: AppColors.concealBlack
+  },
+  checkBoxText: {
+    fontSize: 18,
+    color: '#828282'
   }
 });
 
