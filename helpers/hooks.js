@@ -8,6 +8,13 @@ export const useFormInput = (init) => {
   return { bind: { value, onChangeText }, reset, setValue, value };
 };
 
+export const useCheckbox = (init) => {
+  const [checked, setValue] = useState(init);
+  const onPress = val => { setValue(!checked) };
+  const reset = () => setValue(false);
+  return { bind: { checked, onPress }, reset, setValue, checked };
+};
+
 export const useFormValidation = (init) => {
   const [formValid, setFormValid] = useState(false);
   useEffect(() => { setFormValid(init) });

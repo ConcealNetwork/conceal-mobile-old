@@ -6,7 +6,7 @@ import { Image, CheckBox } from 'react-native-elements';
 import SlidingUpPanel from 'rn-sliding-up-panel';
 
 import { AppContext } from '../components/ContextProvider';
-import { useFormInput, useFormValidation } from '../helpers/hooks';
+import { useFormInput, useFormValidation, useCheckbox } from '../helpers/hooks';
 import SignUp from './SignUp';
 import ResetPassword from './ResetPassword';
 import { AppColors } from '../constants/Colors';
@@ -25,13 +25,14 @@ import {
 
 const Login = () => {
   const { actions, state } = useContext(AppContext);
-  const { loginUser, resetPassword, signUpUser, setRememberme, setAppData } = actions;
+  const { loginUser, resetPassword, signUpUser } = actions;
   const { layout, userSettings, appData } = state;
   const { formSubmitted, message } = layout;
 
-  const { value: email, bind: bindEmail } = useFormInput(global.rememberme ? global.username : '');
+  const { value: email, bind: bindEmail } = useFormInput(global.username);
   const { value: password, bind: bindPassword } = useFormInput('');
   const { value: twoFACode, bind: bindTwoFACode } = useFormInput('');
+  const { checked: rememberMe, bind: bindRememberMe } = useCheckbox(global.rememberme);
 
   let signUpPanel;
   let resetPasswordPanel;
@@ -74,22 +75,17 @@ const Login = () => {
             inputStyle={AppStyles.loginInput}
           />
           <CheckBox
+            {...bindRememberMe}
             title='Remember username'
-            checked={global.rememberme}
             textStyle={styles.checkBoxText}
             containerStyle={styles.checkBoxContainer}
             checkedColor={AppColors.concealOrange}
             uncheckedColor={AppColors.concealOrange}
-            onPress={() => {
-              global.rememberme = !global.rememberme;
-              setRememberme(global.rememberme ? "TRUE" : "FALSE");
-              setAppData({ login: { rememberMe: global.rememberme } });
-            }}
           />
 
           <View style={styles.footer}>
             <ConcealButton
-              onPress={() => loginUser({ email, password, twoFACode, id: 'loginForm' })}
+              onPress={() => loginUser({ email, password, twoFACode, rememberMe, id: 'loginForm' })}
               text='Sign In'
               accessibilityLabel="Log In Button"
               disabled={formSubmitted || !formValid}

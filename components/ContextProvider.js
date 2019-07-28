@@ -17,13 +17,19 @@ const AppContextProvider = props => {
 
   const loginUser = options => {
     const { id } = options;
+    console.log(options);
     if (options.twoFACode) {
       options.uuid = Expo.Constants.installationId;
     }
     let message;
     let msgType;
     dispatch({ type: 'FORM_SUBMITTED', value: true });
-    Auth.setUsername(options.email);
+    Auth.setRememberme(options.rememberMe);
+    if (options.rememberMe) {
+      Auth.setUsername(options.email);
+    } else {
+      Auth.setUsername('');
+    }
     Auth.login(options)
       .then(res => {
         if (res.result === 'success') {
@@ -425,18 +431,6 @@ const AppContextProvider = props => {
     dispatch({ type: 'SET_APP_DATA', appData });
   };
 
-  const getUsername = () => {
-    return Auth.getUsername();
-  };
-
-  const getRememberme = () => {
-    return Auth.getUsername();
-  };
-
-  const setRememberme = (value) => {
-    return Auth.setRememberme(value);
-  };
-
   const actions = {
     loginUser,
     signUpUser,
@@ -455,10 +449,7 @@ const AppContextProvider = props => {
     deleteWallet,
     setDefaultWallet,
     getWalletKeys,
-    setAppData,
-    getUsername,
-    getRememberme,
-    setRememberme
+    setAppData
   };
 
   useEffect(() => {
