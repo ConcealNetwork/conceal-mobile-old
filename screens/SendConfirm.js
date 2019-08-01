@@ -90,7 +90,7 @@ const SendConfirmScreen = () => {
       state.appData.sendScreen.toAddress,
       state.appData.sendScreen.toPaymendId,
       state.appData.sendScreen.toAmount,
-      password
+      '', password
     );
   }
 
