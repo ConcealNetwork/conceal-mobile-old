@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, Dimensions } from 'react-native';
 import { AppLoading, Font, Icon } from 'expo';
 import { Platform, StatusBar, View } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import ConcealLoader from './components/ccxLoader';
+import EStyleSheet from 'react-native-extended-stylesheet';
 
 import AppContextProvider from './components/ContextProvider';
 import AppStyles from './components/Style';
@@ -16,6 +17,11 @@ if (Platform.OS === 'android') {
   require('intl/locale-data/jsonp/en-US');
   require('intl/locale-data/jsonp/en-GB');
 }
+
+// build only once
+EStyleSheet.build({
+  $rem: Dimensions.get('window').width / 360
+});
 
 // create the app container first
 const AppContainer = createAppContainer(AppNavigator);

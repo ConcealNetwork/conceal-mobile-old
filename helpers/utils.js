@@ -1,7 +1,7 @@
+import { Share, Dimensions } from "react-native";
 import { appSettings } from '../constants/appSettings';
 import { AppColors } from '../constants/Colors';
 import Toast from 'react-native-root-toast';
-import { Share } from "react-native";
 
 export const shareContent = async (content) => {
   try {
@@ -75,6 +75,10 @@ export const showSuccessToast = (message) => {
     shadow: true,
     delay: 100
   });
+};
+
+export const getAspectRatio = () => {
+  return Dimensions.get('window').width / 360;
 };
 
 export const format0Decimals = { minimumFractionDigits: 0, maximumFractionDigits: 0 };

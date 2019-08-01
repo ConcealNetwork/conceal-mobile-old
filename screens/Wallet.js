@@ -1,20 +1,23 @@
 import React, { useContext } from 'react';
 import { Icon, Header } from 'react-native-elements';
-import { Text, View, FlatList, StyleSheet } from 'react-native';
+import { Text, View, FlatList } from 'react-native';
+import EStyleSheet from 'react-native-extended-stylesheet';
 import { AppColors } from '../constants/Colors';
 import NavigationService from '../helpers/NavigationService';
 import { AppContext } from '../components/ContextProvider';
 import ConcealButton from '../components/ccxButton';
+import AppStyles from '../components/Style';
 import { sprintf } from 'sprintf-js';
 import Moment from 'moment';
 import {
   maskAddress,
   formatOptions,
+  getAspectRatio,
   format0Decimals,
   format2Decimals,
   format4Decimals,
   format6Decimals,
-  format8Decimals
+  format8Decimals,
 } from '../helpers/utils';
 
 const Wallet = () => {
@@ -32,8 +35,8 @@ const Wallet = () => {
     <View style={styles.pageWrapper}>
       <Header
         placement="left"
-        containerStyle={styles.appHeader}
-        centerComponent={{ text: 'Selected Wallet', style: { color: '#fff', fontSize: 20 } }}
+        containerStyle={AppStyles.appHeader}
+        centerComponent={{ text: 'Selected Wallet', style: AppStyles.appHeaderText }}
       />
       {currWallet
         ? (<View style={styles.walletWrapper}>
@@ -48,7 +51,7 @@ const Wallet = () => {
                 name={currWallet.locked ? 'md-lock' : 'logo-bitcoin'}
                 type='ionicon'
                 color={currWallet.locked ? '#FF0000' : '#FFFFFF'}
-                size={16}
+                size={16 * getAspectRatio()}
               />
               <Text style={currWallet.locked ? [styles.worthBTC, styles.lockedText] : styles.worthBTC}>
                 {
@@ -64,7 +67,7 @@ const Wallet = () => {
               name='md-settings'
               type='ionicon'
               color='#FFFFFF'
-              size={36}
+              size={40 * getAspectRatio()}
             />
             <Icon
               containerStyle={[styles.iconGeneral, styles.iconWallets]}
@@ -72,7 +75,7 @@ const Wallet = () => {
               name='md-wallet'
               type='ionicon'
               color='#FFFFFF'
-              size={36}
+              size={40 * getAspectRatio()}
             />
             <Icon
               containerStyle={[styles.iconGeneral, styles.iconAddressBook]}
@@ -80,7 +83,7 @@ const Wallet = () => {
               name='md-book'
               type='ionicon'
               color='#FFFFFF'
-              size={36}
+              size={40 * getAspectRatio()}
             />
             <Icon
               containerStyle={[styles.iconGeneral, styles.iconMarkets]}
@@ -88,7 +91,7 @@ const Wallet = () => {
               name='md-trending-up'
               type='ionicon'
               color='#FFFFFF'
-              size={36}
+              size={40 * getAspectRatio()}
             />
           </View>
           <Text style={styles.txsText}>Transactions</Text>
@@ -117,7 +120,7 @@ const Wallet = () => {
                     <Icon
                       name={item.type === 'received' ? 'md-arrow-down' : 'md-arrow-up'}
                       type='ionicon'
-                      size={32}
+                      size={32 * getAspectRatio()}
                       color={item.type === 'received' ? "green" : "red"}
                       containerStyle={styles.txDirection}
                     />
@@ -165,43 +168,37 @@ const Wallet = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = EStyleSheet.create({
   pageWrapper: {
     flex: 1,
     backgroundColor: 'rgb(40, 45, 49)'
-  },
-  appHeader: {
-    borderBottomWidth: 1,
-    backgroundColor: '#212529',
-    borderBottomColor: '#343a40',
   },
   flatview: {
     justifyContent: 'center',
     borderBottomColor: AppColors.concealBlack,
     borderWidth: 0,
     borderBottomWidth: 1,
-    padding: 20,
+    padding: '20rem',
   },
   worthDollars: {
     color: '#FFFFFF',
-    fontSize: 14,
+    fontSize: '14rem',
   },
   amountCCX: {
     color: '#FFA500',
-    fontSize: 24,
-    margin: 5,
+    fontSize: '24rem',
+    margin: '5rem',
   },
   worthBTC: {
     color: '#FFFFFF',
-    fontSize: 14,
+    fontSize: '14rem',
   },
   accountOverview: {
-    top: 5,
-    margin: 10,
-    padding: 25,
-    height: 125,
-    marginLeft: 10,
-    marginRight: 10,
+    top: '5rem',
+    padding: '25rem',
+    width: '100%',
+    marginBottom: '10rem',
+    aspectRatio: 2.5 / 1,
     borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
@@ -210,9 +207,9 @@ const styles = StyleSheet.create({
     borderWidth: 1
   },
   footer: {
-    bottom: 10,
-    left: 10,
-    right: 10,
+    bottom: '10rem',
+    left: '10rem',
+    right: '10rem',
     position: 'absolute',
     flex: 1,
     alignItems: 'stretch',
@@ -223,96 +220,80 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   footerBtnRight: {
-    marginLeft: 5,
+    marginLeft: '5rem',
   },
   footerBtnLeft: {
     marginRight: 5,
   },
   iconGeneral: {
     position: 'absolute',
-    width: 36,
-    height: 36,
+    width: '36rem',
+    height: '36rem',
   },
   iconSettings: {
-    left: 15,
-    top: 15,
+    left: '15rem',
+    top: '20rem',
   },
   iconWallets: {
-    left: 15,
-    top: 70,
+    left: '15rem',
+    top: '80rem',
   },
   iconAddressBook: {
-    right: 15,
-    top: 15,
+    right: '15rem',
+    top: '20rem',
   },
   iconMarkets: {
-    right: 15,
-    top: 70,
+    right: '15rem',
+    top: '80rem',
   },
   transactionsWrapper: {
-    top: 180,
-    left: 10,
-    right: 10,
-    bottom: 70,
+    top: '190rem',
+    left: '10rem',
+    right: '10rem',
+    bottom: '70rem',
     position: 'absolute'
   },
   dataTimestamp: {
     color: '#FFFFFF',
-    fontSize: 14,
+    fontSize: '14rem',
   },
   dataAmount: {
     color: '#FFFFFF',
-    fontSize: 20,
+    fontSize: '20rem',
   },
   dataAddress: {
     color: '#FFA500',
-    fontSize: 14,
+    fontSize: '14rem',
   },
   dataPending: {
     color: "#FF0000"
   },
   txsText: {
     color: '#FFFFFF',
-    fontSize: 18,
-    marginTop: 5,
-    marginLeft: 10,
+    fontSize: '18rem',
+    marginTop: '5rem',
+    marginLeft: '10rem',
     paddingLeft: 0
   },
   txDirection: {
     position: 'absolute',
-    width: 32,
-    height: 32,
-    right: 10,
-    top: 20,
-  },
-  sendDialog: {
-    backgroundColor: '#212529',
-    borderColor: '#495057',
-    borderRadius: 10,
-    borderWidth: 1,
-    padding: 10,
-  },
-  toAddress: {
-    width: '100%',
-    color: '#FFA500',
-    backgroundColor: '#212529',
-  },
-  amount: {
-    borderTopWidth: 1,
-    borderColor: '#212529',
+    width: '32rem',
+    height: '32rem',
+    right: '10rem',
+    top: '20rem',
   },
   btcPriceWrapper: {
-    height: 20,
+    height: '20rem',
     display: 'flex',
     flexDirection: 'row',
   },
   btcIcon: {
-    marginRight: 5,
-    paddingTop: 2,
+    marginRight: '5rem',
+    paddingTop: '2rem',
   },
   emptyTransactionsText: {
-    fontSize: 18,
-    marginTop: 20,
+    fontSize: '18rem',
+    marginTop: '20rem',
     color: '#FFFFFF',
     textAlign: 'center'
   },
@@ -321,22 +302,23 @@ const styles = StyleSheet.create({
   },
   emptyWalletWrapper: {
     flex: 1,
-    padding: 20,
+    padding: '20rem',
     alignItems: 'center',
     justifyContent: 'center'
   },
   emptyWalletText: {
-    fontSize: 18,
+    fontSize: '18rem',
     color: '#FFFFFF',
     textAlign: 'center'
   },
   crateWalletBtn: {
-    marginTop: 30,
-    paddingLeft: 15,
-    paddingRight: 15
+    marginTop: '30rem',
+    paddingLeft: '15rem',
+    paddingRight: '15rem'
   },
   walletWrapper: {
-    flex: 1
+    flex: 1,
+    padding: '10rem'
   }
 });
 

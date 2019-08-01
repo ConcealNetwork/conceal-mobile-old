@@ -1,16 +1,39 @@
 import { StyleSheet } from 'react-native';
 import { AppColors } from '../constants/Colors';
+import EStyleSheet from 'react-native-extended-stylesheet';
 
-
-export default StyleSheet.create({
+export default EStyleSheet.create({
   appContainer: {
     flex: 1,
     backgroundColor: AppColors.concealBlack,
   },
   viewContainer: {
     flex: 1,
-    padding: 15,
+    padding: '15rem',
     backgroundColor: AppColors.concealBlack,
+  },
+  pageWrapper: {
+    flex: 1,
+    backgroundColor: 'rgb(40, 45, 49)'
+  },
+  '@media (max-width: 499)': {
+    appHeader: {
+      borderBottomWidth: 1,
+      backgroundColor: '#212529',
+      borderBottomColor: '#343a40',
+    }
+  },
+  '@media (min-width: 500)': {
+    appHeader: {
+      height: '50rem',
+      borderBottomWidth: 1,
+      backgroundColor: '#212529',
+      borderBottomColor: '#343a40',
+    }
+  },
+  appHeaderText: {
+    color: '#fff',
+    fontSize: '20rem'
   },
   horizontal: {
     flexDirection: 'row',
@@ -45,7 +68,7 @@ export default StyleSheet.create({
   },
   title: {
     fontFamily: 'Roboto',
-    fontSize: 36,
+    fontSize: '36rem',
     textAlign: 'center',
     color: AppColors.concealOrange,
   },
