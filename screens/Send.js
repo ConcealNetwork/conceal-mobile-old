@@ -138,7 +138,8 @@ const SendScreen = () => {
   setAddress = (label, address, paymentID, entryID) => {
     setAppData({
       sendScreen: {
-        toAddress: address
+        toAddress: address,
+        toPaymendId: paymentID
       }
     });
   }
