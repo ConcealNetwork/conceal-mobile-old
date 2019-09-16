@@ -7,21 +7,21 @@
     "eject": "expo eject"
   },
   "dependencies": {
-    "expo": "^33.0.7",
+    "expo": "^34.0.1",
     "expo-barcode-scanner": "^5.0.1",
     "intl": "^1.2.5",
     "jwt-decode": "^2.2.0",
     "merge-json": "0.1.0-b.3",
     "moment": "^2.24.0",
     "react": "16.8.3",
-    "react-native": "https://github.com/expo/react-native/archive/sdk-33.0.0.tar.gz",
+    "react-native": "https://github.com/expo/react-native/archive/sdk-34.0.0.tar.gz",
     "react-native-elements": "^1.2.0",
     "react-native-extended-stylesheet": "^0.12.0",
     "react-native-qrcode-svg": "^5.2.0",
     "react-native-root-toast": "^3.1.2",
     "react-native-svg": "^9.9.3",
     "react-navigation": "^3.12.1",
-    "rn-sliding-up-panel": "^2.3.1",
+    "rn-sliding-up-panel": "^2.3.2",
     "sprintf-js": "^1.1.2"
   },
   "devDependencies": {
