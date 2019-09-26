@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { AsyncStorage, Dimensions } from 'react-native';
-import { Font } from 'expo-font';
+import * as Font from 'expo-font';
 import { AppLoading } from 'expo';
 import { Icon } from '@expo/vector-icons';
 import { Platform, StatusBar, View } from 'react-native';

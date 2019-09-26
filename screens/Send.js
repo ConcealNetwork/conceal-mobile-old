@@ -74,6 +74,16 @@ const SendScreen = () => {
     });
   }
 
+  onScanAddressQRCode = () => {
+    setAppData({
+      scanCode: {
+        scanned: false
+      }
+    });
+
+    NavigationService.navigate('Scanner', { path: ["sendScreen", "toAddress"] });
+  }
+
   // key extractor for the list
   keyExtractor = (item, index) => index.toString();
 
@@ -284,7 +294,7 @@ const SendScreen = () => {
         />
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnRight]}
-          onPress={() => NavigationService.navigate('Scanner', { path: ["sendScreen", "toAddress"] })}
+          onPress={() => onScanAddressQRCode()}
           text="SCAN QR"
         />
       </View>

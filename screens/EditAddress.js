@@ -26,6 +26,17 @@ const EditAddress = (props) => {
     return (state.appData.addressEntry.label && state.appData.addressEntry.address);
   }
 
+  onScanAddressQRCode = () => {
+    setAppData({
+      scanCode: {
+        scanned: false
+      }
+    });
+
+    NavigationService.navigate('Scanner', { path: ["addressEntry", "address"] });
+  }
+
+
   return (
     <View style={styles.pageWrapper}>
       <Header
@@ -82,7 +93,7 @@ const EditAddress = (props) => {
         />
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnRight]}
-          onPress={() => NavigationService.navigate('Scanner', { path: ["addressEntry", "address"] })}
+          onPress={() => onScanAddressQRCode()}
           text="SCAN QR"
         />
       </View>

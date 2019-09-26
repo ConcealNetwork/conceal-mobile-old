@@ -3,7 +3,7 @@ import { Header, Icon } from 'react-native-elements';
 import { AppContext } from '../components/ContextProvider';
 import NavigationService from '../helpers/NavigationService';
 import ConcealButton from '../components/ccxButton';
-import QRCode from 'react-native-qrcode';
+import QRCode from 'react-native-qrcode-svg';
 import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
 import {
@@ -49,13 +49,15 @@ const Receive = () => {
       <View style={styles.receiveContainer}>
         <ScrollView contentContainerStyle={AppStyles.contentContainer}>
           <Text style={styles.address}>{currWallet.addr}</Text>
-          <QRCode
-            style={{ margin: 10 }}
-            size={200}
-            value={currWallet.addr}
-            bgColor='black'
-            fgColor='white'
-          />
+          <View style={styles.qrCodeContainer}>
+            <QRCode
+              size={200}
+              value={currWallet.addr}
+              bgColor='white'
+              fgColor='black'
+              elc='H'
+            />
+          </View>
         </ScrollView>
       </View>
       <View style={styles.footer}>
@@ -83,10 +85,14 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20
   },
+  qrCodeContainer: {
+    padding: 10,
+    backgroundColor: '#FFFFFF'
+  },
   appHeader: {
     borderBottomWidth: 1,
     backgroundColor: '#212529',
-    borderBottomColor: '#343a40',
+    borderBottomColor: '#343a40'
   },
   footer: {
     bottom: 10,
@@ -96,22 +102,22 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'stretch',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-between'
   },
   footerBtn: {
-    flex: 1,
+    flex: 1
   },
   footerBtnRight: {
-    marginLeft: 5,
+    marginLeft: 5
   },
   footerBtnLeft: {
-    marginRight: 5,
+    marginRight: 5
   },
   address: {
     fontSize: 16,
     marginBottom: 20,
     color: AppColors.concealOrange
-  },
+  }
 });
 
 export default Receive;
