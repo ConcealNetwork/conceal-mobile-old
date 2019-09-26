@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { AsyncStorage, Dimensions } from 'react-native';
-import { AppLoading, Font, Icon } from 'expo';
+import { Font } from 'expo-font';
+import { AppLoading } from 'expo';
+import { Icon } from '@expo/vector-icons';
 import { Platform, StatusBar, View } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import ConcealLoader from './components/ccxLoader';

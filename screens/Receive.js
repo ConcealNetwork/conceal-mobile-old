@@ -3,7 +3,7 @@ import { Header, Icon } from 'react-native-elements';
 import { AppContext } from '../components/ContextProvider';
 import NavigationService from '../helpers/NavigationService';
 import ConcealButton from '../components/ccxButton';
-import QRCode from 'react-native-qrcode-svg';
+import QRCode from 'react-native-qrcode';
 import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
 import {
