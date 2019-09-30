@@ -38,32 +38,32 @@ export default EStyleSheet.create({
   horizontal: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    padding: 10,
+    padding: '10rem',
   },
   loginView: {
-    flex: 1,
-    paddingTop: 60,
+    paddingTop: '40rem',
     alignItems: 'center',
   },
   contentContainer: {
-    paddingTop: 30,
+    paddingTop: '30rem',
     alignItems: 'center',
     marginHorizontal: 15,
   },
   textRegular: {
     fontFamily: 'Roboto',
-    fontSize: 20,
+    fontSize: '18rem',
     color: AppColors.text,
   },
   textSmall: {
-    fontSize: 16,
+    fontSize: '16rem',
   },
   textLarge: {
-    fontSize: 20,
+    fontSize: '18rem',
+    textAlign: 'center'
   },
   textOrange: {
     fontFamily: 'Roboto',
-    fontSize: 24,
+    fontSize: '24rem',
     color: AppColors.concealOrange,
   },
   title: {
@@ -84,21 +84,18 @@ export default EStyleSheet.create({
   },
   tabBarLabel: {
     fontFamily: 'Lato',
-    fontSize: 14,
-    lineHeight: 60,
+    fontSize: '14rem',
+    lineHeight: '60rem',
   },
   tabBarIndicator: {
     backgroundColor: AppColors.concealOrange,
   },
-  loginInput: {
-    textAlign: 'center'
-  },
   inputField: {
     width: '100%',
-    height: 40,
-    marginTop: 5,
+    height: '40rem',
+    marginTop: '5rem',
     borderWidth: 0,
-    marginBottom: 5,
+    marginBottom: '5rem',
     borderBottomWidth: 1,
     borderColor: 'rgb(50, 50, 50)',
     color: 'rgb(255, 255, 255)',
@@ -106,11 +103,11 @@ export default EStyleSheet.create({
   },
   submitButton: {
     backgroundColor: AppColors.concealOrange,
-    margin: 10,
-    paddingTop: 5,
-    paddingBottom: 5,
-    paddingLeft: 10,
-    paddingRight: 10,
+    margin: '10rem',
+    paddingTop: '5rem',
+    paddingBottom: '5rem',
+    paddingLeft: '10rem',
+    paddingRight: '10rem',
   },
   submitButtonDisabled: {
     borderColor: 'rgba(255, 165, 0, 0.3)',
@@ -122,8 +119,8 @@ export default EStyleSheet.create({
     backgroundColor: AppColors.concealBlack,
   },
   loginButton: {
-    width: 100,
-    height: 40,
+    width: '100rem',
+    height: '40rem',
   },
   buttonTitle: {
     color: 'rgb(0, 0, 0)',

@@ -1,12 +1,19 @@
 import React, { useContext } from 'react';
-import { Text, TextInput, View, StyleSheet } from 'react-native';
 import { Image } from 'react-native-elements';
 import ConcealButton from '../components/ccxButton';
 
 import { AppContext } from '../components/ContextProvider';
 import { useFormInput, useFormValidation } from '../helpers/hooks';
-import AppStyles from '../components/Style';
+import { getAspectRatio } from '../helpers/utils';
 import { AppColors } from '../constants/Colors';
+import AppStyles from '../components/Style';
+import {
+  Text,
+  View,
+  TextInput,
+  StyleSheet,
+  ScrollView
+} from 'react-native';
 
 
 const SignUp = props => {
@@ -27,10 +34,10 @@ const SignUp = props => {
   const formValid = useFormValidation(formValidation);
 
   return (
-    <View style={[AppStyles.viewContainer, AppStyles.loginView]}>
+    <ScrollView contentContainerStyle={AppStyles.loginView}>
       <Image
         source={require('../assets/images/icon.png')}
-        style={{ width: 150, height: 150 }}
+        style={{ width: 150 * getAspectRatio(), height: 150 * getAspectRatio() }}
       />
       <Text style={AppStyles.title}>SIGN UP</Text>
 
@@ -82,7 +89,7 @@ const SignUp = props => {
           accessibilityLabel="Cancel Button"
         />
       </View>
-    </View>
+    </ScrollView>
   )
 };
 

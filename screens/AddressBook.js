@@ -166,13 +166,15 @@ const styles = EStyleSheet.create({
     fontSize: '18rem'
   },
   address: {
-    color: '#FFA500'
+    color: '#FFA500',
+    fontSize: '14rem'
   },
   data: {
-    color: '#AAAAAA'
+    color: '#AAAAAA',
+    fontSize: '12rem'
   },
   buttonContainer: {
-    margin: 5
+    margin: '5rem'
   },
   walletsWrapper: {
     top: '90rem',

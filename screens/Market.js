@@ -3,9 +3,12 @@ import { Icon, Header, ListItem } from 'react-native-elements';
 import { ScrollView, Text, View, StyleSheet, FlatList } from 'react-native';
 import { format0Decimals, format2Decimals, format4Decimals, format8Decimals } from '../helpers/utils';
 import NavigationService from '../helpers/NavigationService';
+import EStyleSheet from 'react-native-extended-stylesheet';
 import { ActivityIndicator } from 'react-native';
 import { AppContext } from '../components/ContextProvider';
+import { getAspectRatio } from '../helpers/utils';
 import { AppColors } from '../constants/Colors';
+import AppStyles from '../components/Style';
 import { sprintf } from 'sprintf-js';
 
 const Market = () => {
@@ -60,7 +63,7 @@ const Market = () => {
         name={item.icon}
         type='ionicon'
         color='white'
-        size={26}
+        size={32 * getAspectRatio()}
       />}
     />
   );
@@ -69,15 +72,15 @@ const Market = () => {
     <View style={styles.pageWrapper}>
       <Header
         placement="left"
-        containerStyle={styles.appHeader}
+        containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
           onPress={() => NavigationService.goBack()}
           name='md-return-left'
           type='ionicon'
           color='white'
-          size={32}
+          size={32 * getAspectRatio()}
         />}
-        centerComponent={{ text: 'Market Data', style: { color: '#fff', fontSize: 20 } }}
+        centerComponent={{ text: 'Market Data', style: AppStyles.appHeaderText }}
       />
       <FlatList
         data={list}
@@ -89,24 +92,21 @@ const Market = () => {
   )
 };
 
-const styles = StyleSheet.create({
+const styles = EStyleSheet.create({
   pageWrapper: {
     flex: 1,
     backgroundColor: 'rgb(40, 45, 49)'
   },
-  appHeader: {
-    borderBottomWidth: 1,
-    backgroundColor: '#212529',
-    borderBottomColor: '#343a40'
-  },
   settingsLabel: {
+    fontSize: '14rem',
     color: AppColors.concealOrange
   },
   settingsText: {
+    fontSize: '16rem',
     color: AppColors.concealTextColor
   },
   settingsList: {
-    margin: 10,
+    margin: '10rem',
     backgroundColor: AppColors.concealBackground
   },
   settingsItem: {

@@ -1,14 +1,17 @@
 import { Icon, Overlay, Header, ListItem } from 'react-native-elements';
 import NavigationService from '../helpers/NavigationService';
 import { AppContext } from '../components/ContextProvider';
+import EStyleSheet from 'react-native-extended-stylesheet';
 import ConcealTextInput from '../components/ccxTextInput';
 import ConcealButton from '../components/ccxButton';
 import { AppColors } from '../constants/Colors';
+import AppStyles from '../components/Style';
 import React, { useContext } from "react";
 import { sprintf } from 'sprintf-js';
 import {
   maskAddress,
   formatOptions,
+  getAspectRatio,
   format0Decimals,
   format2Decimals,
   format4Decimals,
@@ -98,7 +101,7 @@ const SendScreen = () => {
         name={item.icon}
         type='ionicon'
         color='white'
-        size={32}
+        size={32 * getAspectRatio()}
       />}
     />
   );
@@ -158,21 +161,21 @@ const SendScreen = () => {
     <View style={styles.pageWrapper}>
       <Header
         placement="left"
-        containerStyle={styles.appHeader}
+        containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
           onPress={() => NavigationService.goBack()}
           name='md-return-left'
           type='ionicon'
           color='white'
-          size={32}
+          size={32 * getAspectRatio()}
         />}
-        centerComponent={{ text: 'Send CCX', style: { color: '#fff', fontSize: 20 } }}
+        centerComponent={{ text: 'Send CCX', style: AppStyles.appHeaderText }}
         rightComponent={<Icon
           onPress={() => this.clearSend()}
           name='md-trash'
           type='ionicon'
           color='white'
-          size={32}
+          size={32 * getAspectRatio()}
         />}
       />
       <ScrollView contentContainerStyle={styles.walletWrapper}>
@@ -302,15 +305,10 @@ const SendScreen = () => {
   )
 };
 
-const styles = StyleSheet.create({
+const styles = EStyleSheet.create({
   pageWrapper: {
     flex: 1,
     backgroundColor: 'rgb(40, 45, 49)'
-  },
-  appHeader: {
-    borderBottomWidth: 1,
-    backgroundColor: '#212529',
-    borderBottomColor: "#343a40"
   },
   icon: {
     color: "orange"
@@ -319,17 +317,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#212529",
     justifyContent: 'center',
     borderRadius: 10,
-    marginBottom: 5,
-    marginTop: 5,
-    padding: 20,
+    marginBottom: '5rem',
+    marginTop: '5rem',
+    padding: '20rem',
   },
   sendInput: {
-    marginTop: 10,
-    marginBottom: 20
+    marginTop: '10rem',
+    marginBottom: '20rem'
   },
   addressLabel: {
     color: "#FFFFFF",
-    fontSize: 18
+    fontSize: '18rem'
   },
   fromAddress: {
     fontSize: 18,
@@ -342,7 +340,7 @@ const styles = StyleSheet.create({
   fromBalance: {
     textAlign: 'center',
     color: "#AAAAAA",
-    fontSize: 24
+    fontSize: '24rem'
   },
   address: {
     color: "#FFA500"
@@ -355,30 +353,30 @@ const styles = StyleSheet.create({
     backgroundColor: '#212529',
     borderColor: '#333',
     borderWidth: 1,
-    marginBottom: 2,
-    marginTop: 2,
-    padding: 10,
-    fontSize: 16
+    marginBottom: '2rem',
+    marginTop: '2rem',
+    padding: '10rem',
+    fontSize: '16rem'
   },
   sendSummaryLabel: {
     color: AppColors.concealOrange
   },
   buttonContainer: {
-    margin: 5
+    margin: '5rem'
   },
   walletWrapper: {
     flex: 1,
     top: 0,
-    left: 5,
-    right: 5,
-    bottom: 50,
-    margin: 15,
+    left: '5rem',
+    right: '5rem',
+    bottom: '50rem',
+    margin: '15rem',
     position: 'absolute',
     flexDirection: 'column'
   },
   sendSummaryWrapper: {
-    margin: 10,
-    marginTop: 5
+    margin: '10rem',
+    marginTop: '5rem'
   },
   overlayWrapper: {
     top: 0,
@@ -388,17 +386,17 @@ const styles = StyleSheet.create({
     position: 'absolute'
   },
   addressWrapper: {
-    top: 10,
-    left: 10,
-    right: 10,
-    bottom: 80,
-    borderRadius: 10,
+    top: '10rem',
+    left: '10rem',
+    right: '10rem',
+    bottom: '80rem',
+    borderRadius: '10rem',
     position: 'absolute'
   },
   footer: {
-    bottom: 10,
-    left: 20,
-    right: 20,
+    bottom: '10rem',
+    left: '20rem',
+    right: '20rem',
     position: 'absolute',
     flex: 1,
     alignItems: 'stretch',
@@ -409,10 +407,10 @@ const styles = StyleSheet.create({
     flex: 1
   },
   footerBtnRight: {
-    marginLeft: 5
+    marginLeft: '5rem'
   },
   footerBtnLeft: {
-    marginRight: 5
+    marginRight: '5rem'
   },
   summaryLabel: {
     color: AppColors.concealOrange
@@ -422,27 +420,27 @@ const styles = StyleSheet.create({
   },
   summaryList: {
     flex: 1,
-    margin: 10,
+    margin: '10rem',
     backgroundColor: AppColors.concealBackground
   },
   summaryItem: {
     backgroundColor: '#212529',
     borderWidth: 0,
-    paddingTop: 5,
-    paddingBottom: 5,
+    paddingTop: '5rem',
+    paddingBottom: '5rem',
     borderBottomWidth: 1,
     borderBottomColor: AppColors.concealBackground
   },
   lockedWrapper: {
-    height: 20,
+    height: '20rem',
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center'
   },
   lockedIcon: {
-    marginRight: 5,
-    paddingTop: 2
+    marginRight: '5rem',
+    paddingTop: '2rem'
   },
   lockedText: {
     color: '#FF0000'

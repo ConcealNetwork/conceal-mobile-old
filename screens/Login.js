@@ -3,8 +3,7 @@ import ConcealTextInput from '../components/ccxTextInput';
 import ConcealButton from '../components/ccxButton';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
-import { Image, CheckBox } from 'react-native-elements';
-import SlidingUpPanel from 'rn-sliding-up-panel';
+import { Image, CheckBox, Overlay } from 'react-native-elements';
 
 import { AppContext } from '../components/ContextProvider';
 import { useFormInput, useFormValidation, useCheckbox } from '../helpers/hooks';
@@ -19,6 +18,7 @@ import {
   Animated,
   Keyboard,
   TextInput,
+  ScrollView,
   TouchableOpacity,
   TouchableWithoutFeedback
 } from 'react-native';
@@ -29,6 +29,7 @@ const Login = () => {
   const { loginUser, resetPassword, signUpUser } = actions;
   const { layout, userSettings, appData } = state;
   const { formSubmitted, message } = layout;
+  const { setAppData } = actions;
 
   const { value: email, bind: bindEmail } = useFormInput(global.username);
   const { value: password, bind: bindPassword } = useFormInput('');
@@ -48,7 +49,7 @@ const Login = () => {
   return (
     <View style={AppStyles.viewContainer}>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <View style={AppStyles.loginView}>
+        <ScrollView contentContainerStyle={[AppStyles.loginView, styles.LoginContainer]}>
           <Image
             source={require('../assets/images/icon.png')}
             style={{ width: 150 * getAspectRatio(), height: 150 * getAspectRatio() }}
@@ -59,21 +60,21 @@ const Login = () => {
             placeholder="E-mail"
             keyboardType="email-address"
             textContentType="emailAddress"
-            inputStyle={AppStyles.loginInput}
+            inputStyle={AppStyles.textLarge}
           />
           <ConcealTextInput
             {...bindPassword}
             secureTextEntry={true}
             placeholder="Password"
             textContentType="password"
-            inputStyle={AppStyles.loginInput}
+            inputStyle={AppStyles.textLarge}
           />
           <ConcealTextInput
             {...bindTwoFACode}
             placeholder="2 Factor Authentication Code"
             keyboardType="numeric"
             textContentType="none"
-            inputStyle={AppStyles.loginInput}
+            inputStyle={AppStyles.textLarge}
           />
           <CheckBox
             {...bindRememberMe}
@@ -82,6 +83,7 @@ const Login = () => {
             containerStyle={styles.checkBoxContainer}
             checkedColor={AppColors.concealOrange}
             uncheckedColor={AppColors.concealOrange}
+            size={20 * getAspectRatio()}
           />
 
           <View style={styles.footer}>
@@ -94,7 +96,7 @@ const Login = () => {
             />
 
             <ConcealButton
-              onPress={() => signUpPanel.show()}
+              onPress={() => setAppData({ login: { signUpVisible: true } })}
               text="Sign Up"
               style={[styles.footerBtn, styles.footerBtnRight]}
               accessibilityLabel="Sign Up Button"
@@ -102,34 +104,43 @@ const Login = () => {
             />
           </View>
 
-          <TouchableOpacity onPress={() => resetPasswordPanel.show()}>
+          <TouchableOpacity style={styles.forgotContainer} onPress={() => setAppData({ login: { resetPasswordVisible: true } })}>
             <Text style={styles.forgotText}>Forgot your password?</Text>
             <Text style={styles.forgotText}>Click here</Text>
           </TouchableOpacity>
-
-          <SlidingUpPanel ref={c => signUpPanel = c} animatedValue={new Animated.Value(0)}>
-            <SignUp
-              signUpUser={data => {
-                signUpUser(data);
-                Keyboard.dismiss();
-                signUpPanel.hide();
-              }}
-              hidePanel={() => signUpPanel.hide()}
-            />
-          </SlidingUpPanel>
-
-          <SlidingUpPanel ref={c => resetPasswordPanel = c} animatedValue={new Animated.Value(0)}>
-            <ResetPassword
-              resetPassword={data => {
-                resetPassword(data);
-                Keyboard.dismiss();
-                resetPasswordPanel.hide();
-              }}
-              hidePanel={() => resetPasswordPanel.hide()}
-            />
-          </SlidingUpPanel>
-        </View>
+        </ScrollView>
       </TouchableWithoutFeedback>
+      <Overlay
+        isVisible={state.appData.login.signUpVisible}
+        overlayBackgroundColor={AppColors.concealBlack}
+        width="100%"
+        height="100%"
+      >
+        <SignUp
+          signUpUser={data => {
+            signUpUser(data);
+            Keyboard.dismiss();
+            signUpPanel.hide();
+          }}
+          hidePanel={() => setAppData({ login: { signUpVisible: false } })}
+        />
+      </Overlay>
+
+      <Overlay
+        isVisible={state.appData.login.resetPasswordVisible}
+        overlayBackgroundColor={AppColors.concealBlack}
+        width="100%"
+        height="100%"
+      >
+        <ResetPassword
+          resetPassword={data => {
+            resetPassword(data);
+            Keyboard.dismiss();
+            resetPasswordPanel.hide();
+          }}
+          hidePanel={() => setAppData({ login: { resetPasswordVisible: false } })}
+        />
+      </Overlay>
     </View>
   )
 };
@@ -158,11 +169,18 @@ const styles = EStyleSheet.create({
   },
   checkBoxContainer: {
     borderColor: AppColors.concealBorderColor,
-    backgroundColor: AppColors.concealBlack
+    backgroundColor: AppColors.concealBlack,
+    marginTop: '10rem'
   },
   checkBoxText: {
     fontSize: '18rem',
     color: '#828282'
+  },
+  forgotContainer: {
+    marginTop: '15rem'
+  },
+  LoginContainer: {
+    paddingTop: 60
   }
 });
 

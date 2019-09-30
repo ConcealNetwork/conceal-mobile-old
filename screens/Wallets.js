@@ -1,12 +1,15 @@
 import React, { useContext } from 'react';
 import { Icon, Header, CheckBox } from 'react-native-elements';
 import NavigationService from '../helpers/NavigationService';
+import EStyleSheet from 'react-native-extended-stylesheet';
 import { AppContext } from '../components/ContextProvider';
 import ConcealButton from '../components/ccxButton';
 import { AppColors } from '../constants/Colors';
+import AppStyles from '../components/Style';
 import {
   maskAddress,
   formatOptions,
+  getAspectRatio,
   format0Decimals,
   format2Decimals,
   format4Decimals,
@@ -41,22 +44,22 @@ const Wallets = () => {
     <View style={styles.pageWrapper}>
       <Header
         placement="left"
-        containerStyle={styles.appHeader}
+        containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
           onPress={() => NavigationService.goBack()}
           name='md-return-left'
           type='ionicon'
           color='white'
-          size={32}
+          size={32 * getAspectRatio()}
         />}
-        centerComponent={{ text: 'Wallets', style: { color: '#fff', fontSize: 20 } }}
+        centerComponent={{ text: 'Wallets', style: AppStyles.appHeaderText }}
         rightComponent={walletsLoaded && (walletsList.length < appSettings.maxWallets || walletsList.length === 0) ?
           (< Icon
             onPress={() => createWallet()}
             name='md-add-circle-outline'
             type='ionicon'
             color='white'
-            size={32}
+            size={32 * getAspectRatio()}
           />) : null}
       />
       <View style={styles.walletsWrapper}>
@@ -82,7 +85,7 @@ const Wallets = () => {
                     <View style={styles.selectedWrapper}>
                       <CheckBox
                         center
-                        size={36}
+                        size={36 * getAspectRatio()}
                         checkedIcon='dot-circle-o'
                         uncheckedIcon='circle-o'
                         checked={item.default}
@@ -136,20 +139,15 @@ const Wallets = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = EStyleSheet.create({
   pageWrapper: {
     flex: 1,
     backgroundColor: 'rgb(40, 45, 49)'
   },
-  appHeader: {
-    borderBottomWidth: 1,
-    backgroundColor: '#212529',
-    borderBottomColor: '#343a40'
-  },
   selectedWrapper: {
     position: 'absolute',
     right: 0,
-    top: 15
+    top: '15rem'
   },
   icon: {
     color: 'orange'
@@ -163,10 +161,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     borderColor: AppColors.concealBorderColor,
     borderRadius: 10,
-    marginBottom: 5,
+    marginBottom: '5rem',
     borderWidth: 1,
-    marginTop: 5,
-    padding: 20,
+    marginTop: '5rem',
+    padding: '20rem',
   },
   walletSelected: {
     borderColor: AppColors.concealOrange,
@@ -174,20 +172,22 @@ const styles = StyleSheet.create({
   },
   address: {
     color: '#FFFFFF',
-    fontSize: 18
+    fontSize: '18rem'
   },
   balance: {
     color: '#FFA500',
+    fontSize: '14rem'
   },
   data: {
-    color: '#AAAAAA'
+    color: '#AAAAAA',
+    fontSize: '14rem'
   },
   buttonContainer: {
-    margin: 5
+    margin: '5rem'
   },
   walletsWrapper: {
     flex: 1,
-    padding: 10
+    padding: '10rem'
   },
   walletFooter: {
     flex: 1,
@@ -200,8 +200,8 @@ const styles = StyleSheet.create({
   },
   footerBtn: {
     flex: 1,
-    height: 40,
-    marginTop: 10,
+    height: '40rem',
+    marginTop: '10rem',
     borderWidth: 0,
     borderRadius: 0,
     borderBottomWidth: 2,
@@ -210,8 +210,8 @@ const styles = StyleSheet.create({
   },
   footerBtnDisabled: {
     flex: 1,
-    height: 40,
-    marginTop: 10,
+    height: '40rem',
+    marginTop: '10rem',
     borderWidth: 0,
     borderRadius: 0,
     borderBottomWidth: 2,
@@ -219,25 +219,26 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0)'
   },
   footerBtnRight: {
-    marginLeft: 5
+    marginLeft: '5rem'
   },
   footerBtnLeft: {
-    marginRight: 5
+    marginRight: '5rem'
   },
   buttonText: {
     color: '#FFFFFF'
   },
   lockedText: {
-    color: '#FF0000'
+    color: '#FF0000',
+    fontSize: '14rem'
   },
   emptyWalletsWrapper: {
     flex: 1,
-    padding: 20,
+    padding: '20rem',
     alignItems: 'center',
     justifyContent: 'center'
   },
   emptyWalletsText: {
-    fontSize: 18,
+    fontSize: '18rem',
     color: '#FFFFFF',
     textAlign: 'center'
   }
