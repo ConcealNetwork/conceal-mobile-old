@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { AsyncStorage, Dimensions } from 'react-native';
+import { YellowBox } from 'react-native';
 import * as Font from 'expo-font';
 import { AppLoading } from 'expo';
 import { Icon } from '@expo/vector-icons';
@@ -20,6 +21,9 @@ if (Platform.OS === 'android') {
   require('intl/locale-data/jsonp/en-GB');
 }
 
+// supress the timer warnings
+YellowBox.ignoreWarnings(['Setting a timer']);
+
 // build only once
 EStyleSheet.build({
   $rem: Dimensions.get('window').width / 360
@@ -34,7 +38,6 @@ const App = props => {
   const loadResourcesAsync = async () => {
     return Promise.all([
       Font.loadAsync({
-        ...Icon.Ionicons.font,
         'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
         'Lato': require('./assets/fonts/Lato/Lato-Regular.ttf'),
         'Roboto': require('./assets/fonts/Roboto/Roboto-Regular.ttf'),

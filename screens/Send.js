@@ -189,7 +189,7 @@ const SendScreen = () => {
                 name='md-lock'
                 type='ionicon'
                 color='#FF0000'
-                size={16}
+                size={16 * getAspectRatio()}
               />
               <Text style={currWallet.locked ? [styles.worthBTC, styles.lockedText] : styles.worthBTC}>
                 {sprintf('%s CCX', currWallet.locked.toLocaleString(undefined, format4Decimals))}
@@ -213,7 +213,7 @@ const SendScreen = () => {
               name='md-add'
               type='ionicon'
               color='white'
-              size={32}
+              size={32 * getAspectRatio()}
             />
           }
         />
@@ -240,7 +240,7 @@ const SendScreen = () => {
                 name='md-add'
                 type='ionicon'
                 color='white'
-                size={32}
+                size={32 * getAspectRatio()}
               />
             }
           />
@@ -330,7 +330,7 @@ const styles = EStyleSheet.create({
     fontSize: '18rem'
   },
   fromAddress: {
-    fontSize: 18,
+    fontSize: '18rem',
     color: "#FFA500",
     textAlign: 'center'
   },
@@ -343,7 +343,8 @@ const styles = EStyleSheet.create({
     fontSize: '24rem'
   },
   address: {
-    color: "#FFA500"
+    color: "#FFA500",
+    fontSize: '14rem'
   },
   data: {
     color: "#AAAAAA"
@@ -413,10 +414,12 @@ const styles = EStyleSheet.create({
     marginRight: '5rem'
   },
   summaryLabel: {
-    color: AppColors.concealOrange
+    color: AppColors.concealOrange,
+    fontSize: '12rem'
   },
   summaryText: {
-    color: AppColors.concealTextColor
+    color: AppColors.concealTextColor,
+    fontSize: '14rem'
   },
   summaryList: {
     flex: 1,

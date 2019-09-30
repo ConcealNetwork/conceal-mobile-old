@@ -98,11 +98,11 @@ const styles = EStyleSheet.create({
     backgroundColor: 'rgb(40, 45, 49)'
   },
   settingsLabel: {
-    fontSize: '14rem',
+    fontSize: '12rem',
     color: AppColors.concealOrange
   },
   settingsText: {
-    fontSize: '16rem',
+    fontSize: '14rem',
     color: AppColors.concealTextColor
   },
   settingsList: {

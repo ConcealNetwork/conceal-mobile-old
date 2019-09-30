@@ -1,13 +1,16 @@
 import { Input, Icon, Overlay, Header, ListItem } from 'react-native-elements';
 import { useFormInput, useFormValidation } from '../helpers/hooks';
 import NavigationService from '../helpers/NavigationService';
+import EStyleSheet from 'react-native-extended-stylesheet';
 import { AppContext } from '../components/ContextProvider';
 import ConcealButton from '../components/ccxButton';
 import { AppColors } from '../constants/Colors';
+import AppStyles from '../components/Style';
 import React, { useContext } from "react";
 import {
   maskAddress,
   formatOptions,
+  getAspectRatio,
   format0Decimals,
   format2Decimals,
   format4Decimals,
@@ -71,7 +74,7 @@ const SendConfirmScreen = () => {
         name={item.icon}
         type='ionicon'
         color='white'
-        size={32}
+        size={32 * getAspectRatio()}
       />}
     />
   );
@@ -101,21 +104,21 @@ const SendConfirmScreen = () => {
     <View style={styles.pageWrapper}>
       <Header
         placement="left"
-        containerStyle={styles.appHeader}
+        containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
           onPress={() => NavigationService.goBack()}
           name='md-return-left'
           type='ionicon'
           color='white'
-          size={26}
+          size={32 * getAspectRatio()}
         />}
-        centerComponent={{ text: 'Confirm sending', style: { color: '#fff', fontSize: 20 } }}
+        centerComponent={{ text: 'Confirm sending', style: AppStyles.appHeaderText }}
       />
       <ScrollView contentContainerStyle={styles.walletWrapper}>
         <Input
           {...bindPassword}
           placeholder='please enter your password...'
-          inputStyle={styles.toAddress}
+          inputStyle={styles.password}
           containerStyle={styles.sendInput}
           textContentType="password"
           secureTextEntry={state.appData.sendScreen.securePasswordEntry}
@@ -125,7 +128,7 @@ const SendConfirmScreen = () => {
               name='ios-eye-off'
               type='ionicon'
               color='white'
-              size={32}
+              size={32 * getAspectRatio()}
             />
           }
         />
@@ -153,7 +156,7 @@ const SendConfirmScreen = () => {
   )
 };
 
-const styles = StyleSheet.create({
+const styles = EStyleSheet.create({
   pageWrapper: {
     flex: 1,
     backgroundColor: 'rgb(40, 45, 49)'
@@ -169,34 +172,18 @@ const styles = StyleSheet.create({
   flatview: {
     backgroundColor: "#212529",
     justifyContent: 'center',
-    borderRadius: 10,
-    marginBottom: 5,
-    marginTop: 5,
-    padding: 20,
+    borderRadius: '10rem',
+    marginBottom: '5rem',
+    marginTop: '5rem',
+    padding: '20rem',
   },
   sendInput: {
-    marginTop: 10,
-    marginBottom: 20
+    marginTop: '10rem',
+    marginBottom: '20rem'
   },
-  addressLabel: {
+  password: {
     color: "#FFFFFF",
-    fontSize: 18
-  },
-  fromAddress: {
-    fontSize: 18,
-    color: "#FFA500",
-    textAlign: 'center'
-  },
-  toAddress: {
-    color: "#FFFFFF",
-  },
-  fromBalance: {
-    textAlign: 'center',
-    color: "#AAAAAA",
-    fontSize: 24
-  },
-  address: {
-    color: "#FFA500"
+    fontSize: '18rem'
   },
   data: {
     color: "#AAAAAA"
@@ -206,27 +193,27 @@ const styles = StyleSheet.create({
     backgroundColor: '#212529',
     borderColor: '#333',
     borderWidth: 1,
-    marginBottom: 2,
-    marginTop: 2,
-    padding: 10,
-    fontSize: 16
+    marginBottom: '2rem',
+    marginTop: '2rem',
+    padding: '10rem',
+    fontSize: '16rem'
   },
   buttonContainer: {
-    margin: 5
+    margin: '5rem'
   },
   walletWrapper: {
     flex: 1,
     top: 0,
-    left: 5,
-    right: 5,
-    bottom: 50,
-    margin: 15,
+    left: '5rem',
+    right: '5rem',
+    bottom: '50rem',
+    margin: '15rem',
     position: 'absolute',
     flexDirection: 'column'
   },
   sendSummaryWrapper: {
-    margin: 10,
-    marginTop: 20
+    margin: '10rem',
+    marginTop: '20rem'
   },
   sendSummaryHighlight: {
     color: AppColors.concealOrange
@@ -239,17 +226,17 @@ const styles = StyleSheet.create({
     position: 'absolute'
   },
   addressWrapper: {
-    top: 10,
-    left: 10,
-    right: 10,
-    bottom: 80,
+    top: '10rem',
+    left: '10rem',
+    right: '10rem',
+    bottom: '80rem',
     borderRadius: 10,
     position: 'absolute'
   },
   footer: {
-    bottom: 10,
-    left: 20,
-    right: 20,
+    bottom: '10rem',
+    left: '20rem',
+    right: '20rem',
     position: 'absolute',
     flex: 1,
     alignItems: 'stretch',
@@ -260,27 +247,29 @@ const styles = StyleSheet.create({
     flex: 1
   },
   footerBtnRight: {
-    marginLeft: 5
+    marginLeft: '5rem'
   },
   footerBtnLeft: {
-    marginRight: 5
+    marginRight: '5rem'
   },
   summaryLabel: {
-    color: AppColors.concealOrange
+    color: AppColors.concealOrange,
+    fontSize: '12rem'
   },
   summaryText: {
-    color: AppColors.concealTextColor
+    color: AppColors.concealTextColor,
+    fontSize: '14rem'
   },
   summaryList: {
     flex: 1,
-    margin: 10,
+    margin: '10rem',
     backgroundColor: AppColors.concealBackground
   },
   summaryItem: {
     backgroundColor: '#212529',
     borderWidth: 0,
-    paddingTop: 5,
-    paddingBottom: 5,
+    paddingTop: '5rem',
+    paddingBottom: '5rem',
     borderBottomWidth: 1,
     borderBottomColor: AppColors.concealBackground,
   }
