@@ -131,7 +131,7 @@ const AddressBook = () => {
                           entryId: item.entryID
                         }
                       });
-                      NavigationService.navigate('EditAddress');
+                      NavigationService.navigate('EditAddress', { callback: null });
                     }}
                     text="EDIT"
                   />
