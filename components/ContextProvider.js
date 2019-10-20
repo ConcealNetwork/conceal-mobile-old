@@ -128,7 +128,19 @@ const AppContextProvider = props => {
     let message;
     let msgType;
     Api.getUser()
-      .then(res => dispatch({ type: 'USER_LOADED', user: res.message }))
+      .then(res => { dispatch({ type: 'USER_LOADED', user: res.message }); })
+      .catch(err => { message = `ERROR ${err}` })
+      .finally(() => {
+        showMessage(message, msgType);
+      });
+  };
+
+  const getMessages = () => {
+    logger.log('GETTING MESSAGES...');
+    let message;
+    let msgType;
+    Api.getMessages()
+      .then(res => { dispatch({ type: 'MESSAGES_LOADED', messages: res.message }); })
       .catch(err => { message = `ERROR ${err}` })
       .finally(() => {
         showMessage(message, msgType);
@@ -470,6 +482,7 @@ const AppContextProvider = props => {
       getUser();
       check2FA();
       getWallets();
+      getMessages();
       getBlockchainHeight();
       getMarketPrices();
       getPrices();

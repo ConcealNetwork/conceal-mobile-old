@@ -2,11 +2,12 @@ import React from 'react';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
 
-
 import Wallet from '../screens/Wallet';
 import Wallets from '../screens/Wallets';
 import AddressBook from '../screens/AddressBook';
 import EditAddress from '../screens/EditAddress';
+import SendMessage from '../screens/SendMessage';
+import Messages from '../screens/Messages';
 import Send from '../screens/Send';
 import SendConfirm from '../screens/SendConfirm';
 import Receive from '../screens/Receive';
@@ -73,6 +74,18 @@ const AppNavigator = createStackNavigator(
     },
     EditAddress: {
       screen: EditAddress,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    Messages: {
+      screen: Messages,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    SendMessage: {
+      screen: SendMessage,
       navigationOptions: {
         header: null,
       },

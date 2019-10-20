@@ -170,6 +170,23 @@ export default class ApiHelper {
       });
   };
 
+  getMessages = () => {
+    return this.fetch(`${this.apiURL}/wallet/messages`, { method: 'GET' })
+      .then(res => Promise.resolve(res));
+  };
+
+  sendMessage = (message, address, wallet) => {
+    const body = {
+      message: message,
+      address: address,
+      wallet: wallet
+    };
+    return this.fetch(`${this.apiURL}/wallet/send-message`, { method: 'POST', body: JSON.stringify(body) })
+      .then(res => {
+        Promise.resolve(res);
+      });
+  };
+
   _checkStatus = response => {
     if (response.status >= 200 && response.status < 300) {
       return response;

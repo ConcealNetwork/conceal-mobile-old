@@ -37,6 +37,13 @@ const Wallet = () => {
         placement="left"
         containerStyle={AppStyles.appHeader}
         centerComponent={{ text: 'Selected Wallet', style: AppStyles.appHeaderText }}
+        rightComponent={<Icon
+          onPress={() => { NavigationService.navigate('Settings'); }}
+          name='md-settings'
+          type='ionicon'
+          color='white'
+          size={32 * getAspectRatio()}
+        />}
       />
       {currWallet
         ? (<View style={styles.walletWrapper}>
@@ -63,8 +70,8 @@ const Wallet = () => {
             </View>
             <Icon
               containerStyle={[styles.iconGeneral, styles.iconSettings]}
-              onPress={() => NavigationService.navigate('Settings')}
-              name='md-settings'
+              onPress={() => NavigationService.navigate('Messages')}
+              name='md-mail'
               type='ionicon'
               color='#FFFFFF'
               size={40 * getAspectRatio()}

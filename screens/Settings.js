@@ -1,12 +1,20 @@
 import React, { useContext } from 'react';
 import { Icon, Header, ListItem } from 'react-native-elements';
-import { ScrollView, Text, View, StyleSheet, FlatList } from 'react-native';
 import NavigationService from '../helpers/NavigationService';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { AppContext } from '../components/ContextProvider';
 import { getAspectRatio } from '../helpers/utils';
 import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
+import AppConf from '../app.json';
+import {
+  Text,
+  View,
+  Picker,
+  FlatList,
+  ScrollView,
+  StyleSheet
+} from 'react-native';
 
 
 const Settings = () => {
@@ -34,6 +42,11 @@ const Settings = () => {
       value: userSettings.twoFAEnabled ? 'Two Factor Authentication is ON' : 'Two Factor Authentication is OFF',
       title: 'Visit: "https://conceal.cloud" to change',
       icon: 'md-lock'
+    },
+    {
+      value: AppConf.expo.version,
+      title: 'Conceal Mobile version',
+      icon: 'md-information'
     }
   ];
 

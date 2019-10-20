@@ -18,7 +18,8 @@ const useAppState = () => {
       redirectToReferrer: false,
       sendTxResponse: null,
       userLoaded: false,
-      walletsLoaded: false
+      walletsLoaded: false,
+      messagesLoaded: false,
     },
     markets: {
       stex: {
@@ -64,6 +65,9 @@ const useAppState = () => {
         addrListVisible: false,
         sendConfirmVisible: false,
         securePasswordEntry: true
+      },
+      sendMessage: {
+        addrListVisible: false
       },
       scanCode: {
         hasCameraPermission: null,
@@ -121,6 +125,18 @@ const useAppState = () => {
             ...state.user,
             ...action.user,
           },
+        };
+        break;
+      case 'MESSAGES_LOADED':
+        result = {
+          ...state,
+          layout: {
+            ...state.layout,
+            messagesLoaded: true,
+          },
+          messages: {
+            ...action.messages
+          }
         };
         break;
       case '2FA_CHECK':
@@ -332,6 +348,7 @@ const useAppState = () => {
             userLoaded: false,
             walletsLoaded: false,
             loginFinished: false,
+            messagesLoaded: false,
           },
           user: {
             ...state.user,

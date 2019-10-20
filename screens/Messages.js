@@ -1,0 +1,160 @@
+import React, { useContext } from 'react';
+import { Icon, Header, CheckBox } from 'react-native-elements';
+import NavigationService from '../helpers/NavigationService';
+import EStyleSheet from 'react-native-extended-stylesheet';
+import { AppContext } from '../components/ContextProvider';
+import ConcealButton from '../components/ccxButton';
+import { AppColors } from '../constants/Colors';
+import AppStyles from '../components/Style';
+import Moment from 'moment';
+import {
+  maskAddress,
+  formatOptions,
+  getAspectRatio,
+  format0Decimals,
+  format2Decimals,
+  format4Decimals,
+  format6Decimals,
+  format8Decimals
+} from '../helpers/utils';
+import {
+  Alert,
+  Text,
+  View,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity
+} from 'react-native';
+
+const Messages = () => {
+  const { actions, state } = useContext(AppContext);
+  const { appSettings, layout, messages, appData } = state;
+  const { messagesLoaded } = layout;
+  let messageList = [];
+  let counter = 0;  
+
+  Object.keys(messages).forEach(item => {
+    messages[item].forEach(function (element) {
+      counter++;
+
+      messageList.push({
+        id: counter.toString(),
+        address: item,
+        message: element.message,
+        timestamp: element.timestamp,
+        sdm: element.sdm
+      });
+    });
+  });
+
+  return (
+    <View style={styles.pageWrapper}>
+      <Header
+        placement="left"
+        containerStyle={AppStyles.appHeader}
+        leftComponent={<Icon
+          onPress={() => NavigationService.goBack()}
+          name='md-return-left'
+          type='ionicon'
+          color='white'
+          size={32 * getAspectRatio()}
+        />}
+        centerComponent={{ text: 'Messages', style: AppStyles.appHeaderText }}
+        rightComponent={messagesLoaded ?
+          (< Icon
+            onPress={() => NavigationService.navigate('SendMessage') }
+            name='md-add-circle-outline'
+            type='ionicon'
+            color='white'
+            size={32 * getAspectRatio()}
+          />) : null}
+      />
+      <View style={styles.walletsWrapper}>
+        {layout.userLoaded && messageList.length === 0
+          ? (<View style={styles.emptyMessagesWrapper}>
+            <Text style={styles.emptyMessagesText}>
+              You have no messages currently. When someone will send you a message it will be visible here.
+            </Text>
+          </View>)
+          : (<FlatList
+            style={styles.flatList}
+            data={messageList}
+            showsVerticalScrollIndicator={false}
+            keyExtractor={item => item.id}
+            renderItem={({ item }) =>
+              <View style={(item.addr === appData.common.selectedWallet) ? [styles.flatview, styles.walletSelected] : styles.flatview}>
+                <TouchableOpacity onPress={() => showMessage(item)}>
+                  <View>
+                    <Text style={styles.address}>{maskAddress(item.address)}</Text>
+                    <Text style={styles.message}>{item.message}</Text>
+                    <Text style={styles.timestamp}>{Moment(item.timestamp).format('LLLL')}</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            }
+          />)
+        }
+      </View>
+    </View>
+  );
+};
+
+const styles = EStyleSheet.create({
+  pageWrapper: {
+    flex: 1,
+    backgroundColor: 'rgb(40, 45, 49)'
+  },
+  selectedWrapper: {
+    position: 'absolute',
+    right: 0,
+    top: '15rem'
+  },
+  icon: {
+    color: 'orange'
+  },
+  flatList: {
+    height: '100%',
+  },
+  flatview: {
+    backgroundColor: '#212529',
+    justifyContent: 'center',
+    borderColor: AppColors.concealBorderColor,
+    borderRadius: 10,
+    marginBottom: '5rem',
+    borderWidth: 1,
+    marginTop: '5rem',
+    padding: '20rem',
+  },
+  address: {
+    color: '#FFA500',
+    fontSize: '14rem'
+  },
+  message: {
+    color: '#FFFFFF',
+    fontSize: '18rem'
+  },
+  timestamp: {
+    color: '#FFA500',
+    fontSize: '14rem'
+  },
+  buttonContainer: {
+    margin: '5rem'
+  },
+  walletsWrapper: {
+    flex: 1,
+    padding: '10rem'
+  },
+  emptyMessagesWrapper: {
+    flex: 1,
+    padding: '20rem',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  emptyMessagesText: {
+    fontSize: '18rem',
+    color: '#FFFFFF',
+    textAlign: 'center'
+  }
+});
+
+export default Messages;
