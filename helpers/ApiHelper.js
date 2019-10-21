@@ -175,16 +175,16 @@ export default class ApiHelper {
       .then(res => Promise.resolve(res));
   };
 
-  sendMessage = (message, address, wallet) => {
+  sendMessage = (message, address, wallet, twoFACode, password) => {
     const body = {
       message: message,
       address: address,
       wallet: wallet
     };
+    if (twoFACode && twoFACode !== '') body.code = twoFACode;
+    if (password && password !== '') body.password = password;
     return this.fetch(`${this.apiURL}/wallet/send-message`, { method: 'POST', body: JSON.stringify(body) })
-      .then(res => {
-        Promise.resolve(res);
-      });
+      .then(res => Promise.resolve(res));
   };
 
   _checkStatus = response => {

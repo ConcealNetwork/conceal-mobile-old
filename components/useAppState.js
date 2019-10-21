@@ -309,6 +309,11 @@ const useAppState = () => {
           ...state
         };
         break;
+      case 'MESSAGE_SENT':
+        result = {
+          ...state
+        };
+        break;
       case 'APP_UPDATED':
         result = {
           ...state,

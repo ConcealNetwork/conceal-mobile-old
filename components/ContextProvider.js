@@ -147,6 +147,29 @@ const AppContextProvider = props => {
       });
   };
 
+  const sendMessage = (msg, address, wallet, password) => {
+    logger.log('SENDING MESSAGE...');
+    dispatch({ type: 'FORM_SUBMITTED', value: true });
+    let message;
+    let msgType;
+    Api.sendMessage(msg, address, wallet, null, password)
+      .then(res => {
+        if (res.result === 'success') {
+          dispatch({ type: 'MESSAGE_SENT', res });
+          getWallets();
+          NavigationService.goBack();
+          message = 'Message was successfully sent to the recipient';
+          msgType = 'info';
+        } else {
+          message = res.message;
+        }
+      })
+      .finally(() => {
+        dispatch({ type: 'FORM_SUBMITTED', value: false });
+        showMessage(message, msgType);
+      });
+  };
+
   const addContact = (contact, extras, callback) => {
     const { label, address, paymentID, entryID, edit, id } = contact;
     let message;
@@ -455,6 +478,7 @@ const AppContextProvider = props => {
     check2FA,
     update2FA,
     sendPayment,
+    sendMessage,
     createWallet,
     getWallets,
     switchWallet,

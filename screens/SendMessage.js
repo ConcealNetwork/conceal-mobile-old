@@ -11,12 +11,7 @@ import { sprintf } from 'sprintf-js';
 import {
   maskAddress,
   formatOptions,
-  getAspectRatio,
-  format0Decimals,
-  format2Decimals,
-  format4Decimals,
-  format6Decimals,
-  format8Decimals
+  getAspectRatio
 } from '../helpers/utils';
 import {
   Text,
@@ -125,15 +120,14 @@ const SendMessage = () => {
             }
           />
         </TouchableOpacity>
-        <View
-          style={{
-            borderBottomColor: '#000000',
-            borderBottomWidth: 1,
-          }}>
+        <View style={styles.messageWrapper}>
           <TextInput
             multiline
+            maxLength={280}
             numberOfLines={4}
+            style={styles.messageText}
             placeholder="Write your message here..."
+            placeholderTextColor={AppColors.placeholderTextColor}
             onChangeText={text => {
               setAppData({
                 sendMessage: {
@@ -144,6 +138,7 @@ const SendMessage = () => {
             value={state.appData.sendMessage.message}
           />
         </View>
+        <Text style={styles.messageText}>{state.appData.sendMessage.message ? 280 - state.appData.sendMessage.message.length : 280} chars of 280 left</Text>
       </ScrollView>
       <Overlay
         isVisible={state.appData.sendMessage.addrListVisible}
@@ -185,7 +180,14 @@ const SendMessage = () => {
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnLeft]}
           disabled={!this.isFormValid()}
-          onPress={() => NavigationService.navigate('SendConfirm')}
+          onPress={() => {
+            actions.sendMessage(
+              state.appData.sendMessage.message,
+              state.appData.sendMessage.toAddress,
+              currWallet.addr,
+              'philosophem'
+            );
+          }}
           text="SEND"
         />
         <ConcealButton
@@ -221,11 +223,6 @@ const styles = EStyleSheet.create({
   addressLabel: {
     color: "#FFFFFF",
     fontSize: '18rem'
-  },
-  fromAddress: {
-    fontSize: '18rem',
-    color: "#FFA500",
-    textAlign: 'center'
   },
   toAddress: {
     color: "#FFFFFF",
@@ -340,9 +337,16 @@ const styles = EStyleSheet.create({
   },
   lockedText: {
     color: '#FF0000'
+  },
+  messageWrapper: {
+    borderBottomColor: 'rgb(55, 55, 55)',
+    borderBottomWidth: 1,
+    margin: '10rem'
+  },
+  messageText: {
+    fontSize: '18rem',
+    color: AppColors.concealTextColor,
   }
-
 });
-
 
 export default SendMessage;
