@@ -67,7 +67,8 @@ const useAppState = () => {
         securePasswordEntry: true
       },
       sendMessage: {
-        addrListVisible: false
+        addrListVisible: false,
+        securePasswordEntry: true
       },
       scanCode: {
         hasCameraPermission: null,

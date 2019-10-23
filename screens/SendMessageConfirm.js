@@ -10,12 +10,7 @@ import React, { useContext } from "react";
 import {
   maskAddress,
   formatOptions,
-  getAspectRatio,
-  format0Decimals,
-  format2Decimals,
-  format4Decimals,
-  format6Decimals,
-  format8Decimals
+  getAspectRatio
 } from '../helpers/utils';
 import {
   Text,
@@ -26,7 +21,7 @@ import {
   ScrollView
 } from "react-native";
 
-const SendConfirm = () => {
+const SendMessageConfirm = () => {
   const { state, actions } = useContext(AppContext);
   const { setAppData } = actions;
   const { userSettings, layout, wallets, appData } = state;
@@ -46,19 +41,10 @@ const SendConfirm = () => {
     });
   }
 
-  let totalAmount = parseFloat(state.appData.sendScreen.toAmount);
-  totalAmount = totalAmount + 0.0001;
-
-  addSummaryItem(sprintf('%s CCX', totalAmount.toLocaleString(undefined, format6Decimals)), 'You are sending', 'md-cash');
   addSummaryItem(maskAddress(currWallet.addr), 'From address', 'md-mail');
-  addSummaryItem(maskAddress(state.appData.sendScreen.toAddress), 'To address', 'md-mail');
-  if (state.appData.sendScreen.toPaymendId) {
-    addSummaryItem(maskAddress(state.appData.sendScreen.toPaymendId), 'Payment ID', 'md-key');
-  }
-  if (state.appData.sendScreen.toLabel) {
-    addSummaryItem(state.appData.sendScreen.toLabel, 'Label', 'md-eye');
-  }
+  addSummaryItem(maskAddress(state.appData.sendMessage.toAddress), 'To address', 'md-mail');
   addSummaryItem('0.0001 CCX', 'Transaction Fee', 'md-cash');
+  addSummaryItem(state.appData.sendMessage.message, 'Message', 'md-mail');
 
   // key extractor for the list
   keyExtractor = (item, index) => index.toString();
@@ -81,19 +67,18 @@ const SendConfirm = () => {
 
   toogleSecurePassword = () => {
     setAppData({
-      sendScreen: {
-        securePasswordEntry: !state.appData.sendScreen.securePasswordEntry
+      sendMessage: {
+        securePasswordEntry: !state.appData.sendMessage.securePasswordEntry
       }
     });
   }
 
-  sendPayment = () => {
-    actions.sendPayment(
+  sendMessage = () => {
+    actions.sendMessage(
+      state.appData.sendMessage.message,
+      state.appData.sendMessage.toAddress,
       currWallet.addr,
-      state.appData.sendScreen.toAddress,
-      state.appData.sendScreen.toPaymendId,
-      state.appData.sendScreen.toAmount,
-      '', password
+      password
     );
   }
 
@@ -121,7 +106,7 @@ const SendConfirm = () => {
           inputStyle={styles.password}
           containerStyle={styles.sendInput}
           textContentType="password"
-          secureTextEntry={state.appData.sendScreen.securePasswordEntry}
+          secureTextEntry={state.appData.sendMessage.securePasswordEntry}
           rightIcon={
             <Icon
               onPress={() => this.toogleSecurePassword()}
@@ -142,7 +127,7 @@ const SendConfirm = () => {
       <View style={styles.footer}>
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnLeft]}
-          onPress={() => this.sendPayment()}
+          onPress={() => this.sendMessage()}
           disabled={!formValid}
           text="SEND"
         />
@@ -270,4 +255,5 @@ const styles = EStyleSheet.create({
   }
 });
 
-export default SendConfirm;
+
+export default SendMessageConfirm;

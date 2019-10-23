@@ -157,7 +157,7 @@ const AppContextProvider = props => {
         if (res.result === 'success') {
           dispatch({ type: 'MESSAGE_SENT', res });
           getWallets();
-          NavigationService.goBack();
+          NavigationService.goBack(2);
           message = 'Message was successfully sent to the recipient';
           msgType = 'info';
         } else {
@@ -448,7 +448,7 @@ const AppContextProvider = props => {
         if (res.result === 'success') {
           dispatch({ type: 'PAYMENT_SENT', res });
           getWallets();
-          NavigationService.navigate('Wallet');
+          NavigationService.goBack(2);
           message = 'Payment was successfully sent to the recipient';
           msgType = 'info';
         } else {

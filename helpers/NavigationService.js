@@ -15,10 +15,12 @@ function navigate(routeName, params) {
   );
 }
 
-function goBack() {
-  _navigator.dispatch(
-    NavigationActions.back()
-  );
+function goBack(steps) {
+  for (i = 0; i < (steps ? steps : 1); i++) {
+    _navigator.dispatch(
+      NavigationActions.back()
+    );
+  }
 }
 
 export default {

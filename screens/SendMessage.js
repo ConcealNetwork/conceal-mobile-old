@@ -138,7 +138,7 @@ const SendMessage = () => {
             value={state.appData.sendMessage.message}
           />
         </View>
-        <Text style={styles.messageText}>{state.appData.sendMessage.message ? 280 - state.appData.sendMessage.message.length : 280} chars of 280 left</Text>
+        <Text style={styles.messageCharsLeft}>{state.appData.sendMessage.message ? 280 - state.appData.sendMessage.message.length : 280} chars of 280 left</Text>
       </ScrollView>
       <Overlay
         isVisible={state.appData.sendMessage.addrListVisible}
@@ -180,14 +180,7 @@ const SendMessage = () => {
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnLeft]}
           disabled={!this.isFormValid()}
-          onPress={() => {
-            actions.sendMessage(
-              state.appData.sendMessage.message,
-              state.appData.sendMessage.toAddress,
-              currWallet.addr,
-              'philosophem'
-            );
-          }}
+          onPress={() => NavigationService.navigate('SendMessageConfirm')}
           text="SEND"
         />
         <ConcealButton
@@ -344,6 +337,12 @@ const styles = EStyleSheet.create({
     margin: '10rem'
   },
   messageText: {
+    fontSize: '18rem',
+    marginBottom: '10rem',
+    color: AppColors.concealTextColor,
+  },
+  messageCharsLeft: {
+    margin: '10rem',
     fontSize: '18rem',
     color: AppColors.concealTextColor,
   }
