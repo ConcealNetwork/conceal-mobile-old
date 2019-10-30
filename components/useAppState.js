@@ -66,6 +66,9 @@ const useAppState = () => {
         sendConfirmVisible: false,
         securePasswordEntry: true
       },
+      messages: {
+        filterState: 0
+      },
       sendMessage: {
         addrListVisible: false,
         securePasswordEntry: true
@@ -129,6 +132,7 @@ const useAppState = () => {
         };
         break;
       case 'MESSAGES_LOADED':
+        console.log(action.messages);
         result = {
           ...state,
           layout: {

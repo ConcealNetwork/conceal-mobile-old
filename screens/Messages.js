@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Icon, Header, CheckBox } from 'react-native-elements';
+import { Icon, Header, ButtonGroup } from 'react-native-elements';
 import NavigationService from '../helpers/NavigationService';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { AppContext } from '../components/ContextProvider';
@@ -28,24 +28,38 @@ import {
 
 const Messages = () => {
   const { actions, state } = useContext(AppContext);
+  const { setAppData } = actions;
   const { appSettings, layout, messages, appData } = state;
+  const filterButtons = ['All', 'Inbound', 'Outbound'];
   const { messagesLoaded } = layout;
   let messageList = [];
-  let counter = 0;  
+  let counter = 0;
 
   Object.keys(messages).forEach(item => {
     messages[item].forEach(function (element) {
       counter++;
 
-      messageList.push({
-        id: counter.toString(),
-        address: item,
-        message: element.message,
-        timestamp: element.timestamp,
-        sdm: element.sdm
-      });
+      if ((state.appData.messages.filterState == 0) || ((element.type == 'in') && (state.appData.messages.filterState == 1)) || ((element.type == 'out') && (state.appData.messages.filterState == 2))) {
+        messageList.push({
+          id: counter.toString(),
+          address: item,
+          message: element.message,
+          timestamp: element.timestamp,
+          type: element.type,
+          sdm: element.sdm
+        });
+      }
     });
   });
+
+
+  changeFilter = (selectedIndex) => {
+    setAppData({
+      messages: {
+        filterState: selectedIndex
+      }
+    });
+  }
 
   return (
     <View style={styles.pageWrapper}>
@@ -62,14 +76,25 @@ const Messages = () => {
         centerComponent={{ text: 'Messages', style: AppStyles.appHeaderText }}
         rightComponent={messagesLoaded ?
           (< Icon
-            onPress={() => NavigationService.navigate('SendMessage') }
+            onPress={() => NavigationService.navigate('SendMessage')}
             name='md-add-circle-outline'
             type='ionicon'
             color='white'
             size={32 * getAspectRatio()}
           />) : null}
       />
-      <View style={styles.walletsWrapper}>
+      <View style={styles.messagesWrapper}>
+        <View>
+          <ButtonGroup
+            onPress={this.changeFilter}
+            selectedIndex={state.appData.messages.filterState}
+            buttons={filterButtons}
+            buttonStyle={styles.filterButton}
+            containerStyle={styles.filterButtons}
+            innerBorderStyle={styles.filterButtonBorder}
+            selectedButtonStyle={styles.filterButtonSelected}
+          />
+        </View>
         {layout.userLoaded && messageList.length === 0
           ? (<View style={styles.emptyMessagesWrapper}>
             <Text style={styles.emptyMessagesText}>
@@ -88,6 +113,7 @@ const Messages = () => {
                     <Text style={styles.address}>{maskAddress(item.address)}</Text>
                     <Text style={styles.message}>{item.message}</Text>
                     <Text style={styles.timestamp}>{Moment(item.timestamp).format('LLLL')}</Text>
+                    <Text style={item.type == 'in' ? [styles.type, styles.typein] : [styles.type, styles.typeout]}>{item.type == 'in' ? "Inbound" : "Otbound"}</Text>
                   </View>
                 </TouchableOpacity>
               </View>
@@ -129,6 +155,15 @@ const styles = EStyleSheet.create({
     color: '#FFA500',
     fontSize: '14rem'
   },
+  type: {
+    fontSize: '14rem'
+  },
+  typein: {
+    color: 'green',
+  },
+  typeout: {
+    color: 'red',
+  },
   message: {
     color: '#FFFFFF',
     fontSize: '18rem'
@@ -140,7 +175,7 @@ const styles = EStyleSheet.create({
   buttonContainer: {
     margin: '5rem'
   },
-  walletsWrapper: {
+  messagesWrapper: {
     flex: 1,
     padding: '10rem'
   },
@@ -154,6 +189,28 @@ const styles = EStyleSheet.create({
     fontSize: '18rem',
     color: '#FFFFFF',
     textAlign: 'center'
+  },
+  msgDirection: {
+    position: 'absolute',
+    width: '32rem',
+    height: '32rem',
+    right: '10rem',
+    top: '20rem',
+  },
+  filterButtons: {
+    height: '45rem',
+    borderColor: AppColors.concealBorderColor
+  },
+  filterButton: {
+    borderColor: AppColors.concealOrange,
+    backgroundColor: AppColors.concealBackground
+  },
+  filterButtonSelected: {
+    borderColor: AppColors.concealOrange,
+    backgroundColor: AppColors.concealOrange
+  },
+  filterButtonBorder: {
+    color: AppColors.concealBorderColor
   }
 });
 
