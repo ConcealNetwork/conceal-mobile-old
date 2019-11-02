@@ -52,6 +52,13 @@ const Messages = () => {
     });
   });
 
+  // sort the array by timestamp
+  messageList.sort(function (a, b) {
+    // Turn your strings into dates, and then subtract them
+    // to get a value that is either negative, positive, or zero.
+    return Moment(b.timestamp).toDate() - Moment(a.timestamp).toDate();
+  });
+
 
   changeFilter = (selectedIndex) => {
     setAppData({

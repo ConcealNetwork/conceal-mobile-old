@@ -97,7 +97,7 @@ const SendMessage = () => {
             editable={false}
             placeholder='Select recipient address...'
             containerStyle={styles.sendInput}
-            value={state.appData.sendMessage.toAddress}
+            value={state.appData.sendMessage.toLabel ? state.appData.sendMessage.toLabel : maskAddress(state.appData.sendMessage.toAddress)}
             rightIcon={
               <Icon
                 onPress={() => {
@@ -153,7 +153,7 @@ const SendMessage = () => {
               showsVerticalScrollIndicator={false}
               renderItem={({ item }) =>
                 (currWallet.addr !== item.address)
-                  ? (<TouchableOpacity onPress={() => setAppData({ sendMessage: { addrListVisible: false, toAddress: item.address } })}>
+                  ? (<TouchableOpacity onPress={() => setAppData({ sendMessage: { addrListVisible: false, toAddress: item.address, toLabel: item.label } })}>
                     <View style={styles.flatview}>
                       <View>
                         <Text style={styles.addressLabel}>{item.label}</Text>
@@ -343,8 +343,8 @@ const styles = EStyleSheet.create({
   },
   messageCharsLeft: {
     margin: '10rem',
-    fontSize: '18rem',
-    color: AppColors.concealTextColor,
+    fontSize: '16rem',
+    color: AppColors.concealOrange,
   }
 });
 

@@ -222,7 +222,7 @@ const SendScreen = () => {
             editable={false}
             placeholder='Select recipient address...'
             containerStyle={styles.sendInput}
-            value={state.appData.sendScreen.toAddress}
+            value={state.appData.sendScreen.toLabel ? state.appData.sendScreen.toLabel : maskAddress(state.appData.sendScreen.toAddress)}
             rightIcon={
               <Icon
                 onPress={() => {

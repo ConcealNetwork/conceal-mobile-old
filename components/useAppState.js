@@ -132,7 +132,6 @@ const useAppState = () => {
         };
         break;
       case 'MESSAGES_LOADED':
-        console.log(action.messages);
         result = {
           ...state,
           layout: {
