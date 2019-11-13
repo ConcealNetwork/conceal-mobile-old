@@ -17,7 +17,6 @@ const AppContextProvider = props => {
 
   const loginUser = options => {
     const { id } = options;
-    console.log(options);
     if (options.twoFACode) {
       options.uuid = Expo.Constants.installationId;
     }
@@ -518,6 +517,7 @@ const AppContextProvider = props => {
     if (user.loggedIn && intervals.length === 0) {
       const appIntervals = [
         { fn: getWallets, time: userSettings.updateWalletsInterval },
+        { fn: getMessages, time: userSettings.updateMessagesInterval },
         { fn: getBlockchainHeight, time: appSettings.updateBlockchainHeightInterval },
         { fn: getMarketPrices, time: appSettings.updateMarketPricesInterval },
         { fn: getPrices, time: appSettings.updateMarketPricesInterval },

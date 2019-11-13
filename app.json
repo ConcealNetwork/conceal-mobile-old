@@ -8,7 +8,7 @@
       "ios",
       "android"
     ],
-    "version": "1.0.6",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "splash": {
@@ -17,7 +17,8 @@
       "backgroundColor": "#232323"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "enabled": false
     },
     "assetBundlePatterns": [
       "**/*"
@@ -27,7 +28,7 @@
     },
     "android": {
       "package": "com.ConcealNetwork.ConcealMobile",
-      "versionCode": 16,
+      "versionCode": 17,
       "permissions": [
         "CAMERA"
       ]

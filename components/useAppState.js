@@ -58,6 +58,7 @@ const useAppState = () => {
       twoFACode: '',
       twoFAEnabled: null,
       updateWalletsInterval: 60,  // seconds
+      updateMessagesInterval: 60,  // seconds
     },
     wallets: {},
     appData: {
