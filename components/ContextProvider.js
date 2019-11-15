@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 
 import useAppState from './useAppState';
 import NavigationService from '../helpers/NavigationService';
-import { showMessage } from '../helpers/utils';
+import { showMessageDialog } from '../helpers/utils';
 import AuthHelper from '../helpers/AuthHelper';
 import ApiHelper from '../helpers/ApiHelper';
 import { logger } from '../helpers/Logger';
@@ -38,10 +38,10 @@ const AppContextProvider = props => {
           message = res.message;
         }
       })
-      .catch(err => showMessage(`ERROR ${err}`))
+      .catch(err => showMessageDialog(`ERROR ${err}`))
       .finally(() => {
         dispatch({ type: 'FORM_SUBMITTED', value: false });
-        showMessage(message, msgType);
+        showMessageDialog(message, msgType);
       });
   };
 
@@ -64,7 +64,7 @@ const AppContextProvider = props => {
       .catch(err => { message = `ERROR ${err}` })
       .finally(() => {
         dispatch({ type: 'FORM_SUBMITTED', value: false });
-        showMessage(message, msgType);
+        showMessageDialog(message, msgType);
       });
   };
 
@@ -87,7 +87,7 @@ const AppContextProvider = props => {
       })
       .catch(err => { message = `ERROR ${err}` })
       .finally(() => {
-        showMessage(message, msgType);
+        showMessageDialog(message, msgType);
       });
   };
 
@@ -109,7 +109,7 @@ const AppContextProvider = props => {
       .catch(err => { message = `ERROR ${err}` })
       .finally(() => {
         dispatch({ type: 'FORM_SUBMITTED', value: false });
-        showMessage(message, msgType);
+        showMessageDialog(message, msgType);
       });
   };
 
@@ -130,7 +130,7 @@ const AppContextProvider = props => {
       .then(res => { dispatch({ type: 'USER_LOADED', user: res.message }); })
       .catch(err => { message = `ERROR ${err}` })
       .finally(() => {
-        showMessage(message, msgType);
+        showMessageDialog(message, msgType);
       });
   };
 
@@ -142,7 +142,7 @@ const AppContextProvider = props => {
       .then(res => { dispatch({ type: 'MESSAGES_LOADED', messages: res.message }); })
       .catch(err => { message = `ERROR ${err}` })
       .finally(() => {
-        showMessage(message, msgType);
+        showMessageDialog(message, msgType);
       });
   };
 
@@ -165,7 +165,7 @@ const AppContextProvider = props => {
       })
       .finally(() => {
         dispatch({ type: 'FORM_SUBMITTED', value: false });
-        showMessage(message, msgType);
+        showMessageDialog(message, msgType);
       });
   };
 
@@ -189,7 +189,7 @@ const AppContextProvider = props => {
       .catch(err => { message = `ERROR ${err}` })
       .finally(() => {
         dispatch({ type: 'FORM_SUBMITTED', value: false });
-        showMessage(message, msgType);
+        showMessageDialog(message, msgType);
       });
   };
 
@@ -211,7 +211,7 @@ const AppContextProvider = props => {
       .catch(err => { message = `ERROR ${err}` })
       .finally(() => {
         dispatch({ type: 'FORM_SUBMITTED', value: false });
-        showMessage(message, msgType);
+        showMessageDialog(message, msgType);
       });
   };
 
@@ -230,7 +230,7 @@ const AppContextProvider = props => {
       })
       .catch(err => { message = `ERROR ${err}` })
       .finally(() => {
-        showMessage(message, msgType);
+        showMessageDialog(message, msgType);
       });
   };
 
@@ -254,7 +254,7 @@ const AppContextProvider = props => {
       .catch(err => { message = `ERROR ${err}` })
       .finally(() => {
         dispatch({ type: 'FORM_SUBMITTED', value: false });
-        showMessage(message, msgType);
+        showMessageDialog(message, msgType);
       });
   };
 
@@ -278,7 +278,7 @@ const AppContextProvider = props => {
       .catch(err => { message = `ERROR ${err}` })
       .finally(() => {
         dispatch({ type: 'FORM_SUBMITTED', value: false });
-        showMessage(message, msgType);
+        showMessageDialog(message, msgType);
       });
   };
 
@@ -318,7 +318,7 @@ const AppContextProvider = props => {
       .finally(() => {
         dispatch({ type: 'WALLETS_LOADED' });
         dispatch({ type: 'APP_UPDATED' });
-        showMessage(message, msgType);
+        showMessageDialog(message, msgType);
       });
   };
 
@@ -343,7 +343,7 @@ const AppContextProvider = props => {
         .catch(err => { message = `ERROR ${err}` })
         .finally(() => {
           dispatch({ type: 'FORM_SUBMITTED', value: false });
-          showMessage(message);
+          showMessageDialog(message);
         });
     }
   };
@@ -377,7 +377,7 @@ const AppContextProvider = props => {
       .finally(() => {
         getWallets();
         dispatch({ type: 'FORM_SUBMITTED', value: false });
-        showMessage(message, msgType);
+        showMessageDialog(message, msgType);
       });
   };
 
@@ -406,7 +406,7 @@ const AppContextProvider = props => {
       .finally(() => {
         getWallets();
         dispatch({ type: 'FORM_SUBMITTED', value: false });
-        showMessage(message, msgType);
+        showMessageDialog(message, msgType);
       });
   };
 
@@ -456,7 +456,7 @@ const AppContextProvider = props => {
       })
       .finally(() => {
         dispatch({ type: 'FORM_SUBMITTED', value: false });
-        showMessage(message, msgType);
+        showMessageDialog(message, msgType);
       });
   };
 

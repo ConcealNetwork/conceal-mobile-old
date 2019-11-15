@@ -6,6 +6,7 @@ import { AppLoading } from 'expo';
 import { Icon } from '@expo/vector-icons';
 import { Platform, StatusBar, View } from 'react-native';
 import { createAppContainer } from 'react-navigation';
+import FlashMessage from "react-native-flash-message";
 import ConcealLoader from './components/ccxLoader';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
@@ -70,6 +71,7 @@ const App = props => {
               NavigationService.setTopLevelNavigator(navigatorRef);
             }}
           />
+          <FlashMessage position="top" />
         </View>
       </AppContextProvider>
   )

@@ -1,7 +1,8 @@
 import { Share, Dimensions } from "react-native";
 import { appSettings } from '../constants/appSettings';
 import { AppColors } from '../constants/Colors';
-import Toast from 'react-native-root-toast';
+import { showMessage, hideMessage } from "react-native-flash-message";
+import EStyleSheet from 'react-native-extended-stylesheet';
 
 export const shareContent = async (content) => {
   try {
@@ -17,7 +18,7 @@ export const shareContent = async (content) => {
       // dismissed
     }
   } catch (error) {
-    showErrorToast(error.message);
+    showErrorMessage(error.message);
   }
 }
 
@@ -31,7 +32,7 @@ export const maskAddress = (address, maskingChar = '.', maskedChars = 8, charsPr
   }
 };
 
-export const showMessage = (message, msgType) => {
+export const showMessageDialog = (message, msgType) => {
   let toastMessage;
 
   if (message) {
@@ -43,39 +44,45 @@ export const showMessage = (message, msgType) => {
 
     if (toastMessage !== '') {
       if ((msgType || "error") === "error") {
-        showErrorToast(toastMessage);
+        showErrorMessage(toastMessage);
       } else if (msgType === "info") {
-        showSuccessToast(toastMessage);
+        showSuccessMessage(toastMessage);
       }
     }
   }
 }
 
-export const showErrorToast = (message) => {
-  let toast = Toast.show(message, {
-    backgroundColor: AppColors.concealErrorColor,
-    duration: Toast.durations.LONG,
-    opacity: 1,
-    position: 0,
-    animation: true,
-    hideOnPress: true,
-    shadow: true,
-    delay: 100
+export const showErrorMessage = (message) => {
+  showMessage({
+    duration: 3000,
+    message: message,
+    type: "danger",
+    titleStyle: styles.errorText,
   });
 };
 
-export const showSuccessToast = (message) => {
-  let toast = Toast.show(message, {
-    backgroundColor: AppColors.concealInfoColor,
-    duration: Toast.durations.SHORT,
-    opacity: 1,
-    position: 0,
-    animation: true,
-    hideOnPress: true,
-    shadow: true,
-    delay: 100
+export const showSuccessMessage = (message) => {
+  showMessage({
+    duration: 3000,
+    message: message,
+    type: "success",
+    titleStyle: styles.errorText,
   });
 };
+
+const styles = EStyleSheet.create({
+  successText: {
+    color: "#FFFFFF",
+    fontSize: '18rem',
+    paddingTop: '10rem'
+  },
+  errorText: {
+    color: "#FFFFFF",
+    fontSize: '18rem',
+    paddingTop: '10rem'
+  }
+});
+
 
 export const getAspectRatio = () => {
   return Dimensions.get('window').width / 360;

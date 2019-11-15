@@ -145,7 +145,7 @@ const Messages = () => {
             keyExtractor={item => item.id}
             renderItem={({ item }) =>
               <View style={(item.addr === appData.common.selectedWallet) ? [styles.flatview, styles.walletSelected] : styles.flatview}>
-                <TouchableOpacity onPress={() => showMessage(item)}>
+                <TouchableOpacity onPress={() => console.log("message")}>
                   <View>
                     <Text style={styles.address}>{maskAddress(item.address)}</Text>
                     <Text style={styles.message}>{item.message}</Text>
