@@ -68,6 +68,7 @@ const useAppState = () => {
         securePasswordEntry: true
       },
       messages: {
+        filterText: null,
         filterState: 0
       },
       sendMessage: {

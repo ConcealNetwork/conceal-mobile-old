@@ -3,6 +3,7 @@ import { Icon, Header, ButtonGroup } from 'react-native-elements';
 import NavigationService from '../helpers/NavigationService';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { AppContext } from '../components/ContextProvider';
+import ConcealTextInput from '../components/ccxTextInput';
 import ConcealButton from '../components/ccxButton';
 import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
@@ -32,14 +33,26 @@ const Messages = () => {
   const { appSettings, layout, messages, appData } = state;
   const filterButtons = ['All', 'Inbound', 'Outbound'];
   const { messagesLoaded } = layout;
+  let isValidItem = false;
   let messageList = [];
   let counter = 0;
 
   Object.keys(messages).forEach(item => {
     messages[item].forEach(function (element) {
+      isValidItem = true;
       counter++;
 
-      if ((state.appData.messages.filterState == 0) || ((element.type == 'in') && (state.appData.messages.filterState == 1)) || ((element.type == 'out') && (state.appData.messages.filterState == 2))) {
+      // check if direction filter is set and the type of the message is appropriate
+      if (((element.type == 'in') && (state.appData.messages.filterState == 2)) || ((element.type == 'out') && (state.appData.messages.filterState == 1))) {
+        isValidItem = false;
+      }
+
+      // check if the text filter is set
+      if (state.appData.messages.filterText && (element.message.toLowerCase().search(state.appData.messages.filterText.toLowerCase()) == -1)) {
+        isValidItem = false;
+      }
+
+      if (isValidItem) {
         messageList.push({
           id: counter.toString(),
           address: item,
@@ -102,6 +115,23 @@ const Messages = () => {
             selectedButtonStyle={styles.filterButtonSelected}
           />
         </View>
+        <ConcealTextInput
+          placeholder='Enter text to search...'
+          value={state.appData.messages.filterText}
+          onChangeText={(text) => {
+            setAppData({ messages: { filterText: text } });
+          }}
+          rightIcon={
+            <Icon
+              onPress={() => setAppData({ messages: { filterText: null } })}
+              name='md-trash'
+              type='ionicon'
+              color='white'
+              size={32 * getAspectRatio()}
+            />
+          }
+        />
+
         {layout.userLoaded && messageList.length === 0
           ? (<View style={styles.emptyMessagesWrapper}>
             <Text style={styles.emptyMessagesText}>
