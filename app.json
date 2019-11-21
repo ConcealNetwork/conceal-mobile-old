@@ -24,7 +24,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ConcealNetwork.ConcealMobile"
     },
     "android": {
       "package": "com.ConcealNetwork.ConcealMobile",
