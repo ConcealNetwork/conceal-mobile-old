@@ -20,10 +20,11 @@ import {
 
 
 const ResetPassword = props => {
-  const { state } = useContext(AppContext);
-  const { hidePanel, resetPassword } = props;
+  const { actions, state } = useContext(AppContext);
   const { layout } = state;
   const { formSubmitted, message } = layout;
+  const { resetPassword } = actions;
+  const { hidePanel } = props;
 
   const { value: email, bind: bindEmail } = useFormInput(global.username);
 
@@ -58,7 +59,10 @@ const ResetPassword = props => {
 
           <View style={styles.footer}>
             <ConcealButton
-              onPress={() => resetPassword({ email, id: 'resetPasswordForm' })}
+              onPress={() => {
+                resetPassword({ email, id: 'resetPasswordForm' });
+                hidePanel();
+              }}
               text='Send E-mail'
               accessibilityLabel="Send E-mail Button"
               disabled={formSubmitted || !formValid}

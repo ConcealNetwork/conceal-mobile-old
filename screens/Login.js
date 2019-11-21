@@ -128,11 +128,6 @@ const Login = () => {
         height="100%"
       >
         <ResetPassword
-          resetPassword={data => {
-            resetPassword(data);
-            Keyboard.dismiss();
-            resetPasswordPanel.hide();
-          }}
           hidePanel={() => setAppData({ login: { resetPasswordVisible: false } })}
         />
       </Overlay>
