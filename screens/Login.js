@@ -117,11 +117,6 @@ const Login = () => {
         height="100%"
       >
         <SignUp
-          signUpUser={data => {
-            signUpUser(data);
-            Keyboard.dismiss();
-            signUpPanel.hide();
-          }}
           hidePanel={() => setAppData({ login: { signUpVisible: false } })}
         />
       </Overlay>

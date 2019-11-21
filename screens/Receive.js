@@ -10,8 +10,8 @@ import AppStyles from '../components/Style';
 import {
   shareContent,
   getAspectRatio,
-  showErrorToast,
-  showSuccessToast
+  showErrorMessage,
+  showSuccessMessage
 } from '../helpers/utils';
 import {
   Text,
@@ -30,10 +30,9 @@ const Receive = () => {
 
   onCopyAddress = async (text) => {
     Clipboard.setString(text);
-    showSuccessToast('Copied address to the clipboard...');
+    showSuccessMessage('Copied address to the clipboard...');
   }
 
-  // You can manually hide the Toast, or it will automatically disappear after a `duration` ms timeout.
   return (
     <View style={styles.pageWrapper}>
       <Header

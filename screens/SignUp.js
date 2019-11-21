@@ -17,10 +17,12 @@ import {
 
 
 const SignUp = props => {
-  const { state } = useContext(AppContext);
-  const { hidePanel, signUpUser } = props;
+  const { actions, state } = useContext(AppContext);
   const { layout, userSettings } = state;
   const { formSubmitted, message } = layout;
+  const { signUpUser } = actions;
+  const { hidePanel } = props;
+
 
   const { value: userName, bind: bindUserName } = useFormInput('');
   const { value: email, bind: bindEmail } = useFormInput('');
@@ -72,7 +74,10 @@ const SignUp = props => {
 
       <View style={styles.footer}>
         <ConcealButton
-          onPress={() => signUpUser({ userName, email, password, id: 'signUpForm' })}
+          onPress={() => {
+            signUpUser({ userName, email, password, id: 'signUpForm' });
+            hidePanel();
+          }}
           text="Sign Up"
           accessibilityLabel="Sign Up Button"
           disabled={formSubmitted || !formValid}
