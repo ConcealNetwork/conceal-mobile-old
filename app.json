@@ -28,7 +28,7 @@
     },
     "android": {
       "package": "com.ConcealNetwork.ConcealMobile",
-      "versionCode": 18,
+      "versionCode": 19,
       "permissions": [
         "CAMERA"
       ]
