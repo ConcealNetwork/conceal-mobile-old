@@ -179,7 +179,8 @@ export default class ApiHelper {
     const body = {
       message: message,
       address: address,
-      wallet: wallet
+      wallet: wallet,
+      sdm: 0
     };
     if (twoFACode && twoFACode !== '') body.code = twoFACode;
     if (password && password !== '') body.password = password;
