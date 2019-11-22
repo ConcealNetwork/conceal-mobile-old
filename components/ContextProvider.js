@@ -156,6 +156,7 @@ const AppContextProvider = props => {
         if (res.result === 'success') {
           dispatch({ type: 'MESSAGE_SENT', res });
           getWallets();
+          getMessages();
           NavigationService.goBack(2);
           message = 'Message was successfully sent to the recipient';
           msgType = 'info';
