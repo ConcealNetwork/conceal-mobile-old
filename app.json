@@ -8,7 +8,7 @@
       "ios",
       "android"
     ],
-    "version": "1.2.2",
+    "version": "1.2.3",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "splash": {
@@ -29,7 +29,7 @@
     },
     "android": {
       "package": "com.ConcealNetwork.ConcealMobile",
-      "versionCode": 21,
+      "versionCode": 22,
       "permissions": [
         "CAMERA"
       ]
