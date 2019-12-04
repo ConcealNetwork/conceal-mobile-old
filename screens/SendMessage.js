@@ -5,6 +5,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import ConcealTextInput from '../components/ccxTextInput';
 import ConcealButton from '../components/ccxButton';
 import { AppColors } from '../constants/Colors';
+import SearchAddress from './SearchAddress';
 import AppStyles from '../components/Style';
 import React, { useContext } from "react";
 import { sprintf } from 'sprintf-js';
@@ -92,7 +93,7 @@ const SendMessage = () => {
         />}
       />
       <ScrollView contentContainerStyle={styles.walletWrapper}>
-        <TouchableOpacity onPress={() => setAppData({ sendMessage: { addrListVisible: true } })}>
+        <TouchableOpacity onPress={() => setAppData({ searchAddress: { addrListVisible: true } })}>
           <ConcealTextInput
             editable={false}
             placeholder='Select recipient address...'
@@ -140,42 +141,12 @@ const SendMessage = () => {
         </View>
         <Text style={styles.messageCharsLeft}>{state.appData.sendMessage.message ? 280 - state.appData.sendMessage.message.length : 280} chars of 280 left</Text>
       </ScrollView>
-      <Overlay
-        isVisible={state.appData.sendMessage.addrListVisible}
-        overlayBackgroundColor={AppColors.concealBackground}
-        width="100%"
-        height="100%"
-      >
-        <View style={styles.overlayWrapper}>
-          <View style={styles.addressWrapper}>
-            <FlatList
-              data={user.addressBook}
-              showsVerticalScrollIndicator={false}
-              renderItem={({ item }) =>
-                (currWallet.addr !== item.address)
-                  ? (<TouchableOpacity onPress={() => setAppData({ sendMessage: { addrListVisible: false, toAddress: item.address, toLabel: item.label } })}>
-                    <View style={styles.flatview}>
-                      <View>
-                        <Text style={styles.addressLabel}>{item.label}</Text>
-                        <Text style={styles.address}>Address: {maskAddress(item.address)}</Text>
-                        {item.paymentID ? (<Text style={styles.data}>Payment ID: {item.paymentID}</Text>) : null}
-                      </View>
-                    </View>
-                  </TouchableOpacity>)
-                  : null
-              }
-              keyExtractor={item => item.entryID.toString()}
-            />
-          </View>
-          <View style={styles.footer}>
-            <ConcealButton
-              style={[styles.footerBtn]}
-              onPress={() => setAppData({ sendMessage: { addrListVisible: false } })}
-              text="CLOSE"
-            />
-          </View>
-        </View>
-      </Overlay>
+      <SearchAddress
+        selectAddress={(item) => setAppData({ searchAddress: { addrListVisible: false }, sendMessage: { toAddress: item.address, toLabel: item.label } })}
+        closeOverlay={() => setAppData({ searchAddress: { addrListVisible: false } })}
+        addressData={user.addressBook}
+        currWallet={currWallet}
+      />
       <View style={styles.footer}>
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnLeft]}
@@ -201,21 +172,9 @@ const styles = EStyleSheet.create({
   icon: {
     color: "orange"
   },
-  flatview: {
-    backgroundColor: "#212529",
-    justifyContent: 'center',
-    borderRadius: 10,
-    marginBottom: '5rem',
-    marginTop: '5rem',
-    padding: '20rem',
-  },
   sendInput: {
     marginTop: '10rem',
     marginBottom: '20rem'
-  },
-  addressLabel: {
-    color: "#FFFFFF",
-    fontSize: '18rem'
   },
   toAddress: {
     color: "#FFFFFF",
@@ -224,10 +183,6 @@ const styles = EStyleSheet.create({
     textAlign: 'center',
     color: "#AAAAAA",
     fontSize: '24rem'
-  },
-  address: {
-    color: "#FFA500",
-    fontSize: '14rem'
   },
   data: {
     color: "#AAAAAA"
@@ -261,21 +216,6 @@ const styles = EStyleSheet.create({
   sendSummaryWrapper: {
     margin: '10rem',
     marginTop: '5rem'
-  },
-  overlayWrapper: {
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    position: 'absolute'
-  },
-  addressWrapper: {
-    top: '10rem',
-    left: '10rem',
-    right: '10rem',
-    bottom: '80rem',
-    borderRadius: '10rem',
-    position: 'absolute'
   },
   footer: {
     bottom: '10rem',

@@ -150,7 +150,7 @@ const Messages = () => {
                     <Text style={styles.address}>{maskAddress(item.address)}</Text>
                     <Text style={styles.message}>{item.message}</Text>
                     <Text style={styles.timestamp}>{Moment(item.timestamp).format('LLLL')}</Text>
-                    <Text style={item.type == 'in' ? [styles.type, styles.typein] : [styles.type, styles.typeout]}>{item.type == 'in' ? "Inbound" : "Otbound"}</Text>
+                    <Text style={item.type == 'in' ? [styles.type, styles.typein] : [styles.type, styles.typeout]}>{item.type == 'in' ? "Inbound" : "Outbound"}</Text>
                   </View>
                 </TouchableOpacity>
               </View>

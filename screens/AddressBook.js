@@ -48,6 +48,20 @@ const AddressBook = () => {
   const { actions, state } = useContext(AppContext);
   const { deleteContact, setAppData } = actions;
   const { layout, user } = state;
+  let addressList = [];
+
+  user.addressBook.forEach(function (value, index, array) {
+    isValidItem = true;
+
+    // check if the text filter is set
+    if (state.appData.addressBook.filterText && (value.label.toLowerCase().search(state.appData.addressBook.filterText.toLowerCase()) == -1)) {
+      isValidItem = false;
+    }
+
+    if (isValidItem) {
+      addressList.push(value);
+    }
+  });
 
   return (
     <View style={AppStyles.pageWrapper}>
@@ -81,16 +95,33 @@ const AddressBook = () => {
           size={32 * getAspectRatio()}
         />}
       />
-      <View style={styles.walletsWrapper}>
-        {layout.userLoaded && user.addressBook.length === 0
+      <ConcealTextInput
+        placeholder='Enter text to search...'
+        value={state.appData.addressBook.filterText}
+        containerStyle={styles.searchInput}
+        onChangeText={(text) => {
+          setAppData({ addressBook: { filterText: text } });
+        }}
+        rightIcon={
+          <Icon
+            onPress={() => setAppData({ addressBook: { filterText: null } })}
+            name='md-trash'
+            type='ionicon'
+            color='white'
+            size={32 * getAspectRatio()}
+          />
+        }
+      />
+      <View style={styles.addressListWrapper}>
+        {layout.userLoaded && addressList.length === 0
           ? (<View style={styles.emptyAddressBookWrapper}>
             <Text style={styles.emptyAddressBookText}>
-              You have no contacts saved in your address book.
+              You have no contacts saved in your address book, or search did not find any
               Add one by clicking on the button or when you are sending funds.
             </Text>
           </View>)
           : (<FlatList
-            data={user.addressBook}
+            data={addressList}
             showsVerticalScrollIndicator={false}
             keyExtractor={item => item.entryID.toString()}
             renderItem={({ item }) =>
@@ -100,7 +131,7 @@ const AddressBook = () => {
                   <Text style={styles.address}>Address: {maskAddress(item.address)}</Text>
                   {item.paymentID ? (<Text style={styles.data}>Payment ID: {item.paymentID}</Text>) : null}
                 </View>
-                <View style={styles.walletFooter}>
+                <View style={styles.addressListFooter}>
                   <ConcealButton
                     style={[styles.footerBtn, styles.footerBtnLeft]}
                     buttonStyle={styles.btnStyle}
@@ -176,8 +207,8 @@ const styles = EStyleSheet.create({
   buttonContainer: {
     margin: '5rem'
   },
-  walletsWrapper: {
-    top: '90rem',
+  addressListWrapper: {
+    top: '125rem',
     left: '10rem',
     right: '10rem',
     bottom: 0,
@@ -193,7 +224,7 @@ const styles = EStyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
-  walletFooter: {
+  addressListFooter: {
     flex: 1,
     alignItems: 'stretch',
     flexDirection: 'row',

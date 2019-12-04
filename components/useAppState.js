@@ -63,7 +63,6 @@ const useAppState = () => {
     wallets: {},
     appData: {
       sendScreen: {
-        addrListVisible: false,
         sendConfirmVisible: false,
         securePasswordEntry: true
       },
@@ -72,7 +71,6 @@ const useAppState = () => {
         filterState: 0
       },
       sendMessage: {
-        addrListVisible: false,
         securePasswordEntry: true
       },
       scanCode: {
@@ -85,6 +83,13 @@ const useAppState = () => {
         paymentId: null,
         entryId: null,
         headerText: null
+      },
+      addressBook: {
+        filterText: null
+      },
+      searchAddress: {
+        addrListVisible: false,
+        filterText: null
       },
       login: {
         userName: '',
