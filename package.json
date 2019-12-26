@@ -32,7 +32,7 @@
     "react-navigation-stack": "^1.9.0",
     "react-navigation-tabs": "^2.5.5",
     "react-pattern-lock": "^2.0.6",
-    "sprintf-js": "^1.1.2",
+    "sprintf-js": "^1.1.2"
   },
   "devDependencies": {
     "babel-preset-expo": "^5.0.0"
