@@ -17,17 +17,23 @@ class LocalStorage {
     });
   }
 
-  localGet = (name) => {
-    return this.memStorage[`@conceal:${name}`];
+  get = (name, defValue) => {
+    let value = this.memStorage[`@conceal:${name}`];
+
+    if (!value && defValue) {
+      value = defValue;
+    }
+
+    return value;
   };
 
-  localSet = (name, value) => {
+  set = (name, value) => {
     let fullName = `@conceal:${name}`;
     this.memStorage[fullName] = value;
-    this.syncStorage.set(fullName, value);
+    AsyncStorage.setItem(fullName, value);
   };
 
-  localRemove = (name) => {
+  remove = (name) => {
     let fullName = `@conceal:${name}`;
     delete this.memStorage[fullName];
     this.syncStorage.remove(fullName);

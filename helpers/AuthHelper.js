@@ -36,13 +36,13 @@ export default class AuthHelper {
     }
   };
 
-  setUsername = idUsername => localStorage.localSet('id_username', idUsername);
-  getUsername = () => { return localStorage.localGet('id_username') };
-  setRememberme = idRememberme => localStorage.localSet('id_rememberme', idRememberme);
-  getRememberme = () => { return localStorage.localGet('id_rememberme'); }
-  setToken = idToken => localStorage.localSet('id_token', idToken);
-  getToken = () => { return localStorage.localGet('id_token'); }
-  logout = () => localStorage.localRemove('id_token');
+  setUsername = idUsername => localStorage.set('id_username', idUsername);
+  getUsername = () => { return localStorage.get('id_username') };
+  setRememberme = idRememberme => localStorage.set('id_rememberme', idRememberme);
+  getRememberme = () => { return localStorage.get('id_rememberme'); }
+  setToken = idToken => localStorage.set('id_token', idToken);
+  getToken = () => { return localStorage.get('id_token'); }
+  logout = () => localStorage.remove('id_token');
   decodeToken = () => (decode(this.getToken()));
 
   fetch = (url, options) => {

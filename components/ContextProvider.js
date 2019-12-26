@@ -61,7 +61,7 @@ const AppContextProvider = props => {
           message = res.message;
         }
       })
-      .catch(err => { message = `ERROR ${err}` })
+      .catch(err => { message = `ERROR ${err}`; })
       .finally(() => {
         dispatch({ type: 'FORM_SUBMITTED', value: false });
         showMessageDialog(message, msgType);
@@ -85,7 +85,7 @@ const AppContextProvider = props => {
           message = res.message;
         }
       })
-      .catch(err => { message = `ERROR ${err}` })
+      .catch(err => { message = `ERROR ${err}`; })
       .finally(() => {
         showMessageDialog(message, msgType);
       });

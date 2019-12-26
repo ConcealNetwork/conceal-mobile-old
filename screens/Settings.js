@@ -5,6 +5,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import { AppContext } from '../components/ContextProvider';
 import ModalSelector from 'react-native-modal-selector';
 import ConcealPinView from '../components/ccxPinView';
+import localStorage from '../helpers/LocalStorage';
 import { getAspectRatio } from '../helpers/utils';
 import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
@@ -47,15 +48,15 @@ const Settings = () => {
       icon: 'md-lock'
     }, {
       value: 'password',
-      title: 'Authentication method',
+      title: `Authentication method: ${localStorage.get('auth_method', 'password')}`,
       icon: 'md-lock',
       rightElement: function () {
         return (
           <ModalSelector
             data={[
               { key: 1, section: true, label: 'Available options' },
-              { key: 2, label: 'Password' },
-              { key: 3, label: 'PIN' }
+              { key: 2, value: "password", label: 'Password' },
+              { key: 3, value: "pin", label: 'PIN' }
             ]}
             ref={selector => { pickerRef = selector; }}
             cancelStyle={styles.pickerCancelButton}
@@ -63,6 +64,9 @@ const Settings = () => {
             optionContainerStyle={styles.pickerContainer}
             sectionTextStyle={styles.pickerSectionText}
             optionTextStyle={styles.pickerOptionText}
+            onChange={(option) => {
+              localStorage.set('auth_method', option.value);
+            }}
             customSelector={
               < Icon
                 name='md-menu'

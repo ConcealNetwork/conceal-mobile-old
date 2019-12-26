@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import ConcealTextInput from '../components/ccxTextInput';
 import ConcealButton from '../components/ccxButton';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { localGet } from '../helpers/LocalStorage';
+import localStorage from '../helpers/LocalStorage';
 
 import { Image, CheckBox, Overlay } from 'react-native-elements';
 
@@ -32,10 +32,10 @@ const Login = () => {
   const { formSubmitted, message } = layout;
   const { setAppData } = actions;
 
-  const { value: email, bind: bindEmail } = useFormInput(localGet('id_username'));
+  const { value: email, bind: bindEmail } = useFormInput(localStorage.get('id_username'));
   const { value: password, bind: bindPassword } = useFormInput('');
   const { value: twoFACode, bind: bindTwoFACode } = useFormInput('');
-  const { checked: rememberMe, bind: bindRememberMe } = useCheckbox(localGet('id_rememberme'));
+  const { checked: rememberMe, bind: bindRememberMe } = useCheckbox(localStorage.get('id_rememberme'));
 
   let signUpPanel;
   let resetPasswordPanel;
