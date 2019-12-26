@@ -14,11 +14,10 @@ const AuthLoading = () => {
 
   useEffect(() => {
     logger.log('CHECKING AUTH...');
-    Auth.loggedIn().then(loggedIn =>
-      loggedIn
-        ? (state.layout.userLoaded && state.layout.walletsLoaded) && NavigationService.navigate('App')
-        : NavigationService.navigate('Auth')
-    );
+    let loggedIn = Auth.loggedIn();
+    loggedIn
+      ? (state.layout.userLoaded && state.layout.walletsLoaded) && NavigationService.navigate('App')
+      : NavigationService.navigate('Auth')
   }, []);
 
   return (

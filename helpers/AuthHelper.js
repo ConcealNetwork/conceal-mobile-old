@@ -1,6 +1,5 @@
-import { AsyncStorage } from 'react-native';
+import localStorage from './LocalStorage';
 import decode from 'jwt-decode';
-
 
 export default class AuthHelper {
   constructor(domain) {
@@ -24,9 +23,8 @@ export default class AuthHelper {
   };
 
   loggedIn = () => {
-    return this.getToken()
-      .then(token => !!token && !this.isTokenExpired(token))
-      .catch(e => console.error(e));
+    let token = this.getToken();
+    return !!token && !this.isTokenExpired(token);
   };
 
   isTokenExpired = token => {
@@ -38,13 +36,13 @@ export default class AuthHelper {
     }
   };
 
-  setUsername = async idUsername => await AsyncStorage.setItem('@conceal:id_username', idUsername);
-  getUsername = async () => (await AsyncStorage.getItem('@conceal:id_username'));
-  setRememberme = async idRememberme => await AsyncStorage.setItem('@conceal:id_rememberme', idRememberme);
-  getRememberme = async () => (await AsyncStorage.getItem('@conceal:id_rememberme'));
-  setToken = async idToken => await AsyncStorage.setItem('@conceal:id_token', idToken);
-  getToken = async () => (await AsyncStorage.getItem('@conceal:id_token'));
-  logout = async () => await AsyncStorage.removeItem('@conceal:id_token');
+  setUsername = idUsername => localStorage.localSet('id_username', idUsername);
+  getUsername = () => { return localStorage.localGet('id_username') };
+  setRememberme = idRememberme => localStorage.localSet('id_rememberme', idRememberme);
+  getRememberme = () => { return localStorage.localGet('id_rememberme'); }
+  setToken = idToken => localStorage.localSet('id_token', idToken);
+  getToken = () => { return localStorage.localGet('id_token'); }
+  logout = () => localStorage.localRemove('id_token');
   decodeToken = () => (decode(this.getToken()));
 
   fetch = (url, options) => {
@@ -52,7 +50,6 @@ export default class AuthHelper {
       Accept: 'application/json',
       'Content-Type': 'application/json'
     };
-    // if (this.loggedIn()) headers.Authorization = `Bearer ${this.getToken()}`;
 
     return fetch(url, { headers, ...options })
       .then(this._checkStatus)

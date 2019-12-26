@@ -62,7 +62,8 @@ const App = props => {
         onError={handleLoadingError}
         onFinish={handleFinishLoading}
       />
-      : <AppContextProvider>
+      :
+      < AppContextProvider >
         <ConcealLoader />
         <View style={AppStyles.appContainer}>
           {Platform.OS === 'ios' && <StatusBar barStyle="light-content" />}
@@ -73,7 +74,7 @@ const App = props => {
           />
           <FlashMessage position="top" />
         </View>
-      </AppContextProvider>
+      </AppContextProvider >
   )
 };
 

@@ -489,16 +489,15 @@ const AppContextProvider = props => {
   };
 
   useEffect(() => {
-    Auth.loggedIn()
-      .then(loggedIn => {
-        if (loggedIn) {
-          if (!state.user.loggedIn) dispatch({ type: 'USER_LOGGED_IN' });
-          Auth.getToken()
-            .then(token => {
-              dispatch({ type: 'SET_TOKEN', token });
-            });
-        }
-      });
+    if (Auth.loggedIn()) {
+      if (!state.user.loggedIn) {
+        dispatch({ type: 'USER_LOGGED_IN' });
+      }
+
+      let token = Auth.getToken();
+      // dispatch the Aauthentication token
+      dispatch({ type: 'SET_TOKEN', token });
+    }
   }, [state.user.loggedIn]);
 
   useEffect(() => {

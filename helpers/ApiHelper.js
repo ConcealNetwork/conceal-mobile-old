@@ -143,6 +143,7 @@ export default class ApiHelper {
   };
 
   fetch = (url, options) => {
+    let auth = this.auth;
     const headers = options.headers || {
       Accept: 'application/json',
       'Content-Type': 'application/json',
@@ -156,18 +157,14 @@ export default class ApiHelper {
         .then(this._checkStatus)
         .then(response => response.json());
 
-    return this.auth.loggedIn()
-      .then(loggedIn => {
-        if (loggedIn) {
-          return this.auth.getToken()
-            .then(token => {
-              headers.token = token;
-              return f(url, { headers, ...options });
-            })
-            .catch(err => console.error(err));
-        }
-        return f(url, { headers, ...options });
-      });
+    return new Promise(function (resolve, reject) {
+      if (auth.loggedIn()) {
+        headers.token = auth.getToken();
+      }
+
+      // return the function with headers
+      resolve(f(url, { headers, ...options }));
+    });
   };
 
   getMessages = () => {

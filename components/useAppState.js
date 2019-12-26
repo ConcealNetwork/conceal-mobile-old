@@ -96,6 +96,9 @@ const useAppState = () => {
         signUpVisible: false,
         resetPasswordVisible: false
       },
+      settings: {
+        patternVisible: false
+      },
       common: {
         selectedWallet: null
       }
