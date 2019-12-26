@@ -35,7 +35,9 @@
     "sprintf-js": "^1.1.2"
   },
   "devDependencies": {
-    "babel-preset-expo": "^5.0.0"
+    "babel-preset-expo": "^5.0.0",
+    "eslint": "^6.8.0",
+    "eslint-plugin-react": "^7.17.0"
   },
   "private": true
 }

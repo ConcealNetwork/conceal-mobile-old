@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Icon, Header, ListItem, Overlay } from 'react-native-elements';
 import NavigationService from '../helpers/NavigationService';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -27,6 +27,8 @@ const Settings = () => {
   const { logoutUser, check2FA } = actions;
   const { network, user, userSettings } = state;
 
+  // our hook into the state of the function component for the authentication mode
+  const [authMode, setAuthMode] = useState(localStorage.get('auth_method', 'password'));
   let pickerRef;
 
   const settingsList = [
@@ -48,7 +50,7 @@ const Settings = () => {
       icon: 'md-lock'
     }, {
       value: 'password',
-      title: `Authentication method: ${localStorage.get('auth_method', 'password')}`,
+      title: `Authentication method: "${localStorage.get('auth_method', 'password')}"`,
       icon: 'md-lock',
       rightElement: function () {
         return (
@@ -66,6 +68,7 @@ const Settings = () => {
             optionTextStyle={styles.pickerOptionText}
             onChange={(option) => {
               localStorage.set('auth_method', option.value);
+              setAuthMode(option.value);
             }}
             customSelector={
               < Icon

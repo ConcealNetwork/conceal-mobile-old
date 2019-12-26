@@ -1,27 +1,19 @@
 import React, { useContext } from 'react';
-import { Image } from 'react-native-elements';
 import ConcealButton from '../components/ccxButton';
 import ConcealTextInput from '../components/ccxTextInput';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { Icon, Overlay, ListItem } from 'react-native-elements';
+import { Icon, Overlay } from 'react-native-elements';
 
 import { AppContext } from '../components/ContextProvider';
-import { useFormInput, useFormValidation } from '../helpers/hooks';
 import { AppColors } from '../constants/Colors';
-import AppStyles from '../components/Style';
 import {
   maskAddress,
-  formatOptions,
   getAspectRatio
 } from '../helpers/utils';
 import {
   View,
   Text,
-  Keyboard,
   FlatList,
-  TextInput,
-  StyleSheet,
-  ScrollView,
   TouchableOpacity
 } from 'react-native';
 
@@ -32,8 +24,8 @@ const SearchAddress = props => {
   const { setAppData } = actions;
   let addressList = [];
 
-  addressData.forEach(function (value, index, array) {
-    isValidItem = true;
+  addressData.forEach(function (value) {
+    let isValidItem = true;
 
     // check if the text filter is set
     if (state.appData.searchAddress.filterText && (value.label.toLowerCase().search(state.appData.searchAddress.filterText.toLowerCase()) == -1)) {

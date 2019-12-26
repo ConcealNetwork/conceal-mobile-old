@@ -4,33 +4,24 @@ import NavigationService from '../helpers/NavigationService';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { AppContext } from '../components/ContextProvider';
 import ConcealTextInput from '../components/ccxTextInput';
-import ConcealButton from '../components/ccxButton';
 import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
 import Moment from 'moment';
 import {
   maskAddress,
-  formatOptions,
   getAspectRatio,
-  format0Decimals,
-  format2Decimals,
-  format4Decimals,
-  format6Decimals,
-  format8Decimals
 } from '../helpers/utils';
 import {
-  Alert,
   Text,
   View,
   FlatList,
-  StyleSheet,
   TouchableOpacity
 } from 'react-native';
 
 const Messages = () => {
   const { actions, state } = useContext(AppContext);
   const { setAppData } = actions;
-  const { appSettings, layout, messages, appData } = state;
+  const { layout, messages, appData } = state;
   const filterButtons = ['All', 'Inbound', 'Outbound'];
   const { messagesLoaded } = layout;
   let isValidItem = false;
