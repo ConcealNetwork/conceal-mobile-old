@@ -73,10 +73,6 @@ const useAppState = () => {
       sendMessage: {
         securePasswordEntry: true
       },
-      scanCode: {
-        hasCameraPermission: null,
-        scanned: false
-      },
       addressEntry: {
         label: null,
         address: null,
@@ -95,9 +91,6 @@ const useAppState = () => {
         userName: '',
         signUpVisible: false,
         resetPasswordVisible: false
-      },
-      settings: {
-        patternVisible: false
       },
       common: {
         selectedWallet: null

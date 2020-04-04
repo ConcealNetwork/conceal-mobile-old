@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AsyncStorage, Dimensions } from 'react-native';
+import { Dimensions } from 'react-native';
 import { YellowBox } from 'react-native';
 import * as Font from 'expo-font';
 import { AppLoading } from 'expo';
@@ -42,12 +42,6 @@ const App = props => {
         'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
         'Lato': require('./assets/fonts/Lato/Lato-Regular.ttf'),
         'Roboto': require('./assets/fonts/Roboto/Roboto-Regular.ttf'),
-      }),
-      AsyncStorage.getItem('@conceal:id_username').then(res => {
-        global.username = res;
-      }),
-      AsyncStorage.getItem('@conceal:id_rememberme').then(res => {
-        global.rememberme = (res === "TRUE");
       })
     ]);
   };

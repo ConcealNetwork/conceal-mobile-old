@@ -115,11 +115,9 @@ const AppContextProvider = props => {
 
   const logoutUser = () => {
     logger.log('LOGGING OUT...');
-    Auth.logout()
-      .then(() => {
-        dispatch({ type: 'CLEAR_APP' });
-        NavigationService.navigate('Login');
-      });
+    Auth.logout();
+    dispatch({ type: 'CLEAR_APP' });
+    NavigationService.navigate('Login');
   };
 
   const getUser = () => {

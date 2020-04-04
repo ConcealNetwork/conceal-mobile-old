@@ -29,6 +29,7 @@ const Settings = () => {
 
   // our hook into the state of the function component for the authentication mode
   const [authMode, setAuthMode] = useState(localStorage.get('auth_method', 'password'));
+  const [showPinModal, setShowPinModal] = useState(false);
   let pickerRef;
 
   const settingsList = [
@@ -69,6 +70,10 @@ const Settings = () => {
             onChange={(option) => {
               localStorage.set('auth_method', option.value);
               setAuthMode(option.value);
+
+              if (option.value == "pin") {
+                setShowPinModal(true);
+              }
             }}
             customSelector={
               < Icon
@@ -150,7 +155,7 @@ const Settings = () => {
         keyExtractor={this.keyExtractor}
       />
       <Overlay
-        isVisible={state.appData.settings.patternVisible}
+        isVisible={showPinModal}
         overlayBackgroundColor={AppColors.concealBackground}
         width="100%"
         height="100%"

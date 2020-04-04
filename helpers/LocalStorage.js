@@ -36,7 +36,7 @@ class LocalStorage {
   remove = (name) => {
     let fullName = `@conceal:${name}`;
     delete this.memStorage[fullName];
-    this.syncStorage.remove(fullName);
+    AsyncStorage.removeItem(fullName);
   };
 }
 

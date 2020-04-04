@@ -35,7 +35,7 @@ const Login = () => {
   const { value: email, bind: bindEmail } = useFormInput(localStorage.get('id_username'));
   const { value: password, bind: bindPassword } = useFormInput('');
   const { value: twoFACode, bind: bindTwoFACode } = useFormInput('');
-  const { checked: rememberMe, bind: bindRememberMe } = useCheckbox(localStorage.get('id_rememberme'));
+  const { checked: rememberMe, bind: bindRememberMe } = useCheckbox(localStorage.get('id_rememberme') == "TRUE");
 
   let signUpPanel;
   let resetPasswordPanel;

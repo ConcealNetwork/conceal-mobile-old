@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { AppContext } from '../components/ContextProvider';
 import NavigationService from '../helpers/NavigationService';
 import { Text, View, StyleSheet, Button } from 'react-native';
@@ -13,8 +13,11 @@ import {
 const BarcodeScanner = (props) => {
   const params = props.navigation.state.params
 
+  const [hasPermission, setHasPermission] = useState(false);
+  const [hasScanned, setHasScanned] = useState(false);
   const { state, actions } = useContext(AppContext);
   const { setAppData } = actions;
+
 
   function constructPayload(codeObject, index, path, data) {
     if (index < (path.length - 1)) {
@@ -37,18 +40,19 @@ const BarcodeScanner = (props) => {
     }
 
     constructPayload(codeObject, 0, params.path, scannedCode);
-    constructPayload(codeObject, 0, ["scanCode", "scanned"], true);
     setAppData(codeObject);
+    setHasScanned(true);
+
     showSuccessMessage("Successfully scanned the address");
     NavigationService.goBack();
   };
 
   getPermissionsAsync = async () => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
-    setAppData({ scanCode: { hasCameraPermission: status === 'granted' } });
+    setHasPermission(status === 'granted');
   };
 
-  if (!state.appData.scanCode.hasCameraPermission) {
+  if (!hasPermission) {
     getPermissionsAsync();
     return null;
   } else {
@@ -60,7 +64,7 @@ const BarcodeScanner = (props) => {
           justifyContent: 'flex-end',
         }}>
         <BarCodeScanner
-          onBarCodeScanned={state.appData.scanCode.scanned ? undefined : this.handleBarCodeScanned}
+          onBarCodeScanned={hasScanned ? undefined : this.handleBarCodeScanned}
           style={StyleSheet.absoluteFillObject}
         />
       </View>

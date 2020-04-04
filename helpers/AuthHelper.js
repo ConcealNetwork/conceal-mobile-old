@@ -39,7 +39,7 @@ export default class AuthHelper {
   setUsername = idUsername => localStorage.set('id_username', idUsername);
   getUsername = () => { return localStorage.get('id_username') };
   setRememberme = idRememberme => localStorage.set('id_rememberme', idRememberme);
-  getRememberme = () => { return localStorage.get('id_rememberme'); }
+  getRememberme = () => { return localStorage.get('id_rememberme') == "TRUE"; }
   setToken = idToken => localStorage.set('id_token', idToken);
   getToken = () => { return localStorage.get('id_token'); }
   logout = () => localStorage.remove('id_token');
