@@ -1,3 +1,4 @@
+import localStorage from './helpers/LocalStorage';
 import React, { useState } from 'react';
 import { Dimensions } from 'react-native';
 import { YellowBox } from 'react-native';

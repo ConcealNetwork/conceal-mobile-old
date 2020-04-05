@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { Icon, Header, ListItem, Overlay } from 'react-native-elements';
+import { Input, Icon, Header, ListItem, Overlay } from 'react-native-elements';
+import { useFormInput, useFormValidation } from '../helpers/hooks';
 import NavigationService from '../helpers/NavigationService';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { AppContext } from '../components/ContextProvider';
@@ -10,6 +11,7 @@ import { getAspectRatio } from '../helpers/utils';
 import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
 import AppConf from '../app.json';
+import PinSetup from './PinSetup';
 import {
   Text,
   View,
@@ -28,6 +30,7 @@ const Settings = () => {
   const { network, user, userSettings } = state;
 
   // our hook into the state of the function component for the authentication mode
+  const { value: password, bind: bindPassword } = useFormInput('');
   const [authMode, setAuthMode] = useState(localStorage.get('auth_method', 'password'));
   const [showPinModal, setShowPinModal] = useState(false);
   let pickerRef;
@@ -92,16 +95,6 @@ const Settings = () => {
     }
   ];
 
-  const pickerData = [
-    "Javascript",
-    "Go",
-    "Java",
-    "Kotlin",
-    "C++",
-    "C#",
-    "PHP"
-  ];
-
   // key extractor for the list
   keyExtractor = (item, index) => index.toString();
 
@@ -161,8 +154,13 @@ const Settings = () => {
         height="100%"
       >
         <View style={styles.overlayWrapper}>
-          <ConcealPinView
-            onComplete={(val, clear) => { alert(val) }}
+          <PinSetup
+            onSave={(data) => {
+              console.log(data);
+              localStorage.set(`pin_.${data.pinData}`, data.passData);
+              setShowPinModal(false);
+            }}
+            onCancel={() => setShowPinModal(false)}
           />
         </View>
       </Overlay>
@@ -174,6 +172,13 @@ const styles = EStyleSheet.create({
   pageWrapper: {
     flex: 1,
     backgroundColor: 'rgb(40, 45, 49)'
+  },
+  overlayWrapper: {
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    position: 'absolute'
   },
   appHeader: {
     borderBottomWidth: 1,
@@ -220,6 +225,10 @@ const styles = EStyleSheet.create({
   },
   pickerSectionText: {
     color: AppColors.concealOrange
+  },
+  passwordInput: {
+    marginTop: '30rem',
+    marginBottom: '50rem'
   }
 });
 

@@ -1,4 +1,4 @@
-import { AsyncStorage } from 'react-native';
+import * as SecureStore from 'expo-secure-store';
 
 class LocalStorage {
   constructor() {
@@ -7,18 +7,41 @@ class LocalStorage {
   }
 
   _initialize = (storage) => {
-    AsyncStorage.getAllKeys((err, keys) => {
-      AsyncStorage.multiGet(keys, (error, values) => {
-        values.map((result, i, values) => {
-          storage[values[i][0]] = values[i][1];
-          return true;
+    SecureStore.getItemAsync('Conceal.allKeys').then((keys) => {
+      if (keys) {
+        let allKeys = keys.split(',');
+
+        allKeys.forEach(function (key, index, array) {
+          SecureStore.getItemAsync(key).then((value) => {
+            if (value) {
+              storage[key] = value;
+            }
+          }).catch((err) => {
+            console.log(err);
+          });
         });
-      });
+      }
+    }).catch((err) => {
+      console.log(err);
+    });
+  }
+
+  _storeAllKeys = (storage) => {
+    let allKeys = [];
+
+    Object.keys(storage).forEach(function (key) {
+      allKeys.push(key);
+    });
+
+    SecureStore.setItemAsync('Conceal.allKeys', allKeys.join()).then((result) => {
+      // do nothing
+    }).catch((err) => {
+      console.log(err);
     });
   }
 
   get = (name, defValue) => {
-    let value = this.memStorage[`@conceal:${name}`];
+    let value = this.memStorage[`Conceal.${name}`];
 
     if (!value && defValue) {
       value = defValue;
@@ -28,15 +51,29 @@ class LocalStorage {
   };
 
   set = (name, value) => {
-    let fullName = `@conceal:${name}`;
+    let fullName = `Conceal.${name}`;
     this.memStorage[fullName] = value;
-    AsyncStorage.setItem(fullName, value);
+    SecureStore.setItemAsync(fullName, value).then((result) => {
+      // do nothing
+    }).catch((err) => {
+      console.log(err);
+    });
+
+    // store all keys to the storage
+    this._storeAllKeys(this.memStorage);
   };
 
   remove = (name) => {
-    let fullName = `@conceal:${name}`;
+    let fullName = `Conceal.${name}`;
     delete this.memStorage[fullName];
-    AsyncStorage.removeItem(fullName);
+    SecureStore.deleteItemAsync(fullName).then((result) => {
+      // do nothing
+    }).catch((err) => {
+      console.log(err);
+    });
+
+    // store all keys to the storage
+    this._storeAllKeys(this.memStorage);
   };
 }
 

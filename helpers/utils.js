@@ -55,7 +55,8 @@ export const showMessageDialog = (message, msgType) => {
 export const showErrorMessage = (message) => {
   showMessage({
     duration: 5000,
-    message: message,
+    message: "Error",
+    description: message,
     type: "danger",
     titleStyle: styles.errorText,
   });
@@ -64,7 +65,8 @@ export const showErrorMessage = (message) => {
 export const showSuccessMessage = (message) => {
   showMessage({
     duration: 5000,
-    message: message,
+    message: "Success",
+    description: message,
     type: "success",
     titleStyle: styles.errorText,
   });
