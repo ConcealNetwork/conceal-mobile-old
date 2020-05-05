@@ -1,11 +1,13 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Input, Icon, Header, ListItem, Overlay } from 'react-native-elements';
+import * as LocalAuthentication from 'expo-local-authentication';
 import { useFormInput, useFormValidation } from '../helpers/hooks';
 import NavigationService from '../helpers/NavigationService';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { AppContext } from '../components/ContextProvider';
 import ModalSelector from 'react-native-modal-selector';
 import ConcealPinView from '../components/ccxPinView';
+import { showMessageDialog } from '../helpers/utils';
 import localStorage from '../helpers/LocalStorage';
 import { getAspectRatio } from '../helpers/utils';
 import { AppColors } from '../constants/Colors';
@@ -62,7 +64,8 @@ const Settings = () => {
             data={[
               { key: 1, section: true, label: 'Available options' },
               { key: 2, value: "password", label: 'Password' },
-              { key: 3, value: "pin", label: 'PIN' }
+              { key: 3, value: "biometric", label: 'Biometric' },
+              { key: 4, value: "pin", label: 'PIN' }
             ]}
             ref={selector => { pickerRef = selector; }}
             cancelStyle={styles.pickerCancelButton}
@@ -76,6 +79,10 @@ const Settings = () => {
 
               if (option.value == "pin") {
                 setShowPinModal(true);
+              } else if (option.value == "biometric") {
+                LocalAuthentication.authenticateAsync().then(result => {
+                  console.log(result.success);
+                });
               }
             }}
             customSelector={
@@ -156,9 +163,10 @@ const Settings = () => {
         <View style={styles.overlayWrapper}>
           <PinSetup
             onSave={(data) => {
-              console.log(data);
-              localStorage.set(`pin_.${data.pinData}`, data.passData);
               setShowPinModal(false);
+              showMessageDialog("Pin was successfully set.", "info");
+              localStorage.set('lock_password', data.passData);
+              localStorage.set('lock_pin', data.pinData);
             }}
             onCancel={() => setShowPinModal(false)}
           />

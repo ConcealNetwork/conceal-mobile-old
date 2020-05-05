@@ -1,21 +1,19 @@
 import { Input, Icon, Overlay, Header, ListItem } from 'react-native-elements';
 import { useFormInput, useFormValidation } from '../helpers/hooks';
+import React, { useContext, useState, useEffect } from "react";
 import NavigationService from '../helpers/NavigationService';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { AppContext } from '../components/ContextProvider';
+import ConcealPassword from '../components/ccxPassword';
 import ConcealButton from '../components/ccxButton';
 import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
-import React, { useContext } from "react";
 import {
   maskAddress,
   formatOptions,
   getAspectRatio,
-  format0Decimals,
-  format2Decimals,
-  format4Decimals,
   format6Decimals,
-  format8Decimals
+  showMessageDialog
 } from '../helpers/utils';
 import {
   Text,
@@ -32,9 +30,7 @@ const SendConfirm = () => {
   const { userSettings, layout, wallets, appData } = state;
   const currWallet = wallets[appData.common.selectedWallet];
 
-  const { value: password, bind: bindPassword } = useFormInput('');
-  const { value: twoFACode, bind: bindTwoFACode } = useFormInput('');
-
+  const { value: password, bind: bindPassword, setValue: setPassword } = useFormInput('');
   const sendSummaryList = [];
 
   function addSummaryItem(value, title, icon) {
@@ -79,14 +75,6 @@ const SendConfirm = () => {
     />
   );
 
-  toogleSecurePassword = () => {
-    setAppData({
-      sendScreen: {
-        securePasswordEntry: !state.appData.sendScreen.securePasswordEntry
-      }
-    });
-  }
-
   sendPayment = () => {
     actions.sendPayment(
       currWallet.addr,
@@ -115,22 +103,9 @@ const SendConfirm = () => {
         centerComponent={{ text: 'Confirm sending', style: AppStyles.appHeaderText }}
       />
       <ScrollView contentContainerStyle={styles.walletWrapper}>
-        <Input
-          {...bindPassword}
-          placeholder='please enter your password...'
-          inputStyle={styles.password}
-          containerStyle={styles.sendInput}
-          textContentType="password"
-          secureTextEntry={state.appData.sendScreen.securePasswordEntry}
-          rightIcon={
-            <Icon
-              onPress={() => this.toogleSecurePassword()}
-              name='ios-eye-off'
-              type='ionicon'
-              color='white'
-              size={32 * getAspectRatio()}
-            />
-          }
+        <ConcealPassword
+          bindPassword={bindPassword}
+          setValue={setPassword}
         />
         <FlatList
           data={sendSummaryList}
@@ -212,13 +187,6 @@ const styles = EStyleSheet.create({
   },
   sendSummaryHighlight: {
     color: AppColors.concealOrange
-  },
-  overlayWrapper: {
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    position: 'absolute'
   },
   addressWrapper: {
     top: '10rem',

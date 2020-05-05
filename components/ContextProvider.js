@@ -22,7 +22,10 @@ const AppContextProvider = props => {
     }
     let message;
     let msgType;
+
     dispatch({ type: 'FORM_SUBMITTED', value: true });
+    setUsername(options.email);
+
     Auth.setRememberme(options.rememberMe ? "TRUE" : "FALSE");
     if (options.rememberMe) {
       Auth.setUsername(options.email);
@@ -30,19 +33,9 @@ const AppContextProvider = props => {
       Auth.setUsername('');
     }
     Auth.login(options)
-      .then(res => {
-        if (res.result === 'success') {
-          logger.log('USER_LOGGED_IN...');
-          dispatch({ type: 'USER_LOGGED_IN', password: options.password });
-        } else {
-          message = res.message;
-        }
-      })
+      .then(res => options.callback(res.result === 'success'))
       .catch(err => showMessageDialog(`ERROR ${err}`))
-      .finally(() => {
-        dispatch({ type: 'FORM_SUBMITTED', value: false });
-        showMessageDialog(message, msgType);
-      });
+      .finally(() => dispatch({ type: 'FORM_SUBMITTED', value: false }));
   };
 
   const signUpUser = options => {

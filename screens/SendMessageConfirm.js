@@ -3,6 +3,7 @@ import { useFormInput, useFormValidation } from '../helpers/hooks';
 import NavigationService from '../helpers/NavigationService';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { AppContext } from '../components/ContextProvider';
+import ConcealPassword from '../components/ccxPassword';
 import ConcealButton from '../components/ccxButton';
 import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
@@ -27,9 +28,7 @@ const SendMessageConfirm = () => {
   const { userSettings, layout, wallets, appData } = state;
   const currWallet = wallets[appData.common.selectedWallet];
 
-  const { value: password, bind: bindPassword } = useFormInput('');
-  const { value: twoFACode, bind: bindTwoFACode } = useFormInput('');
-
+  const { value: password, bind: bindPassword, setValue: setPassword } = useFormInput('');
   const sendSummaryList = [];
 
   function addSummaryItem(value, title, icon) {
@@ -100,22 +99,9 @@ const SendMessageConfirm = () => {
         centerComponent={{ text: 'Confirm sending', style: AppStyles.appHeaderText }}
       />
       <ScrollView contentContainerStyle={styles.walletWrapper}>
-        <Input
-          {...bindPassword}
-          placeholder='please enter your password...'
-          inputStyle={styles.password}
-          containerStyle={styles.sendInput}
-          textContentType="password"
-          secureTextEntry={state.appData.sendMessage.securePasswordEntry}
-          rightIcon={
-            <Icon
-              onPress={() => this.toogleSecurePassword()}
-              name='ios-eye-off'
-              type='ionicon'
-              color='white'
-              size={32 * getAspectRatio()}
-            />
-          }
+        <ConcealPassword
+          bindPassword={bindPassword}
+          setValue={setPassword}
         />
         <FlatList
           data={sendSummaryList}

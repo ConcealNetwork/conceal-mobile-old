@@ -7,7 +7,7 @@ import {
 } from "react-native";
 
 export default function ConcealPinView({
-  onComplete, onCancel
+  onComplete, onCancel,
 }) {
   const pinView = useRef(null);
 
@@ -21,7 +21,7 @@ export default function ConcealPinView({
         buttonTextColor={AppColors.concealTextColor}
         buttonBgColor={AppColors.concealOrange}
         onComplete={onComplete || null}
-        pinLength={5}
+        pinLength={6}
       />
     </View>
   );

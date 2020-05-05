@@ -12,6 +12,7 @@
     "expo": "^36.0.2",
     "expo-barcode-scanner": "~8.0.0",
     "expo-font": "~8.0.0",
+    "expo-secure-store": "~8.0.0",
     "intl": "^1.2.5",
     "jwt-decode": "^2.2.0",
     "merge-json": "0.1.0-b.3",
@@ -27,6 +28,7 @@
     "react-native-qrcode-svg": "^5.2.0",
     "react-native-reanimated": "^1.4.0",
     "react-native-screens": "^2.4.0",
+    "react-native-simple-crypto": "^0.2.10",
     "react-native-svg": "9.13.3",
     "react-navigation": "^4.3.7",
     "react-navigation-drawer": "^2.4.11",
@@ -34,7 +36,7 @@
     "react-navigation-tabs": "^2.8.11",
     "react-pattern-lock": "^2.0.6",
     "sprintf-js": "^1.1.2",
-    "expo-secure-store": "~8.0.0"
+    "expo-local-authentication": "~8.0.0"
   },
   "devDependencies": {
     "babel-preset-expo": "^5.0.0",
