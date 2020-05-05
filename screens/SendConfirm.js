@@ -104,6 +104,7 @@ const SendConfirm = () => {
       />
       <ScrollView contentContainerStyle={styles.walletWrapper}>
         <ConcealPassword
+          showAlternative={true}
           bindPassword={bindPassword}
           setValue={setPassword}
         />

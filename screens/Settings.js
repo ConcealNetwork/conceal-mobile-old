@@ -1,6 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Input, Icon, Header, ListItem, Overlay } from 'react-native-elements';
-import * as LocalAuthentication from 'expo-local-authentication';
 import { useFormInput, useFormValidation } from '../helpers/hooks';
 import NavigationService from '../helpers/NavigationService';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -14,6 +13,7 @@ import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
 import AppConf from '../app.json';
 import PinSetup from './PinSetup';
+import FgpSetup from './FgpSetup';
 import {
   Text,
   View,
@@ -34,6 +34,7 @@ const Settings = () => {
   // our hook into the state of the function component for the authentication mode
   const { value: password, bind: bindPassword } = useFormInput('');
   const [authMode, setAuthMode] = useState(localStorage.get('auth_method', 'password'));
+  const [showFgpModal, setShowFgpModal] = useState(false);
   const [showPinModal, setShowPinModal] = useState(false);
   let pickerRef;
 
@@ -80,9 +81,7 @@ const Settings = () => {
               if (option.value == "pin") {
                 setShowPinModal(true);
               } else if (option.value == "biometric") {
-                LocalAuthentication.authenticateAsync().then(result => {
-                  console.log(result.success);
-                });
+                setShowFgpModal(true);
               }
             }}
             customSelector={
@@ -169,6 +168,24 @@ const Settings = () => {
               localStorage.set('lock_pin', data.pinData);
             }}
             onCancel={() => setShowPinModal(false)}
+          />
+        </View>
+      </Overlay>
+      <Overlay
+        isVisible={showFgpModal}
+        overlayBackgroundColor={AppColors.concealBackground}
+        width="100%"
+        height="100%"
+      >
+        <View style={styles.overlayWrapper}>
+          <FgpSetup
+            onSave={(data) => {
+              setShowFgpModal(false);
+              showMessageDialog("Fingerprint was successfully set.", "info");
+              localStorage.set('lock_password', data.passData);
+              localStorage.set('lock_fgp', data.fgpData);
+            }}
+            onCancel={() => setShowFgpModal(false)}
           />
         </View>
       </Overlay>
