@@ -1,10 +1,9 @@
 import React, { useContext } from 'react';
 import { Icon, Header, ListItem } from 'react-native-elements';
-import { ScrollView, Text, View, StyleSheet, FlatList } from 'react-native';
+import { Text, View, StyleSheet, FlatList } from 'react-native';
 import { format0Decimals, format2Decimals, format4Decimals, format8Decimals } from '../helpers/utils';
 import NavigationService from '../helpers/NavigationService';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { ActivityIndicator } from 'react-native';
 import { AppContext } from '../components/ContextProvider';
 import { getAspectRatio } from '../helpers/utils';
 import { AppColors } from '../constants/Colors';
@@ -12,9 +11,8 @@ import AppStyles from '../components/Style';
 import { sprintf } from 'sprintf-js';
 
 const Market = () => {
-  const { actions, state } = useContext(AppContext);
-  const { network, user, prices } = state;
-  const { logoutUser } = actions;
+  const { state } = useContext(AppContext);
+  const { prices } = state;
 
   const list = [
     {
@@ -50,9 +48,9 @@ const Market = () => {
   ];
 
   // key extractor for the list
-  keyExtractor = (item, index) => index.toString();
+  this.keyExtractor = (item, index) => index.toString();
 
-  renderItem = ({ item }) => (
+  this.renderItem = ({ item }) => (
     <ListItem
       title={item.value}
       subtitle={item.title}

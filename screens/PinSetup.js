@@ -1,26 +1,15 @@
-import { Input, Icon } from 'react-native-elements';
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useFormInput, useFormValidation } from '../helpers/hooks';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { AppContext } from '../components/ContextProvider';
 import ConcealPassword from '../components/ccxPassword';
 import ConcealPinView from '../components/ccxPinView';
 import ConcealButton from '../components/ccxButton';
-import { getAspectRatio } from '../helpers/utils';
 import { AppColors } from '../constants/Colors';
-import AppStyles from '../components/Style';
-import AppConf from '../app.json';
-import {
-  View,
-  StyleSheet
-} from 'react-native';
+import { View } from 'react-native';
 
 
 const PinSetup = props => {
-  const { actions, state } = useContext(AppContext);
-  const { network, user, userSettings } = state;
   const { onSave, onCancel } = props;
-  const { loginUser } = actions;
 
   // our hook into the state of the function component for the authentication mode
   const { value: password, bind: bindPassword, setValue: setPassword } = useFormInput('');
@@ -33,14 +22,18 @@ const PinSetup = props => {
 
   return (
     <View style={styles.pinWrapper}>
-      <ConcealPassword
-        showAlternative={false}
-        bindPassword={bindPassword}
-        setValue={setPassword}
-      />
-      <ConcealPinView
-        onComplete={(val, clear) => { setPinValue(val) }}
-      />
+      <View style={styles.passCompWrapper}>
+        <ConcealPassword
+          showAlternative={false}
+          bindPassword={bindPassword}
+          setValue={setPassword}
+        />
+      </View>
+      <View style={styles.pinCompWrapper}>
+        <ConcealPinView
+          onComplete={(val, clear) => { setPinValue(val) }}
+        />
+      </View>
       <View style={styles.footer}>
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnLeft]}
@@ -64,6 +57,14 @@ const styles = EStyleSheet.create({
   pinWrapper: {
     flex: 1,
     paddingTop: '10rem'
+  },
+  pinCompWrapper: {
+    flex: 1,
+    justifyContent: 'center',
+    marginBottom: '70rem'
+  },
+  passCompWrapper: {
+    margin: '10rem'
   },
   passwordInput: {
     marginTop: '30rem',

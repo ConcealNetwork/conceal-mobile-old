@@ -1,18 +1,13 @@
 import React, { useContext } from 'react';
-import { Icon, Header, Overlay } from 'react-native-elements';
+import { Icon, Header } from 'react-native-elements';
 import NavigationService from '../helpers/NavigationService';
 import ConcealTextInput from '../components/ccxTextInput';
 import ConcealButton from '../components/ccxButton';
 import { AppContext } from '../components/ContextProvider';
-import { maskAddress } from '../helpers/utils';
-import { AppColors } from '../constants/Colors';
 import {
-  Alert,
   Text,
   View,
-  FlatList,
   StyleSheet,
-  Clipboard
 } from 'react-native';
 
 const EditAddress = (props) => {
@@ -20,13 +15,12 @@ const EditAddress = (props) => {
 
   const { actions, state } = useContext(AppContext);
   const { addContact, setAppData } = actions;
-  const { layout, user } = state;
 
-  isFormValid = () => {
+  this.isFormValid = () => {
     return (state.appData.addressEntry.label && state.appData.addressEntry.address);
   }
 
-  onScanAddressQRCode = () => {
+  this.onScanAddressQRCode = () => {
     setAppData({
       scanCode: {
         scanned: false
@@ -167,9 +161,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderColor: '#FFA500',
     backgroundColor: 'rgba(0, 0, 0, 0)'
-  },
-  footerBtn: {
-    flex: 1,
   },
   footerBtnRight: {
     marginLeft: 5,

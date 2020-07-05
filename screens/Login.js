@@ -5,6 +5,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import localStorage from '../helpers/LocalStorage';
 
 import { Image, CheckBox, Overlay } from 'react-native-elements';
+import ConcealPassword from '../components/ccxPassword';
 
 import { AppContext } from '../components/ContextProvider';
 import { useFormInput, useFormValidation, useCheckbox } from '../helpers/hooks';
@@ -16,9 +17,7 @@ import { getAspectRatio } from '../helpers/utils';
 import {
   View,
   Text,
-  Animated,
   Keyboard,
-  TextInput,
   ScrollView,
   TouchableOpacity,
   TouchableWithoutFeedback
@@ -27,18 +26,15 @@ import {
 
 const Login = () => {
   const { actions, state } = useContext(AppContext);
-  const { loginUser, resetPassword, signUpUser } = actions;
-  const { layout, userSettings, appData } = state;
-  const { formSubmitted, message } = layout;
+  const { loginUser } = actions;
+  const { layout, userSettings } = state;
+  const { formSubmitted } = layout;
   const { setAppData } = actions;
 
   const { value: email, bind: bindEmail } = useFormInput(localStorage.get('id_username'));
-  const { value: password, bind: bindPassword } = useFormInput('');
+  const { value: password, bind: bindPassword, setValue: setPassword } = useFormInput('');
   const { value: twoFACode, bind: bindTwoFACode } = useFormInput('');
   const { checked: rememberMe, bind: bindRememberMe } = useCheckbox(localStorage.get('id_rememberme') == "TRUE");
-
-  let signUpPanel;
-  let resetPasswordPanel;
 
   const formValidation = (
     email !== '' && /\S+@\S+\.\S+/.test(email) &&
@@ -63,12 +59,10 @@ const Login = () => {
             textContentType="emailAddress"
             inputStyle={AppStyles.textLarge}
           />
-          <ConcealTextInput
-            {...bindPassword}
-            secureTextEntry={true}
-            placeholder="Password"
-            textContentType="password"
-            inputStyle={AppStyles.textLarge}
+          <ConcealPassword
+            showAlternative={true}
+            bindPassword={bindPassword}
+            setValue={setPassword}
           />
           <ConcealTextInput
             {...bindTwoFACode}

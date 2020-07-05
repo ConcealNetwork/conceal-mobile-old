@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Icon, Header, Overlay } from 'react-native-elements';
+import { Icon, Header } from 'react-native-elements';
 import NavigationService from '../helpers/NavigationService';
 import ConcealTextInput from '../components/ccxTextInput';
 import ConcealButton from '../components/ccxButton';
@@ -7,7 +7,6 @@ import { AppContext } from '../components/ContextProvider';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { maskAddress } from '../helpers/utils';
 import AppStyles from '../components/Style';
-import { AppColors } from '../constants/Colors';
 import { getAspectRatio } from '../helpers/utils';
 import {
   Alert,
@@ -17,7 +16,7 @@ import {
   Clipboard
 } from 'react-native';
 
-readLabelromClipboard = async () => {
+let readLabelromClipboard = async () => {
   const clipboardContent = await Clipboard.getString();
   setAppData({
     addressEntry: {
@@ -26,7 +25,7 @@ readLabelromClipboard = async () => {
   });
 };
 
-readAddressFromClipboard = async () => {
+let readAddressFromClipboard = async () => {
   const clipboardContent = await Clipboard.getString();
   setAppData({
     addressEntry: {
@@ -35,7 +34,7 @@ readAddressFromClipboard = async () => {
   });
 };
 
-readPaymentIdFromClipboard = async () => {
+let readPaymentIdFromClipboard = async () => {
   const clipboardContent = await Clipboard.getString();
   setAppData({
     addressEntry: {
@@ -51,7 +50,7 @@ const AddressBook = () => {
   let addressList = [];
 
   user.addressBook.forEach(function (value, index, array) {
-    isValidItem = true;
+    var isValidItem = true;
 
     // check if the text filter is set
     if (state.appData.addressBook.filterText && (value.label.toLowerCase().search(state.appData.addressBook.filterText.toLowerCase()) == -1)) {

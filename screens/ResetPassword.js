@@ -14,7 +14,6 @@ import {
   TextInput,
   StyleSheet,
   ScrollView,
-  TouchableOpacity,
   TouchableWithoutFeedback
 } from 'react-native';
 

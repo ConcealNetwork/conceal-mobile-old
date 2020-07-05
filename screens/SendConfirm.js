@@ -1,36 +1,29 @@
-import { Input, Icon, Overlay, Header, ListItem } from 'react-native-elements';
-import { useFormInput, useFormValidation } from '../helpers/hooks';
-import React, { useContext, useState, useEffect } from "react";
+import { Icon, Header, ListItem } from 'react-native-elements';
+import React, { useContext, useState } from "react";
 import NavigationService from '../helpers/NavigationService';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { AppContext } from '../components/ContextProvider';
-import ConcealPassword from '../components/ccxPassword';
 import ConcealButton from '../components/ccxButton';
+import localStorage from '../helpers/LocalStorage';
 import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
+import AuthCheck from './AuthCheck';
 import {
   maskAddress,
-  formatOptions,
   getAspectRatio,
-  format6Decimals,
-  showMessageDialog
+  format6Decimals
 } from '../helpers/utils';
 import {
-  Text,
   View,
   FlatList,
-  Clipboard,
-  StyleSheet,
-  ScrollView
 } from "react-native";
 
 const SendConfirm = () => {
   const { state, actions } = useContext(AppContext);
-  const { setAppData } = actions;
-  const { userSettings, layout, wallets, appData } = state;
+  const { wallets, appData } = state;
   const currWallet = wallets[appData.common.selectedWallet];
 
-  const { value: password, bind: bindPassword, setValue: setPassword } = useFormInput('');
+  const [showAuthCheck, setShowAuthCheck] = useState(false);
   const sendSummaryList = [];
 
   function addSummaryItem(value, title, icon) {
@@ -38,7 +31,6 @@ const SendConfirm = () => {
       value: value,
       title: title,
       icon: icon
-
     });
   }
 
@@ -75,7 +67,7 @@ const SendConfirm = () => {
     />
   );
 
-  sendPayment = () => {
+  sendPayment = (password) => {
     actions.sendPayment(
       currWallet.addr,
       state.appData.sendScreen.toAddress,
@@ -84,9 +76,6 @@ const SendConfirm = () => {
       '', password
     );
   }
-
-  const formValidation = (password !== '' && password.length >= userSettings.minimumPasswordLength);
-  const formValid = useFormValidation(formValidation);
 
   return (
     <View style={styles.pageWrapper}>
@@ -102,24 +91,16 @@ const SendConfirm = () => {
         />}
         centerComponent={{ text: 'Confirm sending', style: AppStyles.appHeaderText }}
       />
-      <ScrollView contentContainerStyle={styles.walletWrapper}>
-        <ConcealPassword
-          showAlternative={true}
-          bindPassword={bindPassword}
-          setValue={setPassword}
-        />
-        <FlatList
-          data={sendSummaryList}
-          style={styles.summaryList}
-          renderItem={this.renderItem}
-          keyExtractor={this.keyExtractor}
-        />
-      </ScrollView>
+      <FlatList
+        data={sendSummaryList}
+        style={styles.summaryList}
+        renderItem={this.renderItem}
+        keyExtractor={this.keyExtractor}
+      />
       <View style={styles.footer}>
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnLeft]}
-          onPress={() => this.sendPayment()}
-          disabled={!formValid}
+          onPress={() => setShowAuthCheck(true)}
           text="SEND"
         />
         <ConcealButton
@@ -128,6 +109,14 @@ const SendConfirm = () => {
           text="CANCEL"
         />
       </View>
+      <AuthCheck
+        onSuccess={(password) => {
+          setShowAuthCheck(false);
+          this.sendPayment(password);
+        }}
+        onCancel={() => setShowAuthCheck(false)}
+        showCheck={showAuthCheck}
+      />
     </View>
   )
 };
@@ -151,10 +140,6 @@ const styles = EStyleSheet.create({
   sendInput: {
     marginTop: '10rem',
     marginBottom: '20rem'
-  },
-  password: {
-    color: "#FFFFFF",
-    fontSize: '18rem'
   },
   data: {
     color: "#AAAAAA"

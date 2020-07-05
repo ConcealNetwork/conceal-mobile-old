@@ -1,4 +1,4 @@
-import { Icon, Overlay, Header, ListItem } from 'react-native-elements';
+import { Icon, Header } from 'react-native-elements';
 import NavigationService from '../helpers/NavigationService';
 import { AppContext } from '../components/ContextProvider';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -8,19 +8,15 @@ import { AppColors } from '../constants/Colors';
 import SearchAddress from './SearchAddress';
 import AppStyles from '../components/Style';
 import React, { useContext } from "react";
-import { sprintf } from 'sprintf-js';
 import {
   maskAddress,
-  formatOptions,
   getAspectRatio
 } from '../helpers/utils';
 import {
   Text,
   View,
-  FlatList,
   TextInput,
   Clipboard,
-  StyleSheet,
   ScrollView,
   TouchableOpacity
 } from "react-native";
@@ -31,7 +27,7 @@ const SendMessage = () => {
   const { user, wallets, appData } = state;
   const currWallet = wallets[appData.common.selectedWallet];
 
-  onScanAddressQRCode = () => {
+  this.onScanAddressQRCode = () => {
     setAppData({
       scanCode: {
         scanned: false
@@ -41,11 +37,11 @@ const SendMessage = () => {
     NavigationService.navigate('Scanner', { path: ["sendMessage", "toAddress"] });
   }
 
-  isFormValid = () => {
+  this.isFormValid = () => {
     return (state.appData.sendMessage.toAddress && state.appData.sendMessage.message);
   }
 
-  clearSend = () => {
+  this.clearSend = () => {
     setAppData({
       sendMessage: {
         toAddress: '',
@@ -54,7 +50,7 @@ const SendMessage = () => {
     });
   }
 
-  readFromClipboard = async () => {
+  this.readFromClipboard = async () => {
     const clipboardContent = await Clipboard.getString();
     setAppData({
       sendMessage: {
@@ -63,7 +59,7 @@ const SendMessage = () => {
     });
   };
 
-  setAddress = (label, address, paymentID, entryID) => {
+  this.setAddress = (label, address, paymentID, entryID) => {
     setAppData({
       sendMessage: {
         toAddress: address

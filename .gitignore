@@ -30,3 +30,4 @@ yarn-error.*
 
 /.scannerwork
 /.expo-shared
+/web-build

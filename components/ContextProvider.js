@@ -16,7 +16,6 @@ const AppContextProvider = props => {
   const { appData } = state;
 
   const loginUser = options => {
-    const { id } = options;
     if (options.twoFACode) {
       options.uuid = Expo.Constants.installationId;
     }
@@ -24,7 +23,6 @@ const AppContextProvider = props => {
     let msgType;
 
     dispatch({ type: 'FORM_SUBMITTED', value: true });
-    setUsername(options.email);
 
     Auth.setRememberme(options.rememberMe ? "TRUE" : "FALSE");
     if (options.rememberMe) {
@@ -33,13 +31,21 @@ const AppContextProvider = props => {
       Auth.setUsername('');
     }
     Auth.login(options)
-      .then(res => options.callback(res.result === 'success'))
-      .catch(err => showMessageDialog(`ERROR ${err}`))
+      .then(res => {
+        if (res.result === 'success') {
+          logger.log('USER_LOGGED_IN...');
+          dispatch({ type: 'USER_LOGGED_IN', password: options.password });
+        } else {
+          message = res.message;
+          showMessageDialog(message, "error");
+        }
+      })
+      .catch(err => showMessageDialog(`ERROR ${err}`, "error"))
       .finally(() => dispatch({ type: 'FORM_SUBMITTED', value: false }));
   };
 
   const signUpUser = options => {
-    const { userName, email, password, id } = options;
+    const { userName, email, password } = options;
     let message;
     let msgType;
     dispatch({ type: 'FORM_SUBMITTED', value: true });
@@ -62,7 +68,7 @@ const AppContextProvider = props => {
   };
 
   const resetPassword = options => {
-    const { email, id } = options;
+    const { email } = options;
     let message;
     let msgType;
     Api.resetPassword(email)
@@ -85,7 +91,7 @@ const AppContextProvider = props => {
   };
 
   const resetPasswordConfirm = options => {
-    const { password, token, id } = options;
+    const { password, token } = options;
     let message;
     let msgType;
     dispatch({ type: 'FORM_SUBMITTED', value: true });
@@ -162,7 +168,7 @@ const AppContextProvider = props => {
   };
 
   const addContact = (contact, extras, callback) => {
-    const { label, address, paymentID, entryID, edit, id } = contact;
+    const { label, address, paymentID, entryID, edit } = contact;
     let message;
     let msgType;
     dispatch({ type: 'FORM_SUBMITTED', value: true });

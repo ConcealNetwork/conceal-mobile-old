@@ -64,7 +64,7 @@ const Messages = () => {
   });
 
 
-  changeFilter = (selectedIndex) => {
+  this.changeFilter = (selectedIndex) => {
     setAppData({
       messages: {
         filterState: selectedIndex
@@ -136,7 +136,7 @@ const Messages = () => {
             keyExtractor={item => item.id}
             renderItem={({ item }) =>
               <View style={(item.addr === appData.common.selectedWallet) ? [styles.flatview, styles.walletSelected] : styles.flatview}>
-                <TouchableOpacity onPress={() => console.log("message")}>
+                <TouchableOpacity>
                   <View>
                     <Text style={styles.address}>{maskAddress(item.address)}</Text>
                     <Text style={styles.message}>{item.message}</Text>

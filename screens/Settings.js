@@ -1,11 +1,9 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { Input, Icon, Header, ListItem, Overlay } from 'react-native-elements';
-import { useFormInput, useFormValidation } from '../helpers/hooks';
+import React, { useContext, useState } from 'react';
+import { Icon, Header, ListItem, Overlay } from 'react-native-elements';
 import NavigationService from '../helpers/NavigationService';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { AppContext } from '../components/ContextProvider';
 import ModalSelector from 'react-native-modal-selector';
-import ConcealPinView from '../components/ccxPinView';
 import { showMessageDialog } from '../helpers/utils';
 import localStorage from '../helpers/LocalStorage';
 import { getAspectRatio } from '../helpers/utils';
@@ -15,24 +13,17 @@ import AppConf from '../app.json';
 import PinSetup from './PinSetup';
 import FgpSetup from './FgpSetup';
 import {
-  Text,
   View,
-  Picker,
   FlatList,
-  ScrollView,
-  StyleSheet
 } from 'react-native';
 
 
 const Settings = () => {
   const { actions, state } = useContext(AppContext);
-  const { appData } = state;
-  const { setAppData } = actions;
   const { logoutUser, check2FA } = actions;
   const { network, user, userSettings } = state;
 
   // our hook into the state of the function component for the authentication mode
-  const { value: password, bind: bindPassword } = useFormInput('');
   const [authMode, setAuthMode] = useState(localStorage.get('auth_method', 'password'));
   const [showFgpModal, setShowFgpModal] = useState(false);
   const [showPinModal, setShowPinModal] = useState(false);

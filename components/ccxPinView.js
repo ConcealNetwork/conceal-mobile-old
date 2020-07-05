@@ -6,9 +6,7 @@ import {
   View,
 } from "react-native";
 
-export default function ConcealPinView({
-  onComplete, onCancel,
-}) {
+export default function ConcealPinView({ onComplete, onCancel }) {
   const pinView = useRef(null);
 
   return (

@@ -1,5 +1,5 @@
+import { View, Text } from 'react-native';
 import React, { useContext, useEffect } from 'react';
-import { StatusBar, View, Text, StyleSheet } from 'react-native';
 import { AppContext } from '../components/ContextProvider';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import AuthHelper from '../helpers/AuthHelper';

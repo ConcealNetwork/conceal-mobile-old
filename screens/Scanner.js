@@ -1,21 +1,17 @@
 import React, { useContext, useState } from "react";
 import { AppContext } from '../components/ContextProvider';
 import NavigationService from '../helpers/NavigationService';
-import { Text, View, StyleSheet, Button } from 'react-native';
-import Constants from 'expo-constants';
+import { Text, View, StyleSheet } from 'react-native';
 import * as Permissions from 'expo-permissions';
 import { BarCodeScanner } from 'expo-barcode-scanner';
-import {
-  showErrorMessage,
-  showSuccessMessage
-} from '../helpers/utils';
+import { showSuccessMessage } from '../helpers/utils';
 
 const BarcodeScanner = (props) => {
   const params = props.navigation.state.params
 
   const [hasPermission, setHasPermission] = useState(false);
   const [hasScanned, setHasScanned] = useState(false);
-  const { state, actions } = useContext(AppContext);
+  const { actions } = useContext(AppContext);
   const { setAppData } = actions;
 
 
@@ -29,7 +25,7 @@ const BarcodeScanner = (props) => {
     }
   }
 
-  handleBarCodeScanned = ({ type, data }) => {
+  this.handleBarCodeScanned = ({ type, data }) => {
     var codeObject = {};
     var scannedCode = null;
 
@@ -47,7 +43,7 @@ const BarcodeScanner = (props) => {
     NavigationService.goBack();
   };
 
-  getPermissionsAsync = async () => {
+  this.getPermissionsAsync = async () => {
     const { status } = await Permissions.askAsync(Permissions.CAMERA);
     setHasPermission(status === 'granted');
   };

@@ -1,27 +1,19 @@
 import { Icon } from 'react-native-elements';
 import React, { useState } from 'react';
 import * as LocalAuthentication from 'expo-local-authentication';
-import { useFormInput, useFormValidation } from '../helpers/hooks';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import ConcealPassword from '../components/ccxPassword';
 import ConcealButton from '../components/ccxButton';
 import { getAspectRatio } from '../helpers/utils';
 import { AppColors } from '../constants/Colors';
 import { View, Text } from 'react-native';
 
 
-const FgpSetup = props => {
-  const { onSave, onCancel } = props;
+const FgpCheck = props => {
+  const { onComplete, onCancel } = props;
 
   // our hook into the state of the function component for the authentication mode
-  const { value: password, bind: bindPassword, setValue: setPassword } = useFormInput('');
   const [isScanning, setIsScanning] = useState(0);
   const [fgpValue, setfgpValue] = useState(false);
-
-  const formValidation = (
-    (password != '') && (fgpValue)
-  );
-  const formValid = useFormValidation(formValidation);
 
   if (isScanning == 0) {
     setIsScanning(1);
@@ -29,6 +21,9 @@ const FgpSetup = props => {
     LocalAuthentication.authenticateAsync().then(result => {
       setfgpValue(result.success);
       setIsScanning(2);
+
+      // signal back success
+      onComplete({ success: true });
     });
   }
 
@@ -46,11 +41,6 @@ const FgpSetup = props => {
 
   return (
     <View style={styles.fgpWrapper}>
-      <ConcealPassword
-        showAlternative={false}
-        bindPassword={bindPassword}
-        setValue={setPassword}
-      />
       <View style={styles.fgpIconWrapper}>
         <Text style={styles.fgpStatus}>{this.getFgpStatusText()}</Text>
         <Icon
@@ -61,14 +51,6 @@ const FgpSetup = props => {
         />
       </View>
       <View style={styles.footer}>
-        <ConcealButton
-          style={[styles.footerBtn, styles.footerBtnLeft]}
-          disabled={!formValid}
-          onPress={() => {
-            onSave({ fgpData: true, passData: password });
-          }}
-          text="SAVE"
-        />
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnRight]}
           onPress={() => {
@@ -102,14 +84,6 @@ const styles = EStyleSheet.create({
     color: AppColors.concealTextColor,
     fontSize: '18rem'
   },
-  passwordInput: {
-    marginTop: '30rem',
-    marginBottom: '50rem'
-  },
-  passwordText: {
-    color: "#FFFFFF",
-    fontSize: '18rem'
-  },
   footer: {
     bottom: '0rem',
     left: '20rem',
@@ -133,4 +107,4 @@ const styles = EStyleSheet.create({
   }
 });
 
-export default FgpSetup;
+export default FgpCheck;

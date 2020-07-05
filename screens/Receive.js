@@ -10,13 +10,11 @@ import AppStyles from '../components/Style';
 import {
   shareContent,
   getAspectRatio,
-  showErrorMessage,
   showSuccessMessage
 } from '../helpers/utils';
 import {
   Text,
   View,
-  Share,
   Clipboard,
   ScrollView,
   StyleSheet
@@ -25,10 +23,10 @@ import {
 
 const Receive = () => {
   const { state } = useContext(AppContext);
-  const { appSettings, user, layout, wallets, appData } = state;
+  const { wallets, appData } = state;
   const currWallet = wallets[appData.common.selectedWallet];
 
-  onCopyAddress = async (text) => {
+  this.onCopyAddress = async (text) => {
     Clipboard.setString(text);
     showSuccessMessage('Copied address to the clipboard...');
   }
