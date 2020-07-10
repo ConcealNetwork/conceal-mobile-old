@@ -4,7 +4,6 @@ import NavigationService from '../helpers/NavigationService';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { AppContext } from '../components/ContextProvider';
 import ConcealButton from '../components/ccxButton';
-import localStorage from '../helpers/LocalStorage';
 import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
 import AuthCheck from './AuthCheck';

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import ConcealTextInput from '../components/ccxTextInput';
 import ConcealButton from '../components/ccxButton';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -10,7 +10,10 @@ import ConcealPassword from '../components/ccxPassword';
 import { AppContext } from '../components/ContextProvider';
 import { useFormInput, useFormValidation, useCheckbox } from '../helpers/hooks';
 import SignUp from './SignUp';
+import AuthCheck from './AuthCheck';
+import NavigationService from '../helpers/NavigationService';
 import ResetPassword from './ResetPassword';
+import AuthHelper from '../helpers/AuthHelper';
 import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
 import { getAspectRatio } from '../helpers/utils';
@@ -30,11 +33,16 @@ const Login = () => {
   const { layout, userSettings } = state;
   const { formSubmitted } = layout;
   const { setAppData } = actions;
+  const Auth = new AuthHelper(state.appSettings.apiURL);
 
   const { value: email, bind: bindEmail } = useFormInput(localStorage.get('id_username'));
   const { value: password, bind: bindPassword, setValue: setPassword } = useFormInput('');
   const { value: twoFACode, bind: bindTwoFACode } = useFormInput('');
   const { checked: rememberMe, bind: bindRememberMe } = useCheckbox(localStorage.get('id_rememberme') == "TRUE");
+
+  // alternative auth check state
+  const [showLoginForm, setShowLoginForm] = useState(!Auth.getIsAltAuth());
+  const [showAuthCheck, setShowAuthCheck] = useState(Auth.getIsAltAuth());
 
   const formValidation = (
     email !== '' && /\S+@\S+\.\S+/.test(email) &&
@@ -45,66 +53,75 @@ const Login = () => {
 
   return (
     <View style={AppStyles.viewContainer}>
-      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <ScrollView contentContainerStyle={[AppStyles.loginView, styles.LoginContainer]}>
-          <Image
-            source={require('../assets/images/icon.png')}
-            style={{ width: 150 * getAspectRatio(), height: 150 * getAspectRatio() }}
-          />
-          <Text style={AppStyles.title}>SIGN IN</Text>
-          <ConcealTextInput
-            {...bindEmail}
-            placeholder="E-mail"
-            keyboardType="email-address"
-            textContentType="emailAddress"
-            inputStyle={AppStyles.textLarge}
-          />
-          <ConcealPassword
-            showAlternative={true}
-            bindPassword={bindPassword}
-            setValue={setPassword}
-          />
-          <ConcealTextInput
-            {...bindTwoFACode}
-            placeholder="2 Factor Authentication Code"
-            keyboardType="numeric"
-            textContentType="none"
-            inputStyle={AppStyles.textLarge}
-          />
-          <CheckBox
-            {...bindRememberMe}
-            title='Remember username'
-            textStyle={styles.checkBoxText}
-            containerStyle={styles.checkBoxContainer}
-            checkedColor={AppColors.concealOrange}
-            uncheckedColor={AppColors.concealOrange}
-            size={20 * getAspectRatio()}
-          />
+      {!showLoginForm &&
+        <View style={styles.loggingWrapper}>
+          <Text style={styles.loggingH1}>Logging in</Text>
+          <Text style={styles.loggingH2}>... please wait ...</Text>
+        </View>
+      }
 
-          <View style={styles.footer}>
-            <ConcealButton
-              onPress={() => loginUser({ email, password, twoFACode, rememberMe, id: 'loginForm' })}
-              text='Sign In'
-              accessibilityLabel="Log In Button"
-              disabled={formSubmitted || !formValid}
-              style={[styles.footerBtn, styles.footerBtnLeft]}
+      {showLoginForm &&
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+          <ScrollView contentContainerStyle={[AppStyles.loginView, styles.LoginContainer]}>
+            <Image
+              source={require('../assets/images/icon.png')}
+              style={{ width: 150 * getAspectRatio(), height: 150 * getAspectRatio() }}
+            />
+            <Text style={AppStyles.title}>SIGN IN</Text>
+            <ConcealTextInput
+              {...bindEmail}
+              placeholder="E-mail"
+              keyboardType="email-address"
+              textContentType="emailAddress"
+              inputStyle={AppStyles.textLarge}
+            />
+            <ConcealPassword
+              showAlternative={true}
+              bindPassword={bindPassword}
+              setValue={setPassword}
+            />
+            <ConcealTextInput
+              {...bindTwoFACode}
+              placeholder="2 Factor Authentication Code"
+              keyboardType="numeric"
+              textContentType="none"
+              inputStyle={AppStyles.textLarge}
+            />
+            <CheckBox
+              {...bindRememberMe}
+              title='Remember username'
+              textStyle={styles.checkBoxText}
+              containerStyle={styles.checkBoxContainer}
+              checkedColor={AppColors.concealOrange}
+              uncheckedColor={AppColors.concealOrange}
+              size={20 * getAspectRatio()}
             />
 
-            <ConcealButton
-              onPress={() => setAppData({ login: { signUpVisible: true } })}
-              text="Sign Up"
-              style={[styles.footerBtn, styles.footerBtnRight]}
-              accessibilityLabel="Sign Up Button"
-              disabled={formSubmitted}
-            />
-          </View>
+            <View style={styles.footer}>
+              <ConcealButton
+                onPress={() => loginUser({ email, password, twoFACode, rememberMe, id: 'loginForm' })}
+                text='Sign In'
+                accessibilityLabel="Log In Button"
+                disabled={formSubmitted || !formValid}
+                style={[styles.footerBtn, styles.footerBtnLeft]}
+              />
 
-          <TouchableOpacity style={styles.forgotContainer} onPress={() => setAppData({ login: { resetPasswordVisible: true } })}>
-            <Text style={styles.forgotText}>Forgot your password?</Text>
-            <Text style={styles.forgotText}>Click here</Text>
-          </TouchableOpacity>
-        </ScrollView>
-      </TouchableWithoutFeedback>
+              <ConcealButton
+                onPress={() => setAppData({ login: { signUpVisible: true } })}
+                text="Sign Up"
+                style={[styles.footerBtn, styles.footerBtnRight]}
+                accessibilityLabel="Sign Up Button"
+                disabled={formSubmitted}
+              />
+            </View>
+
+            <TouchableOpacity style={styles.forgotContainer} onPress={() => setAppData({ login: { resetPasswordVisible: true } })}>
+              <Text style={styles.forgotText}>Forgot your password?</Text>
+              <Text style={styles.forgotText}>Click here</Text>
+            </TouchableOpacity>
+          </ScrollView>
+        </TouchableWithoutFeedback>
+      }
       <Overlay
         isVisible={state.appData.login.signUpVisible}
         overlayBackgroundColor={AppColors.concealBlack}
@@ -126,11 +143,46 @@ const Login = () => {
           hidePanel={() => setAppData({ login: { resetPasswordVisible: false } })}
         />
       </Overlay>
+
+      <AuthCheck
+        onSuccess={(userPass) => {
+          console.log(userPass);
+          setShowAuthCheck(false);
+          loginUser({
+            email: localStorage.get('id_username'),
+            password: userPass,
+            twoFACode,
+            rememberMe,
+            id: 'loginForm'
+          });
+        }}
+        onCancel={() => {
+          setShowAuthCheck(false);
+          setShowLoginForm(true);
+        }}
+        showCheck={showAuthCheck}
+      />
     </View>
   )
 };
 
 const styles = EStyleSheet.create({
+  loggingWrapper: {
+    position: 'absolute',
+    right: '10rem',
+    left: '10rem',
+    top: '15%'
+  },
+  loggingH1: {
+    fontSize: '26rem',
+    textAlign: 'center',
+    color: AppColors.concealTextColor,
+  },
+  loggingH2: {
+    fontSize: '18rem',
+    textAlign: 'center',
+    color: AppColors.concealTextColor,
+  },
   footer: {
     flex: 1,
     marginTop: '20rem',
@@ -153,7 +205,7 @@ const styles = EStyleSheet.create({
     fontSize: '16rem'
   },
   checkBoxContainer: {
-    borderColor: AppColors.concealBorderColor,
+    borderColor: AppColors.concealBlack,
     backgroundColor: AppColors.concealBlack,
     marginTop: '10rem'
   },

@@ -24,7 +24,6 @@ const PinSetup = props => {
     <View style={styles.pinWrapper}>
       <View style={styles.passCompWrapper}>
         <ConcealPassword
-          showAlternative={false}
           bindPassword={bindPassword}
           setValue={setPassword}
         />

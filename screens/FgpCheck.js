@@ -1,11 +1,13 @@
 import { Icon } from 'react-native-elements';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as LocalAuthentication from 'expo-local-authentication';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import ConcealButton from '../components/ccxButton';
+import localStorage from '../helpers/LocalStorage';
 import { getAspectRatio } from '../helpers/utils';
 import { AppColors } from '../constants/Colors';
 import { View, Text } from 'react-native';
+import { setItemAsync } from 'expo-secure-store';
 
 
 const FgpCheck = props => {
@@ -15,16 +17,28 @@ const FgpCheck = props => {
   const [isScanning, setIsScanning] = useState(0);
   const [fgpValue, setfgpValue] = useState(false);
 
-  if (isScanning == 0) {
-    setIsScanning(1);
+  const startBiometricAuth = () => {
+    if (isScanning == 0) {
+      setIsScanning(1);
 
-    LocalAuthentication.authenticateAsync().then(result => {
-      setfgpValue(result.success);
-      setIsScanning(2);
+      LocalAuthentication.authenticateAsync().then(result => {
+        setfgpValue(result.success);
 
-      // signal back success
-      onComplete({ success: true });
-    });
+        if (!result.success) {
+          setIsScanning(0);
+          startBiometricAuth();
+
+          setTimeout(() => {
+            setIsScanning(1);
+          }, 3000);
+        }
+
+        // signal back success or failure
+        onComplete({ success: result.success });
+        // set to final state
+        setIsScanning(2);
+      });
+    }
   }
 
   this.getFgpStatusText = () => {
@@ -34,15 +48,35 @@ const FgpCheck = props => {
       if (fgpValue) {
         return "Fingerprint SUCCESS";
       } else {
-        return "Fingerprint FAILED!";
+        return "Fingerprint FAILED! Please try again";
       }
     }
   }
 
+  this.getFgpStyle = () => {
+    if (isScanning == 1) {
+      return { color: AppColors.concealTextColor };
+    } else {
+      if (fgpValue) {
+        return { color: AppColors.concealTextColor };
+      } else {
+        return { color: AppColors.concealErrorColor };
+      }
+    }
+  }
+
+  useEffect(() => {
+    setIsScanning(0);
+    startBiometricAuth();
+  }, []);
+
   return (
     <View style={styles.fgpWrapper}>
+      <Text style={styles.hello}>Hello,</Text>
+      <Text style={styles.email}>{localStorage.get('id_username')}</Text>
+
       <View style={styles.fgpIconWrapper}>
-        <Text style={styles.fgpStatus}>{this.getFgpStatusText()}</Text>
+        <Text style={[styles.fgpStatus, this.getFgpStyle()]}>{this.getFgpStatusText()}</Text>
         <Icon
           name='ios-finger-print'
           type='ionicon'
@@ -81,8 +115,18 @@ const styles = EStyleSheet.create({
     justifyContent: 'center'
   },
   fgpStatus: {
+    fontSize: '18rem',
+    marginBottom: '15rem'
+  },
+  hello: {
+    fontSize: '22rem',
+    textAlign: 'center',
     color: AppColors.concealTextColor,
-    fontSize: '18rem'
+  },
+  email: {
+    fontSize: '16rem',
+    textAlign: 'center',
+    color: AppColors.concealTextColor,
   },
   footer: {
     bottom: '0rem',

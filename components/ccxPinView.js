@@ -2,11 +2,9 @@ import React, { useRef } from 'react';
 import PinView from 'react-native-pin-view';
 import { AppColors } from '../constants/Colors';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import {
-  View,
-} from "react-native";
+import { View } from "react-native";
 
-export default function ConcealPinView({ onComplete, onCancel }) {
+export default function ConcealPinView({ onComplete }) {
   const pinView = useRef(null);
 
   return (

@@ -1,5 +1,5 @@
 import { Icon } from 'react-native-elements';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as LocalAuthentication from 'expo-local-authentication';
 import { useFormInput, useFormValidation } from '../helpers/hooks';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -23,13 +23,26 @@ const FgpSetup = props => {
   );
   const formValid = useFormValidation(formValidation);
 
-  if (isScanning == 0) {
-    setIsScanning(1);
+  const startBiometricAuth = () => {
+    if (isScanning == 0) {
+      setIsScanning(1);
 
-    LocalAuthentication.authenticateAsync().then(result => {
-      setfgpValue(result.success);
-      setIsScanning(2);
-    });
+      LocalAuthentication.authenticateAsync().then(result => {
+        setfgpValue(result.success);
+
+        if (!result.success) {
+          setIsScanning(0);
+          startBiometricAuth();
+
+          setTimeout(() => {
+            setIsScanning(1);
+          }, 3000);
+        }
+
+        // set to final state
+        setIsScanning(2);
+      });
+    }
   }
 
   this.getFgpStatusText = () => {
@@ -39,20 +52,38 @@ const FgpSetup = props => {
       if (fgpValue) {
         return "Fingerprint SUCCESS";
       } else {
-        return "Fingerprint FAILED!";
+        return "Fingerprint FAILED! Please try again";
       }
     }
   }
 
+  this.getFgpStyle = () => {
+    if (isScanning == 1) {
+      return { color: AppColors.concealTextColor };
+    } else {
+      if (fgpValue) {
+        return { color: AppColors.concealTextColor };
+      } else {
+        return { color: AppColors.concealErrorColor };
+      }
+    }
+  }
+
+  useEffect(() => {
+    setIsScanning(0);
+    startBiometricAuth();
+  }, []);
+
   return (
     <View style={styles.fgpWrapper}>
-      <ConcealPassword
-        showAlternative={false}
-        bindPassword={bindPassword}
-        setValue={setPassword}
-      />
+      <View style={styles.passCompWrapper}>
+        <ConcealPassword
+          bindPassword={bindPassword}
+          setValue={setPassword}
+        />
+      </View>
       <View style={styles.fgpIconWrapper}>
-        <Text style={styles.fgpStatus}>{this.getFgpStatusText()}</Text>
+        <Text style={[styles.fgpStatus, this.getFgpStyle()]}>{this.getFgpStatusText()}</Text>
         <Icon
           name='ios-finger-print'
           type='ionicon'
@@ -88,6 +119,9 @@ const styles = EStyleSheet.create({
     flex: 1,
     paddingTop: '10rem'
   },
+  passCompWrapper: {
+    margin: '10rem'
+  },
   fgpIconWrapper: {
     top: '40rem',
     left: '0rem',
@@ -99,8 +133,8 @@ const styles = EStyleSheet.create({
     justifyContent: 'center'
   },
   fgpStatus: {
-    color: AppColors.concealTextColor,
-    fontSize: '18rem'
+    fontSize: '18rem',
+    marginBottom: '15rem'
   },
   passwordInput: {
     marginTop: '30rem',

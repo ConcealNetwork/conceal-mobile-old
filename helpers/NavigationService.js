@@ -16,7 +16,7 @@ function navigate(routeName, params) {
 }
 
 function goBack(steps) {
-  for (i = 0; i < (steps ? steps : 1); i++) {
+  for (let i = 0; i < (steps ? steps : 1); i++) {
     _navigator.dispatch(
       NavigationActions.back()
     );

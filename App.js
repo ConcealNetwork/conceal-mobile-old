@@ -1,10 +1,8 @@
-import localStorage from './helpers/LocalStorage';
 import React, { useState } from 'react';
 import { Dimensions } from 'react-native';
 import { YellowBox } from 'react-native';
 import * as Font from 'expo-font';
 import { AppLoading } from 'expo';
-import { Icon } from '@expo/vector-icons';
 import { Platform, StatusBar, View } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import FlashMessage from "react-native-flash-message";

@@ -14,9 +14,15 @@ export default class AuthHelper {
       password,
       rememberme: true,
     };
+
+    if (!twoFACode) {
+      body.checksum = this.getChecksum();
+    }
+
     if (twoFACode && twoFACode !== '') body.code = twoFACode;
     return this.fetch(`${this.domain}/auth`, { method: 'POST', body: JSON.stringify(body) })
       .then(res => {
+        if (res.message.checksum) this.setChecksum(res.message.checksum);
         if (res.message.token) this.setToken(res.message.token);
         return Promise.resolve(res);
       });
@@ -38,8 +44,11 @@ export default class AuthHelper {
 
   setUsername = idUsername => localStorage.set('id_username', idUsername);
   getUsername = () => { return localStorage.get('id_username') };
+  getIsAltAuth = () => { return localStorage.get('auth_method') !== "password" };
   setRememberme = idRememberme => localStorage.set('id_rememberme', idRememberme);
   getRememberme = () => { return localStorage.get('id_rememberme') == "TRUE"; }
+  setChecksum = checksum => localStorage.set('id_checksum', checksum);
+  getChecksum = () => { return localStorage.get('id_checksum') }
   setToken = idToken => localStorage.set('id_token', idToken);
   getToken = () => { return localStorage.get('id_token'); }
   logout = () => localStorage.remove('id_token');

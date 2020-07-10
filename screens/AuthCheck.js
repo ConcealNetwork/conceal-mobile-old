@@ -23,7 +23,11 @@ const AuthCheck = props => {
       >
         <View style={styles.overlayWrapper}>
           <FgpCheck
-            onComplete={(result) => onSuccess(localStorage.get('lock_password'))}
+            onComplete={(result) => {
+              if (result.success) {
+                onSuccess(localStorage.get('lock_password'));
+              }
+            }}
             onCancel={() => onCancel()}
           />
         </View>
@@ -39,9 +43,6 @@ const AuthCheck = props => {
             onComplete={(result) => {
               if (result.success) {
                 onSuccess(localStorage.get('lock_password'));
-              } else {
-                showMessageDialog("Wrong pin. Please try again.", "error");
-                onCancel();
               }
             }}
             onCancel={() => onCancel()}

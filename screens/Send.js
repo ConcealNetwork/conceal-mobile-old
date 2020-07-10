@@ -1,4 +1,4 @@
-import { Icon, Overlay, Header, ListItem } from 'react-native-elements';
+import { Icon, Header, ListItem } from 'react-native-elements';
 import NavigationService from '../helpers/NavigationService';
 import { AppContext } from '../components/ContextProvider';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -11,10 +11,7 @@ import React, { useContext } from "react";
 import { sprintf } from 'sprintf-js';
 import {
   maskAddress,
-  formatOptions,
   getAspectRatio,
-  format0Decimals,
-  format2Decimals,
   format4Decimals,
   format6Decimals,
   format8Decimals
@@ -24,7 +21,6 @@ import {
   View,
   FlatList,
   Clipboard,
-  StyleSheet,
   ScrollView,
   TouchableOpacity
 } from "react-native";
@@ -283,6 +279,17 @@ const styles = EStyleSheet.create({
   },
   icon: {
     color: "orange"
+  },
+  fromWrapper: {
+    width: '100%',
+    padding: '15rem',
+    aspectRatio: 3 / 1,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#212529',
+    borderColor: AppColors.concealBorderColor,
+    borderWidth: 1
   },
   sendInput: {
     marginTop: '10rem',

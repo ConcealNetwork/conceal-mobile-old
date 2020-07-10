@@ -13,17 +13,14 @@ import {
   maskAddress,
   formatOptions,
   getAspectRatio,
-  format0Decimals,
-  format2Decimals,
   format4Decimals,
-  format6Decimals,
   format8Decimals,
 } from '../helpers/utils';
 
 const Wallet = () => {
   const { state, actions } = useContext(AppContext);
   const { setAppData, createWallet } = actions;
-  const { appSettings, layout, prices, user, wallets, appData } = state;
+  const { layout, prices, wallets, appData } = state;
   const currWallet = wallets[appData.common.selectedWallet];
   var transactions = [];
 

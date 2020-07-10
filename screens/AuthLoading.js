@@ -14,10 +14,17 @@ const AuthLoading = () => {
 
   useEffect(() => {
     logger.log('CHECKING AUTH...');
+
+    // force logout if biometric
+    if (Auth.getIsAltAuth) {
+      console.log('logout');
+      Auth.logout();
+    }
+
     let loggedIn = Auth.loggedIn();
     loggedIn
       ? (state.layout.userLoaded && state.layout.walletsLoaded) && NavigationService.navigate('App')
-      : NavigationService.navigate('Auth')
+      : NavigationService.navigate('Auth', 'LoginAlt')
   }, []);
 
   return (
