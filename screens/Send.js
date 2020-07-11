@@ -175,7 +175,7 @@ const SendScreen = () => {
           size={32 * getAspectRatio()}
         />}
       />
-      <ScrollView contentContainerStyle={styles.walletWrapper}>
+      <View style={styles.walletWrapper}>
         <View style={styles.fromWrapper}>
           <Text style={styles.fromAddress}>{maskAddress(currWallet.addr)}</Text>
           <Text style={styles.fromBalance}>{currWallet.balance.toLocaleString(undefined, format4Decimals)} CCX</Text>
@@ -218,7 +218,7 @@ const SendScreen = () => {
           <ConcealTextInput
             editable={false}
             placeholder='Select recipient address...'
-            containerStyle={styles.sendInput}
+            containerStyle={[styles.sendInput, styles.addressInput]}
             value={state.appData.sendScreen.toLabel ? state.appData.sendScreen.toLabel : maskAddress(state.appData.sendScreen.toAddress)}
             rightIcon={
               <Icon
@@ -248,7 +248,7 @@ const SendScreen = () => {
           renderItem={this.renderItem}
           keyExtractor={this.keyExtractor}
         />
-      </ScrollView>
+      </View>
       <SearchAddress
         selectAddress={(item) => setAppData({ searchAddress: { addrListVisible: false }, sendScreen: { toAddress: item.address, toPaymendId: item.paymentID, toLabel: item.label } })}
         closeOverlay={() => setAppData({ searchAddress: { addrListVisible: false } })}
@@ -295,6 +295,9 @@ const styles = EStyleSheet.create({
     marginTop: '10rem',
     marginBottom: '20rem'
   },
+  addressInput: {
+    marginBottom: '5rem'
+  },
   fromAddress: {
     fontSize: '18rem',
     color: "#FFA500",
@@ -329,11 +332,11 @@ const styles = EStyleSheet.create({
   },
   walletWrapper: {
     flex: 1,
-    top: 0,
+    top: '80rem',
     left: '5rem',
     right: '5rem',
     bottom: '50rem',
-    margin: '15rem',
+    margin: '10rem',
     position: 'absolute',
     flexDirection: 'column'
   },
