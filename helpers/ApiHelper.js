@@ -119,8 +119,6 @@ export default class ApiHelper {
     if (twoFACode && twoFACode !== '') body.code = twoFACode;
     if (password && password !== '') body.password = password;
 
-    console.log(body);
-
     return this.fetch(`${this.apiURL}/wallet`, { method: 'PUT', body: JSON.stringify(body) })
       .then(res => Promise.resolve(res));
   };

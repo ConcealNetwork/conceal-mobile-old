@@ -146,7 +146,6 @@ const Login = () => {
 
       <AuthCheck
         onSuccess={(userPass) => {
-          console.log(userPass);
           setShowAuthCheck(false);
           loginUser({
             email: localStorage.get('id_username'),

@@ -17,7 +17,6 @@ const AuthLoading = () => {
 
     // force logout if biometric
     if (Auth.getIsAltAuth) {
-      console.log('logout');
       Auth.logout();
     }
 
