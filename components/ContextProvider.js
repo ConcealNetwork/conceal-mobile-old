@@ -16,9 +16,8 @@ const AppContextProvider = props => {
   const { appData } = state;
 
   const loginUser = options => {
-    if (options.twoFACode) {
-      options.uuid = Expo.Constants.installationId;
-    }
+    // always set the uuid for the login user
+    options.uuid = Expo.Constants.installationId;
     let message;
     let msgType;
 
