@@ -1,5 +1,5 @@
 import { Icon } from 'react-native-elements';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import * as LocalAuthentication from 'expo-local-authentication';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import ConcealButton from '../components/ccxButton';
@@ -16,27 +16,31 @@ const FgpCheck = props => {
   // our hook into the state of the function component for the authentication mode
   const [isScanning, setIsScanning] = useState(0);
   const [fgpValue, setfgpValue] = useState(false);
+  const isMountedRef = useRef(null);
 
-  const startBiometricAuth = () => {
-    if (isScanning == 0) {
+  const startBiometricAuth = (mounted) => {
+    if ((isScanning == 0) && (isMountedRef.current)) {
       setIsScanning(1);
 
       LocalAuthentication.authenticateAsync().then(result => {
-        setfgpValue(result.success);
+        console.log("auth done: " + isMountedRef.current);
+        if (isMountedRef.current) {
+          setfgpValue(result.success);
 
-        if (!result.success) {
-          setIsScanning(0);
-          startBiometricAuth();
+          if (!result.success) {
+            setIsScanning(0);
+            startBiometricAuth();
 
-          setTimeout(() => {
-            setIsScanning(1);
-          }, 3000);
+            setTimeout(() => {
+              setIsScanning(1);
+            }, 3000);
+          }
+
+          // signal back success or failure
+          onComplete({ success: result.success });
+          // set to final state
+          setIsScanning(2);
         }
-
-        // signal back success or failure
-        onComplete({ success: result.success });
-        // set to final state
-        setIsScanning(2);
       });
     }
   }
@@ -66,8 +70,18 @@ const FgpCheck = props => {
   }
 
   useEffect(() => {
-    setIsScanning(0);
-    startBiometricAuth();
+    isMountedRef.current = true;
+    console.log("mount");
+
+    if (isMountedRef.current) {
+      setIsScanning(0);
+      startBiometricAuth();
+    }
+
+    return () => {
+      console.log("unmount");
+      isMountedRef.current = false;
+    }
   }, []);
 
   return (
@@ -88,9 +102,11 @@ const FgpCheck = props => {
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnRight]}
           onPress={() => {
-            LocalAuthentication.cancelAuthenticate();
-            setIsScanning(0);
-            onCancel();
+            if (isMountedRef.current) {
+              LocalAuthentication.cancelAuthenticate();
+              setIsScanning(0);
+              onCancel();
+            }
           }}
           text="CANCEL"
         />

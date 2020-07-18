@@ -112,7 +112,7 @@ export default class ApiHelper {
       wallet,  // origin
     };
 
-    if (!twoFACode) {
+    if (!twoFACode && this.auth.getIsAltAuth()) {
       body.checksum = this.auth.getChecksum();
     }
 

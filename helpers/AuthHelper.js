@@ -15,7 +15,7 @@ export default class AuthHelper {
       rememberme: true,
     };
 
-    if (!twoFACode) {
+    if (!twoFACode && this.getIsAltAuth()) {
       body.checksum = this.getChecksum();
     }
 

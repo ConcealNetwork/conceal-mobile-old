@@ -5,9 +5,10 @@ import { AppContext } from '../components/ContextProvider';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import ConcealPassword from '../components/ccxPassword';
 import ConcealButton from '../components/ccxButton';
+import localStorage from '../helpers/LocalStorage';
 import { getAspectRatio } from '../helpers/utils';
 import { AppColors } from '../constants/Colors';
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
 
 
 const PassCheck = props => {
@@ -24,6 +25,9 @@ const PassCheck = props => {
 
   return (
     <View style={styles.passWrapper}>
+      <Text style={styles.hello}>Hello,</Text>
+      <Text style={styles.email}>{localStorage.get('id_username')}</Text>
+
       <View style={styles.passInnerWrapper}>
         <View style={styles.passFieldWrapper}>
           <ConcealPassword
@@ -76,6 +80,16 @@ const styles = EStyleSheet.create({
   },
   lockIcon: {
     marginTop: '20rem'
+  },
+  hello: {
+    fontSize: '22rem',
+    textAlign: 'center',
+    color: AppColors.concealTextColor,
+  },
+  email: {
+    fontSize: '16rem',
+    textAlign: 'center',
+    color: AppColors.concealTextColor,
   },
   footer: {
     bottom: '0rem',
