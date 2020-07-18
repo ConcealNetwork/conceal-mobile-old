@@ -32,12 +32,12 @@
     "react-native-screens": "2.0.0-alpha.12",
     "react-native-simple-crypto": "^0.2.10",
     "react-native-svg": "9.13.3",
+    "react-native-walkthrough": "^0.2.0",
     "react-navigation": "^4.3.7",
     "react-navigation-drawer": "^2.4.11",
     "react-navigation-stack": "^1.9.0",
     "react-navigation-tabs": "^2.8.11",
     "react-pattern-lock": "^2.0.6",
-    "rn-tourguide": "^2.4.1",
     "sprintf-js": "^1.1.2"
   },
   "devDependencies": {

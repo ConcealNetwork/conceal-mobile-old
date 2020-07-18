@@ -1,9 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Icon, Header } from 'react-native-elements';
 import { Text, View, FlatList } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { AppColors } from '../constants/Colors';
 import NavigationService from '../helpers/NavigationService';
+import { startWalkthrough, WalkthroughElement } from 'react-native-walkthrough';
 import { AppContext } from '../components/ContextProvider';
 import ConcealButton from '../components/ccxButton';
 import AppStyles from '../components/Style';
@@ -28,6 +29,12 @@ const Wallet = () => {
     transactions = currWallet.transactions.slice().reverse();
   }
 
+  const makeTooltipContent = text => (
+    <View style={styles.tooltipView}>
+      <Text style={styles.tooltipText}>{text}</Text>
+    </View>
+  );
+
   return (
     <View style={styles.pageWrapper}>
       <Header
@@ -35,7 +42,25 @@ const Wallet = () => {
         containerStyle={AppStyles.appHeader}
         centerComponent={{ text: 'Selected Wallet', style: AppStyles.appHeaderText }}
         rightComponent={<Icon
-          onPress={() => { NavigationService.navigate('Settings'); }}
+          onPress={() => {
+            //NavigationService.navigate('Settings'); 
+            startWalkthrough([{
+              id: 'wallet-overall',
+              content: makeTooltipContent('This is your overall wallet state'),
+            }, {
+              id: 'wallet-messages',
+              content: makeTooltipContent('Here you can read or send messages'),
+            }, {
+              id: 'wallet-wallets',
+              content: makeTooltipContent('Here you can change or create wallets'),
+            }, {
+              id: 'wallet-addressbook',
+              content: makeTooltipContent('Here you can edit your addresses'),
+            }, {
+              id: 'wallet-market',
+              content: makeTooltipContent('Here you can see markets data'),
+            }]);
+          }}
           name='md-settings'
           type='ionicon'
           color='white'
@@ -44,60 +69,76 @@ const Wallet = () => {
       />
       {currWallet
         ? (<View style={styles.walletWrapper}>
-          <View style={styles.accountOverview}>
-            <Text style={styles.worthDollars}>
-              $ {(prices.usd * currWallet.balance).toLocaleString(undefined, format4Decimals)}
-            </Text>
-            <Text style={styles.amountCCX}>{currWallet.balance.toLocaleString(undefined, format4Decimals)} CCX</Text>
-            <View style={styles.btcPriceWrapper}>
-              <Icon
-                containerStyle={styles.btcIcon}
-                name={currWallet.locked ? 'md-lock' : 'logo-bitcoin'}
-                type='ionicon'
-                color={currWallet.locked ? '#FF0000' : '#FFFFFF'}
-                size={16 * getAspectRatio()}
-              />
-              <Text style={currWallet.locked ? [styles.worthBTC, styles.lockedText] : styles.worthBTC}>
-                {
-                  currWallet.locked
-                    ? sprintf('%s CCX', currWallet.locked.toLocaleString(undefined, format4Decimals))
-                    : (prices.btc * currWallet.balance).toLocaleString(undefined, format8Decimals)
-                }
-              </Text>
+          <WalkthroughElement id="wallet-overall">
+            <View style={styles.accountOverview}>
+              <View style={styles.iconsLeft}>
+                <WalkthroughElement id="wallet-messages">
+                  <Icon
+                    containerStyle={[styles.iconGeneral, styles.iconMessages]}
+                    onPress={() => NavigationService.navigate('Messages')}
+                    name='md-mail'
+                    type='ionicon'
+                    color='#FFFFFF'
+                    size={40 * getAspectRatio()}
+                  />
+                </WalkthroughElement>
+                <WalkthroughElement id="wallet-wallets">
+                  <Icon
+                    containerStyle={[styles.iconGeneral, styles.iconWallets]}
+                    onPress={() => NavigationService.navigate('Wallets')}
+                    name='md-wallet'
+                    type='ionicon'
+                    color='#FFFFFF'
+                    size={40 * getAspectRatio()}
+                  />
+                </WalkthroughElement>
+              </View>
+              <View style={styles.walletState}>
+                <Text style={styles.worthDollars}>
+                  $ {(prices.usd * currWallet.balance).toLocaleString(undefined, format4Decimals)}
+                </Text>
+                <Text style={styles.amountCCX}>{currWallet.balance.toLocaleString(undefined, format4Decimals)} CCX</Text>
+                <View style={styles.btcPriceWrapper}>
+                  <Icon
+                    containerStyle={styles.btcIcon}
+                    name={currWallet.locked ? 'md-lock' : 'logo-bitcoin'}
+                    type='ionicon'
+                    color={currWallet.locked ? '#FF0000' : '#FFFFFF'}
+                    size={16 * getAspectRatio()}
+                  />
+                  <Text style={currWallet.locked ? [styles.worthBTC, styles.lockedText] : styles.worthBTC}>
+                    {
+                      currWallet.locked
+                        ? sprintf('%s CCX', currWallet.locked.toLocaleString(undefined, format4Decimals))
+                        : (prices.btc * currWallet.balance).toLocaleString(undefined, format8Decimals)
+                    }
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.iconsRight}>
+                <WalkthroughElement id="wallet-addressbook">
+                  <Icon
+                    containerStyle={[styles.iconGeneral, styles.iconAddressBook]}
+                    onPress={() => NavigationService.navigate('AddressBook')}
+                    name='md-book'
+                    type='ionicon'
+                    color='#FFFFFF'
+                    size={40 * getAspectRatio()}
+                  />
+                </WalkthroughElement>
+                <WalkthroughElement id="wallet-market">
+                  <Icon
+                    containerStyle={[styles.iconGeneral, styles.iconMarkets]}
+                    onPress={() => NavigationService.navigate('Market')}
+                    name='md-trending-up'
+                    type='ionicon'
+                    color='#FFFFFF'
+                    size={40 * getAspectRatio()}
+                  />
+                </WalkthroughElement>
+              </View>
             </View>
-            <Icon
-              containerStyle={[styles.iconGeneral, styles.iconSettings]}
-              onPress={() => NavigationService.navigate('Messages')}
-              name='md-mail'
-              type='ionicon'
-              color='#FFFFFF'
-              size={40 * getAspectRatio()}
-            />
-            <Icon
-              containerStyle={[styles.iconGeneral, styles.iconWallets]}
-              onPress={() => NavigationService.navigate('Wallets')}
-              name='md-wallet'
-              type='ionicon'
-              color='#FFFFFF'
-              size={40 * getAspectRatio()}
-            />
-            <Icon
-              containerStyle={[styles.iconGeneral, styles.iconAddressBook]}
-              onPress={() => NavigationService.navigate('AddressBook')}
-              name='md-book'
-              type='ionicon'
-              color='#FFFFFF'
-              size={40 * getAspectRatio()}
-            />
-            <Icon
-              containerStyle={[styles.iconGeneral, styles.iconMarkets]}
-              onPress={() => NavigationService.navigate('Market')}
-              name='md-trending-up'
-              type='ionicon'
-              color='#FFFFFF'
-              size={40 * getAspectRatio()}
-            />
-          </View>
+          </WalkthroughElement>
           <Text style={styles.txsText}>Transactions</Text>
           <View style={styles.transactionsWrapper}>
             {layout.userLoaded && transactions.length === 0
@@ -107,20 +148,23 @@ const Wallet = () => {
             </Text>
               : <FlatList
                 data={transactions}
+                style={styles.txsList}
                 showsVerticalScrollIndicator={false}
                 keyExtractor={item => item.hash}
                 renderItem={({ item }) =>
                   <View style={styles.flatview}>
-                    <Text style={styles.dataTimestamp}>
-                      {Moment(item.timestamp).format('LLLL')}
+                    <View style={styles.txData}>
+                      <Text style={styles.dataTimestamp}>
+                        {Moment(item.timestamp).format('LLLL')}
+                      </Text>
+                      <Text style={styles.dataAmount}>
+                        {item.amount.toLocaleString(undefined, formatOptions)} CCX (fee: {item.fee})
                     </Text>
-                    <Text style={styles.dataAmount}>
-                      {item.amount.toLocaleString(undefined, formatOptions)} CCX (fee: {item.fee})
-                    </Text>
-                    <Text style={styles.dataAddress}>
-                      {maskAddress(item.address)}
-                    </Text>
-                    {(item.status === "pending") ? (<Text style={styles.dataPending}>PENDING</Text>) : null}
+                      <Text style={styles.dataAddress}>
+                        {maskAddress(item.address)}
+                      </Text>
+                      {(item.status === "pending") ? (<Text style={styles.dataPending}>PENDING</Text>) : null}
+                    </View>
                     <Icon
                       name={item.type === 'received' ? 'md-arrow-down' : 'md-arrow-up'}
                       type='ionicon'
@@ -174,15 +218,20 @@ const Wallet = () => {
 
 const styles = EStyleSheet.create({
   pageWrapper: {
-    flex: 1,
-    backgroundColor: 'rgb(40, 45, 49)'
+    backgroundColor: 'rgb(40, 45, 49)',
+    flexDirection: 'column',
+    alignItems: 'center',
+    flex: 1
   },
   flatview: {
-    justifyContent: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     borderBottomColor: AppColors.concealBlack,
     borderWidth: 0,
     borderBottomWidth: 1,
-    padding: '20rem',
+    padding: '15rem',
+    paddingLeft: '10rem',
+    paddingRight: '0rem'
   },
   worthDollars: {
     color: '#FFFFFF',
@@ -199,23 +248,17 @@ const styles = EStyleSheet.create({
   },
   accountOverview: {
     top: '5rem',
-    padding: '25rem',
+    padding: '5rem',
     width: '100%',
     marginBottom: '10rem',
     aspectRatio: 2.5 / 1,
     borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#212529',
     borderColor: AppColors.concealBorderColor,
-    borderWidth: 1
+    flexDirection: 'row',
+    borderWidth: 1,
   },
   footer: {
-    bottom: '10rem',
-    left: '10rem',
-    right: '10rem',
-    position: 'absolute',
-    flex: 1,
     alignItems: 'stretch',
     flexDirection: 'row',
     justifyContent: 'space-between'
@@ -230,32 +273,25 @@ const styles = EStyleSheet.create({
     marginRight: 5,
   },
   iconGeneral: {
-    position: 'absolute',
     width: '36rem',
     height: '36rem',
   },
-  iconSettings: {
-    left: '15rem',
-    top: '20rem',
+  iconMessages: {
+    top: '0rem',
   },
   iconWallets: {
-    left: '15rem',
-    top: '80rem',
+    top: '25rem',
   },
   iconAddressBook: {
-    right: '15rem',
-    top: '20rem',
+    top: '0rem',
   },
   iconMarkets: {
-    right: '15rem',
-    top: '80rem',
+    top: '25rem',
   },
   transactionsWrapper: {
-    top: '190rem',
-    left: '10rem',
-    right: '10rem',
-    bottom: '70rem',
-    position: 'absolute'
+    flexGrow: 1,
+    padding: '10rem',
+    alignSelf: 'stretch'
   },
   dataTimestamp: {
     color: '#FFFFFF',
@@ -280,11 +316,10 @@ const styles = EStyleSheet.create({
     paddingLeft: 0
   },
   txDirection: {
-    position: 'absolute',
     width: '32rem',
     height: '32rem',
     right: '10rem',
-    top: '20rem',
+    top: '20rem'
   },
   btcPriceWrapper: {
     height: '20rem',
@@ -321,9 +356,33 @@ const styles = EStyleSheet.create({
     paddingRight: '15rem'
   },
   walletWrapper: {
-    flex: 1,
-    padding: '10rem'
-  }
+    flexDirection: 'column',
+    alignSelf: 'stretch',
+    padding: '10rem',
+    flexGrow: 1
+  },
+  iconsLeft: {
+    padding: '10rem',
+  },
+  iconsRight: {
+    padding: '10rem',
+  },
+  walletState: {
+    flexGrow: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  txsList: {
+    height: '0rem'
+  },
+  tooltipView: {
+    paddingHorizontal: 24,
+    paddingVertical: 8,
+  },
+  tooltipText: {
+    color: 'black',
+    fontSize: '16rem',
+  },
 });
 
 export default Wallet;

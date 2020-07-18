@@ -8,6 +8,7 @@ import { createAppContainer } from 'react-navigation';
 import FlashMessage from "react-native-flash-message";
 import ConcealLoader from './components/ccxLoader';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { WalkthroughProvider } from 'react-native-walkthrough';
 
 import AppContextProvider from './components/ContextProvider';
 import AppStyles from './components/Style';
@@ -56,18 +57,20 @@ const App = props => {
         onFinish={handleFinishLoading}
       />
       :
-      < AppContextProvider >
-        <ConcealLoader />
-        <View style={AppStyles.appContainer}>
-          {Platform.OS === 'ios' && <StatusBar barStyle="light-content" />}
-          <AppContainer
-            ref={navigatorRef => {
-              NavigationService.setTopLevelNavigator(navigatorRef);
-            }}
-          />
-          <FlashMessage position="top" />
-        </View>
-      </AppContextProvider >
+      <WalkthroughProvider>
+        <AppContextProvider>
+          <ConcealLoader />
+          <View style={AppStyles.appContainer}>
+            {Platform.OS === 'ios' && <StatusBar barStyle="light-content" />}
+            <AppContainer
+              ref={navigatorRef => {
+                NavigationService.setTopLevelNavigator(navigatorRef);
+              }}
+            />
+            <FlashMessage position="top" />
+          </View>
+        </AppContextProvider>
+      </WalkthroughProvider>
   )
 };
 
