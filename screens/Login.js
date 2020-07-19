@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import ConcealTextInput from '../components/ccxTextInput';
 import ConcealButton from '../components/ccxButton';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -11,7 +11,6 @@ import { AppContext } from '../components/ContextProvider';
 import { useFormInput, useFormValidation, useCheckbox } from '../helpers/hooks';
 import SignUp from './SignUp';
 import AuthCheck from './AuthCheck';
-import NavigationService from '../helpers/NavigationService';
 import ResetPassword from './ResetPassword';
 import AuthHelper from '../helpers/AuthHelper';
 import { AppColors } from '../constants/Colors';

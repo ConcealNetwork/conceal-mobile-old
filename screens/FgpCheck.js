@@ -23,7 +23,6 @@ const FgpCheck = props => {
       setIsScanning(1);
 
       LocalAuthentication.authenticateAsync().then(result => {
-        console.log("auth done: " + isMountedRef.current);
         if (isMountedRef.current) {
           setfgpValue(result.success);
 
@@ -38,8 +37,6 @@ const FgpCheck = props => {
 
           // signal back success or failure
           onComplete({ success: result.success });
-          // set to final state
-          setIsScanning(2);
         }
       });
     }
@@ -71,7 +68,6 @@ const FgpCheck = props => {
 
   useEffect(() => {
     isMountedRef.current = true;
-    console.log("mount");
 
     if (isMountedRef.current) {
       setIsScanning(0);
@@ -79,7 +75,7 @@ const FgpCheck = props => {
     }
 
     return () => {
-      console.log("unmount");
+      LocalAuthentication.cancelAuthenticate();
       isMountedRef.current = false;
     }
   }, []);
@@ -102,11 +98,9 @@ const FgpCheck = props => {
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnRight]}
           onPress={() => {
-            if (isMountedRef.current) {
-              LocalAuthentication.cancelAuthenticate();
-              setIsScanning(0);
-              onCancel();
-            }
+            LocalAuthentication.cancelAuthenticate();
+            setIsScanning(0);
+            onCancel();
           }}
           text="CANCEL"
         />

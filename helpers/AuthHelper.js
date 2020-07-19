@@ -44,7 +44,7 @@ export default class AuthHelper {
 
   setUsername = idUsername => localStorage.set('id_username', idUsername);
   getUsername = () => { return localStorage.get('id_username') };
-  getIsAltAuth = () => { return localStorage.get('auth_method') !== "password" };
+  getIsAltAuth = () => { return (localStorage.get('auth_method', 'password') !== "password") };
   setRememberme = idRememberme => localStorage.set('id_rememberme', idRememberme);
   getRememberme = () => { return localStorage.get('id_rememberme') == "TRUE"; }
   setChecksum = checksum => localStorage.set('id_checksum', checksum);
