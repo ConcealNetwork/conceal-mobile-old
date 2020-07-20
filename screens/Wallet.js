@@ -1,14 +1,15 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Icon, Header } from 'react-native-elements';
 import { Text, View, FlatList } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { AppColors } from '../constants/Colors';
 import NavigationService from '../helpers/NavigationService';
-import { startWalkthrough, WalkthroughElement } from 'react-native-walkthrough';
 import { AppContext } from '../components/ContextProvider';
 import ConcealButton from '../components/ccxButton';
+import GuideNavigation from '../helpers/GuideNav';
 import AppStyles from '../components/Style';
 import { sprintf } from 'sprintf-js';
+import Tips from 'react-native-guide-tips';
 import Moment from 'moment';
 import {
   maskAddress,
@@ -25,180 +26,271 @@ const Wallet = () => {
   const currWallet = wallets[appData.common.selectedWallet];
   var transactions = [];
 
+  // guide navigation state values
+  const [guideState, setGuideState] = useState(null);
+  const [guideNavigation] = useState(new GuideNavigation('wallet', [
+    'overall',
+    'messages',
+    'wallets',
+    'addresses',
+    'market',
+    'send',
+    'receive'
+  ]));
+
   if (currWallet && currWallet.transactions) {
     transactions = currWallet.transactions.slice().reverse();
   }
 
-  const makeTooltipContent = text => (
-    <View style={styles.tooltipView}>
-      <Text style={styles.tooltipText}>{text}</Text>
-    </View>
-  );
+  // fire on mount
+  useEffect(() => {
+    setTimeout(() => {
+      setGuideState(guideNavigation.start());
+    }, 100);
+  }, []);
 
   return (
     <View style={styles.pageWrapper}>
       <Header
         placement="left"
         containerStyle={AppStyles.appHeader}
-        centerComponent={{ text: 'Selected Wallet', style: AppStyles.appHeaderText }}
-        rightComponent={<Icon
-          onPress={() => {
-            //NavigationService.navigate('Settings'); 
-            startWalkthrough([{
-              id: 'wallet-overall',
-              content: makeTooltipContent('This is your overall wallet state'),
-            }, {
-              id: 'wallet-messages',
-              content: makeTooltipContent('Here you can read or send messages'),
-            }, {
-              id: 'wallet-wallets',
-              content: makeTooltipContent('Here you can change or create wallets'),
-            }, {
-              id: 'wallet-addressbook',
-              content: makeTooltipContent('Here you can edit your addresses'),
-            }, {
-              id: 'wallet-market',
-              content: makeTooltipContent('Here you can see markets data'),
-            }]);
-          }}
-          name='md-settings'
-          type='ionicon'
-          color='white'
-          size={32 * getAspectRatio()}
-        />}
+        centerComponent={
+          <View style={AppStyles.appHeaderWrapper}>
+            <Text style={AppStyles.appHeaderText}>
+              Selected Wallet
+            </Text>
+            <Icon
+              onPress={() => {
+                guideNavigation.reset();
+                setGuideState(guideNavigation.start());
+              }}
+              name='md-help'
+              type='ionicon'
+              color='white'
+              size={26 * getAspectRatio()}
+            />
+          </View>
+        }
+        rightComponent={
+          <Icon
+            onPress={() => {
+              NavigationService.navigate('Settings');
+            }}
+            name='md-settings'
+            type='ionicon'
+            color='white'
+            size={32 * getAspectRatio()}
+          />
+        }
       />
       {currWallet
         ? (<View style={styles.walletWrapper}>
-          <WalkthroughElement id="wallet-overall">
-            <View style={styles.accountOverview}>
-              <View style={styles.iconsLeft}>
-                <WalkthroughElement id="wallet-messages">
+          <View style={styles.accountOverview}>
+            <View style={styles.iconsLeft}>
+              <View style={[styles.iconWrapper]}>
+                <Tips
+                  position={'right'}
+                  visible={guideState == 'messages'}
+                  textStyle={styles.guideTipText}
+                  tooltipArrowStyle={styles.guideTipArrowLeft}
+                  style={[styles.guideTipContainer, styles.guideTipMessages]}
+                  text="Click here to read and send new messages"
+                  onRequestClose={() => setGuideState(guideNavigation.next())}
+                >
                   <Icon
-                    containerStyle={[styles.iconGeneral, styles.iconMessages]}
+                    containerStyle={styles.iconGeneral}
                     onPress={() => NavigationService.navigate('Messages')}
                     name='md-mail'
                     type='ionicon'
                     color='#FFFFFF'
                     size={40 * getAspectRatio()}
                   />
-                </WalkthroughElement>
-                <WalkthroughElement id="wallet-wallets">
+                </Tips>
+              </View>
+              <View style={[styles.iconWrapper]}>
+                <Tips
+                  position={'right'}
+                  visible={guideState == 'wallets'}
+                  textStyle={styles.guideTipText}
+                  tooltipArrowStyle={styles.guideTipArrowLeft}
+                  style={[styles.guideTipContainer, styles.guideTipWallets]}
+                  text="Click here to manage and select your wallets"
+                  onRequestClose={() => setGuideState(guideNavigation.next())}
+                >
                   <Icon
-                    containerStyle={[styles.iconGeneral, styles.iconWallets]}
+                    containerStyle={styles.iconGeneral}
                     onPress={() => NavigationService.navigate('Wallets')}
                     name='md-wallet'
                     type='ionicon'
                     color='#FFFFFF'
                     size={40 * getAspectRatio()}
                   />
-                </WalkthroughElement>
+                </Tips>
               </View>
-              <View style={styles.walletState}>
-                <Text style={styles.worthDollars}>
-                  $ {(prices.usd * currWallet.balance).toLocaleString(undefined, format4Decimals)}
-                </Text>
-                <Text style={styles.amountCCX}>{currWallet.balance.toLocaleString(undefined, format4Decimals)} CCX</Text>
-                <View style={styles.btcPriceWrapper}>
-                  <Icon
-                    containerStyle={styles.btcIcon}
-                    name={currWallet.locked ? 'md-lock' : 'logo-bitcoin'}
-                    type='ionicon'
-                    color={currWallet.locked ? '#FF0000' : '#FFFFFF'}
-                    size={16 * getAspectRatio()}
-                  />
-                  <Text style={currWallet.locked ? [styles.worthBTC, styles.lockedText] : styles.worthBTC}>
-                    {
-                      currWallet.locked
-                        ? sprintf('%s CCX', currWallet.locked.toLocaleString(undefined, format4Decimals))
-                        : (prices.btc * currWallet.balance).toLocaleString(undefined, format8Decimals)
-                    }
+            </View>
+            <View style={styles.walletState}>
+              <Tips
+                position={'top'}
+                visible={guideState == 'overall'}
+                style={styles.guideTipContainer}
+                textStyle={styles.guideTipText}
+                tooltipArrowStyle={styles.guideTipArrowBottom}
+                text="Here you can see your overall funds current state"
+                onRequestClose={() => setGuideState(guideNavigation.next())}
+              >
+                <View style={styles.walletStateWrapper}>
+                  <Text style={styles.worthDollars}>
+                    $ {(prices.usd * currWallet.balance).toLocaleString(undefined, format4Decimals)}
                   </Text>
+                  <Text style={styles.amountCCX}>{currWallet.balance.toLocaleString(undefined, format4Decimals)} CCX</Text>
+                  <View style={styles.btcPriceWrapper}>
+                    <Icon
+                      containerStyle={styles.btcIcon}
+                      name={currWallet.locked ? 'md-lock' : 'logo-bitcoin'}
+                      type='ionicon'
+                      color={currWallet.locked ? '#FF0000' : '#FFFFFF'}
+                      size={16 * getAspectRatio()}
+                    />
+                    <Text style={currWallet.locked ? [styles.worthBTC, styles.lockedText] : styles.worthBTC}>
+                      {
+                        currWallet.locked
+                          ? sprintf('%s CCX', currWallet.locked.toLocaleString(undefined, format4Decimals))
+                          : (prices.btc * currWallet.balance).toLocaleString(undefined, format8Decimals)
+                      }
+                    </Text>
+                  </View>
                 </View>
-              </View>
-              <View style={styles.iconsRight}>
-                <WalkthroughElement id="wallet-addressbook">
+              </Tips>
+            </View>
+            <View style={styles.iconsRight}>
+              <View style={[styles.iconWrapper]}>
+                <Tips
+                  position={'left'}
+                  visible={guideState == 'addresses'}
+                  style={[styles.guideTipContainer, styles.guideTipAddressBook]}
+                  textStyle={styles.guideTipText}
+                  tooltipArrowStyle={styles.guideTipArrowRight}
+                  text="Click here to edit and manage your address book"
+                  onRequestClose={() => setGuideState(guideNavigation.next())}
+                >
                   <Icon
-                    containerStyle={[styles.iconGeneral, styles.iconAddressBook]}
+                    containerStyle={styles.iconGeneral}
                     onPress={() => NavigationService.navigate('AddressBook')}
                     name='md-book'
                     type='ionicon'
                     color='#FFFFFF'
                     size={40 * getAspectRatio()}
                   />
-                </WalkthroughElement>
-                <WalkthroughElement id="wallet-market">
+                </Tips>
+              </View>
+              <View style={[styles.iconWrapper]}>
+                <Tips
+                  position={'left'}
+                  visible={guideState == 'market'}
+                  textStyle={styles.guideTipText}
+                  tooltipArrowStyle={styles.guideTipArrowRight}
+                  style={[styles.guideTipContainer, styles.guideTipMarket]}
+                  text="Click here to see Conceal market information"
+                  onRequestClose={() => setGuideState(guideNavigation.next())}
+                >
                   <Icon
-                    containerStyle={[styles.iconGeneral, styles.iconMarkets]}
+                    containerStyle={styles.iconGeneral}
                     onPress={() => NavigationService.navigate('Market')}
                     name='md-trending-up'
                     type='ionicon'
                     color='#FFFFFF'
                     size={40 * getAspectRatio()}
                   />
-                </WalkthroughElement>
+                </Tips>
               </View>
             </View>
-          </WalkthroughElement>
-          <Text style={styles.txsText}>Transactions</Text>
-          <View style={styles.transactionsWrapper}>
-            {layout.userLoaded && transactions.length === 0
-              ? <Text style={styles.emptyTransactionsText}>
-                You have no transactions in this wallet yet.
-                To make a transaction either send some funds or receive them.
-            </Text>
-              : <FlatList
-                data={transactions}
-                style={styles.txsList}
-                showsVerticalScrollIndicator={false}
-                keyExtractor={item => item.hash}
-                renderItem={({ item }) =>
-                  <View style={styles.flatview}>
-                    <View style={styles.txData}>
-                      <Text style={styles.dataTimestamp}>
-                        {Moment(item.timestamp).format('LLLL')}
-                      </Text>
-                      <Text style={styles.dataAmount}>
-                        {item.amount.toLocaleString(undefined, formatOptions)} CCX (fee: {item.fee})
+          </View>
+          <View style={styles.txAreaWrapper}>
+            <Text style={styles.txsText}>Transactions</Text>
+            <View style={styles.transactionsWrapper}>
+              {layout.userLoaded && transactions.length === 0
+                ? <Text style={styles.emptyTransactionsText}>
+                  You have no transactions in this wallet yet.
+                  To make a transaction either send some funds or receive them.
                     </Text>
-                      <Text style={styles.dataAddress}>
-                        {maskAddress(item.address)}
-                      </Text>
-                      {(item.status === "pending") ? (<Text style={styles.dataPending}>PENDING</Text>) : null}
+                : <FlatList
+                  data={transactions}
+                  style={styles.txsList}
+                  showsVerticalScrollIndicator={false}
+                  keyExtractor={item => item.hash}
+                  renderItem={({ item }) =>
+                    <View style={styles.flatview}>
+                      <View style={styles.txData}>
+                        <Text style={styles.dataTimestamp}>
+                          {Moment(item.timestamp).format('LLLL')}
+                        </Text>
+                        <Text style={styles.dataAmount}>
+                          {item.amount.toLocaleString(undefined, formatOptions)} CCX (fee: {item.fee})
+                          </Text>
+                        <Text style={styles.dataAddress}>
+                          {maskAddress(item.address)}
+                        </Text>
+                        {(item.status === "pending") ? (<Text style={styles.dataPending}>PENDING</Text>) : null}
+                      </View>
+                      <Icon
+                        name={item.type === 'received' ? 'md-arrow-down' : 'md-arrow-up'}
+                        type='ionicon'
+                        size={32 * getAspectRatio()}
+                        color={item.type === 'received' ? "green" : "red"}
+                        containerStyle={styles.txDirection}
+                      />
                     </View>
-                    <Icon
-                      name={item.type === 'received' ? 'md-arrow-down' : 'md-arrow-up'}
-                      type='ionicon'
-                      size={32 * getAspectRatio()}
-                      color={item.type === 'received' ? "green" : "red"}
-                      containerStyle={styles.txDirection}
-                    />
-                  </View>
-                }
-              />
-            }
+                  }
+                />
+              }
+            </View>
           </View>
           <View style={styles.footer}>
-            <ConcealButton
-              style={[styles.footerBtn, styles.footerBtnLeft]}
-              onPress={() => {
-                setAppData({
-                  sendScreen: {
-                    toAmount: '',
-                    toAddress: '',
-                    toPaymendId: '',
-                    toLabel: ''
-                  }
-                });
-                NavigationService.navigate('Send')
-              }}
-              disabled={currWallet.balance < 0.0001}
-              text="SEND"
-            />
-            <ConcealButton
-              style={[styles.footerBtn, styles.footerBtnRight]}
-              onPress={() => NavigationService.navigate('Receive')}
-              text="RECEIVE"
-            />
+            <View style={[styles.footerBtn, styles.footerBtnLeft]}>
+              <Tips
+                position={'top'}
+                visible={guideState == 'send'}
+                textStyle={styles.guideTipText}
+                text="Click here to send funds to other people"
+                style={[styles.guideTipContainer, styles.guideTipSend]}
+                tooltipArrowStyle={[styles.guideTipArrowBottom, styles.guideTipArrowSend]}
+                onRequestClose={() => setGuideState(guideNavigation.next())}
+              >
+                <ConcealButton
+                  style={styles.footerBtnInner}
+                  onPress={() => {
+                    setAppData({
+                      sendScreen: {
+                        toAmount: '',
+                        toAddress: '',
+                        toPaymendId: '',
+                        toLabel: ''
+                      }
+                    });
+                    NavigationService.navigate('Send')
+                  }}
+                  disabled={currWallet.balance < 0.0001}
+                  text="SEND"
+                />
+              </Tips>
+            </View>
+            <View style={[styles.footerBtn, styles.footerBtnRight]}>
+              <Tips
+                position={'top'}
+                visible={guideState == 'receive'}
+                textStyle={styles.guideTipText}
+                text="Click here to receive funds from other people"
+                style={[styles.guideTipContainer, styles.guideTipReceive]}
+                tooltipArrowStyle={[styles.guideTipArrowBottom, styles.guideTipArrowReceive]}
+                onRequestClose={() => setGuideState(guideNavigation.next())}
+              >
+                <ConcealButton
+                  onPress={() => NavigationService.navigate('Receive')}
+                  style={styles.footerBtnInner}
+                  text="RECEIVE"
+                />
+              </Tips>
+            </View>
           </View>
         </View>) :
         (<View style={styles.emptyWalletWrapper}>
@@ -259,39 +351,32 @@ const styles = EStyleSheet.create({
     borderWidth: 1,
   },
   footer: {
-    alignItems: 'stretch',
-    flexDirection: 'row',
-    justifyContent: 'space-between'
+    flexDirection: 'row'
   },
   footerBtn: {
     flex: 1,
   },
   footerBtnRight: {
     marginLeft: '5rem',
+    width: '100%'
   },
   footerBtnLeft: {
-    marginRight: 5,
+    marginRight: '0rem',
+    width: '100%'
   },
   iconGeneral: {
     width: '36rem',
     height: '36rem',
   },
-  iconMessages: {
-    top: '0rem',
-  },
-  iconWallets: {
-    top: '25rem',
-  },
-  iconAddressBook: {
-    top: '0rem',
-  },
-  iconMarkets: {
-    top: '25rem',
-  },
   transactionsWrapper: {
     flexGrow: 1,
-    padding: '10rem',
     alignSelf: 'stretch'
+  },
+  txAreaWrapper: {
+    flexGrow: 1,
+    padding: '10rem',
+    alignSelf: 'stretch',
+    flexDirection: 'column'
   },
   dataTimestamp: {
     color: '#FFFFFF',
@@ -310,10 +395,7 @@ const styles = EStyleSheet.create({
   },
   txsText: {
     color: '#FFFFFF',
-    fontSize: '18rem',
-    marginTop: '5rem',
-    marginLeft: '10rem',
-    paddingLeft: 0
+    fontSize: '18rem'
   },
   txDirection: {
     width: '32rem',
@@ -363,26 +445,100 @@ const styles = EStyleSheet.create({
   },
   iconsLeft: {
     padding: '10rem',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    paddingTop: '15rem',
+    paddingBottom: '15rem'
   },
   iconsRight: {
     padding: '10rem',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    paddingTop: '15rem',
+    paddingBottom: '15rem'
   },
   walletState: {
     flexGrow: 2,
+    flexDirection: 'column',
+    justifyContent: 'center'
+  },
+  walletStateWrapper: {
+    flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'center'
   },
   txsList: {
     height: '0rem'
   },
-  tooltipView: {
-    paddingHorizontal: 24,
-    paddingVertical: 8,
+  footerBtnInner: {
+    width: '100%'
   },
-  tooltipText: {
-    color: 'black',
-    fontSize: '16rem',
+  guideTipContainer: {
+    backgroundColor: '#FFFFFF'
   },
+  guideTipText: {
+    color: "#000000",
+    fontSize: '18rem'
+  },
+  guideTipArrowLeft: {
+    left: -10,
+    top: '32%',
+    marginTop: 10,
+    borderTopWidth: 10,
+    borderRightWidth: 10,
+    borderBottomWidth: 10,
+    borderTopColor: 'transparent',
+    borderBottomColor: 'transparent',
+    borderRightColor: 'rgba(255, 255, 255, 1)'
+  },
+  guideTipArrowRight: {
+    right: -10,
+    top: '32%',
+    marginTop: 10,
+    borderTopWidth: 10,
+    borderLeftWidth: 10,
+    borderBottomWidth: 10,
+    borderTopColor: 'transparent',
+    borderBottomColor: 'transparent',
+    borderLeftColor: 'rgba(255, 255, 255, 1)'
+  },
+  guideTipArrowBottom: {
+    bottom: -10,
+    left: '50%',
+    marginLeft: 2.5,
+    borderTopWidth: 10,
+    borderLeftWidth: 10,
+    borderRightWidth: 10,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderTopColor: 'rgba(255, 255, 255, 1)'
+  },
+  guideTipAddressBook: {
+    left: '255rem'
+  },
+  guideTipMarket: {
+    left: '255rem'
+  },
+  guideTipMessages: {
+    left: '10rem'
+  },
+  guideTipWallets: {
+    left: '10rem'
+  },
+  guideTipSend: {
+    left: '20rem',
+    top: '-5rem'
+  },
+  guideTipReceive: {
+    left: '-60rem',
+    top: '-5rem'
+  },
+  guideTipArrowSend: {
+    left: '23%'
+  },
+  guideTipArrowReceive: {
+    left: '72%'
+  }
 });
 
 export default Wallet;

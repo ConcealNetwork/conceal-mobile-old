@@ -1,9 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Icon, Header, ButtonGroup } from 'react-native-elements';
 import NavigationService from '../helpers/NavigationService';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { AppContext } from '../components/ContextProvider';
 import ConcealTextInput from '../components/ccxTextInput';
+import GuideNavigation from '../helpers/GuideNav';
 import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
 import Moment from 'moment';
@@ -27,6 +28,18 @@ const Messages = () => {
   let isValidItem = false;
   let messageList = [];
   let counter = 0;
+
+  // guide navigation state values
+  const [guideState, setGuideState] = useState(null);
+  const [guideNavigation] = useState(new GuideNavigation('messages', [
+    'overall',
+    'messages',
+    'wallets',
+    'addresses',
+    'market',
+    'send',
+    'receive'
+  ]));
 
   Object.keys(messages).forEach(item => {
     messages[item].forEach(function (element) {
@@ -84,7 +97,23 @@ const Messages = () => {
           color='white'
           size={32 * getAspectRatio()}
         />}
-        centerComponent={{ text: 'Messages', style: AppStyles.appHeaderText }}
+        centerComponent={
+          <View style={AppStyles.appHeaderWrapper}>
+            <Text style={AppStyles.appHeaderText}>
+              Messages
+            </Text>
+            <Icon
+              onPress={() => {
+                guideNavigation.reset();
+                setGuideState(guideNavigation.start());
+              }}
+              name='md-help'
+              type='ionicon'
+              color='white'
+              size={26 * getAspectRatio()}
+            />
+          </View>
+        }
         rightComponent={messagesLoaded ?
           (< Icon
             onPress={() => NavigationService.navigate('SendMessage')}

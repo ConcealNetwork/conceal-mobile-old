@@ -5,6 +5,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import { AppContext } from '../components/ContextProvider';
 import ModalSelector from 'react-native-modal-selector';
 import { showMessageDialog } from '../helpers/utils';
+import ConcealButton from '../components/ccxButton';
 import localStorage from '../helpers/LocalStorage';
 import { getAspectRatio } from '../helpers/utils';
 import { AppColors } from '../constants/Colors';

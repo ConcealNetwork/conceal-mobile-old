@@ -31,9 +31,13 @@ export default EStyleSheet.create({
       borderBottomColor: '#343a40',
     }
   },
+  appHeaderWrapper: {
+    flexDirection: 'row'
+  },
   appHeaderText: {
     color: '#fff',
-    fontSize: '20rem'
+    fontSize: '20rem',
+    marginRight: '10rem'
   },
   horizontal: {
     flexDirection: 'row',

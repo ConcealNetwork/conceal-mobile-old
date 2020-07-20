@@ -1,9 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Icon, Header, CheckBox } from 'react-native-elements';
 import NavigationService from '../helpers/NavigationService';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { AppContext } from '../components/ContextProvider';
 import ConcealButton from '../components/ccxButton';
+import GuideNavigation from '../helpers/GuideNav';
 import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
 import {
@@ -32,6 +33,18 @@ const Wallets = () => {
   const { appSettings, layout, wallets, appData } = state;
   const { walletsLoaded } = layout;
 
+  // guide navigation state values
+  const [guideState, setGuideState] = useState(null);
+  const [guideNavigation] = useState(new GuideNavigation('wallets', [
+    'overall',
+    'messages',
+    'wallets',
+    'addresses',
+    'market',
+    'send',
+    'receive'
+  ]));
+
   const walletsList = Object.keys(wallets)
     .reduce((acc, curr) => {
       const wallet = wallets[curr];
@@ -52,7 +65,23 @@ const Wallets = () => {
           color='white'
           size={32 * getAspectRatio()}
         />}
-        centerComponent={{ text: 'Wallets', style: AppStyles.appHeaderText }}
+        centerComponent={
+          <View style={AppStyles.appHeaderWrapper}>
+            <Text style={AppStyles.appHeaderText}>
+              Wallets
+            </Text>
+            <Icon
+              onPress={() => {
+                guideNavigation.reset();
+                setGuideState(guideNavigation.start());
+              }}
+              name='md-help'
+              type='ionicon'
+              color='white'
+              size={26 * getAspectRatio()}
+            />
+          </View>
+        }
         rightComponent={walletsLoaded && (walletsList.length < appSettings.maxWallets || walletsList.length === 0) ?
           (< Icon
             onPress={() => createWallet()}

@@ -7,8 +7,6 @@ import localStorage from '../helpers/LocalStorage';
 import { getAspectRatio } from '../helpers/utils';
 import { AppColors } from '../constants/Colors';
 import { View, Text } from 'react-native';
-import { setItemAsync } from 'expo-secure-store';
-
 
 const FgpCheck = props => {
   const { onComplete, onCancel } = props;
@@ -28,10 +26,12 @@ const FgpCheck = props => {
 
           if (!result.success) {
             setIsScanning(0);
-            startBiometricAuth();
 
             setTimeout(() => {
-              setIsScanning(1);
+              if (isMountedRef.current) {
+                setIsScanning(1);
+                startBiometricAuth();
+              }
             }, 3000);
           }
 
