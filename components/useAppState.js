@@ -102,6 +102,20 @@ const useAppState = () => {
   const reducer = (state, action) => {
     let result = {};
     switch (action.type) {
+      case 'USER_LOGIN_STARTED':
+        logger.log('USER_LOGIN_STARTED...');
+        result = {
+          ...state,
+          user: {
+            ...state.user,
+            loggedIn: false
+          },
+          layout: {
+            ...state.layout,
+            loginFinished: false
+          },
+        };
+        break;
       case 'USER_LOGGED_IN':
         if (!state.user.loggedIn) logger.log('LOGGING IN USER...');
         result = {
@@ -109,6 +123,20 @@ const useAppState = () => {
           user: {
             ...state.user,
             loggedIn: true
+          },
+        };
+        break;
+      case 'USER_LOGIN_FAILED':
+        logger.log('USER_LOGIN_FAILED...');
+        result = {
+          ...state,
+          user: {
+            ...state.user,
+            loggedIn: false
+          },
+          layout: {
+            ...state.layout,
+            loginFinished: true
           },
         };
         break;

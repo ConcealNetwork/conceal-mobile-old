@@ -6,18 +6,52 @@ import { getAspectRatio } from '../helpers/utils';
 import { View, } from "react-native";
 
 
-export default function ConcealTextInput({ bindPassword, setValue, showAlternative }) {
-
+export default function ConcealTextInput({
+  bindPassword,
+  setValue,
+  showAlternative,
+  inputStyle,
+  containerStyle,
+  inputContainerStyle
+}) {
   const [isSecure, setIsSecure] = useState(true);
+
+  var inputContainerStyles = [styles.PassInputContainer];
+  var cointainerStyles = [styles.PassContainer];
+  var inputStyles = [styles.PassInput];
+
+  if (inputContainerStyle) {
+    if (Array.isArray(inputContainerStyle)) {
+      inputContainerStyles = inputStyles.concat(inputContainerStyle);
+    } else {
+      inputContainerStyles.push(inputContainerStyle);
+    }
+  }
+
+  if (containerStyle) {
+    if (Array.isArray(containerStyle)) {
+      cointainerStyles = inputStyles.concat(containerStyle);
+    } else {
+      cointainerStyles.push(containerStyle);
+    }
+  }
+
+  if (inputStyle) {
+    if (Array.isArray(inputStyle)) {
+      inputStyles = inputStyles.concat(inputStyle);
+    } else {
+      inputStyles.push(inputStyle);
+    }
+  }
 
   return (
     <View style={styles.PassWrapper}>
       <Input
         {...bindPassword}
         placeholder={'please enter your password...'}
-        inputStyle={styles.PassInput}
-        containerStyle={styles.PassContainer}
-        inputContainerStyle={styles.PassInputContainer}
+        inputStyle={inputStyles}
+        containerStyle={cointainerStyles}
+        inputContainerStyle={inputContainerStyles}
         textContentType="password"
         secureTextEntry={isSecure}
         rightIcon={

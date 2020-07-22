@@ -1,10 +1,10 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import ConcealTextInput from '../components/ccxTextInput';
 import ConcealButton from '../components/ccxButton';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import localStorage from '../helpers/LocalStorage';
 
-import { Image, CheckBox, Overlay } from 'react-native-elements';
+import { Image, CheckBox, Overlay, Icon } from 'react-native-elements';
 import ConcealPassword from '../components/ccxPassword';
 
 import { AppContext } from '../components/ContextProvider';
@@ -20,6 +20,7 @@ import {
   View,
   Text,
   Keyboard,
+  Clipboard,
   ScrollView,
   TouchableOpacity,
   TouchableWithoutFeedback
@@ -34,14 +35,15 @@ const Login = () => {
   const { setAppData } = actions;
   const Auth = new AuthHelper(state.appSettings.apiURL);
 
-  const { value: email, bind: bindEmail } = useFormInput(localStorage.get('id_username'));
+  const { value: email, bind: bindEmail, setValue: setEmailValue } = useFormInput(localStorage.get('id_username'));
   const { value: password, bind: bindPassword, setValue: setPassword } = useFormInput('');
-  const { value: twoFACode, bind: bindTwoFACode } = useFormInput('');
+  const { value: twoFACode, bind: bindTwoFACode, setValue: setTwoFACode } = useFormInput('');
   const { checked: rememberMe, bind: bindRememberMe } = useCheckbox(localStorage.get('id_rememberme') == "TRUE");
 
   // alternative auth check state
   const [showLoginForm, setShowLoginForm] = useState(!Auth.getIsAltAuth());
   const [showAuthCheck, setShowAuthCheck] = useState(Auth.getIsAltAuth());
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const formValidation = (
     email !== '' && /\S+@\S+\.\S+/.test(email) &&
@@ -49,6 +51,17 @@ const Login = () => {
     (twoFACode !== '' ? (twoFACode.length === 6 && parseInt(twoFACode)) : true)
   );
   const formValid = useFormValidation(formValidation);
+
+  useEffect(() => {
+    if (state.layout.loginFinished && isLoggingIn) {
+      console.log("isLoggingIn false");
+      setIsLoggingIn(false);
+
+      if (!Auth.loggedIn() && Auth.getIsAltAuth()) {
+        setShowLoginForm(true);
+      }
+    }
+  }, [state.layout.loginFinished]);
 
   return (
     <View style={AppStyles.viewContainer}>
@@ -73,11 +86,25 @@ const Login = () => {
               keyboardType="email-address"
               textContentType="emailAddress"
               inputStyle={AppStyles.textLarge}
+              rightIcon={
+                <Icon
+                  onPress={() => {
+                    (async () => {
+                      setEmailValue(await Clipboard.getString());
+                    })().catch(e => console.log(e));
+                  }}
+                  name='md-copy'
+                  type='ionicon'
+                  color='white'
+                  size={32 * getAspectRatio()}
+                />
+              }
             />
             <ConcealPassword
               showAlternative={true}
               bindPassword={bindPassword}
               setValue={setPassword}
+              inputStyle={[AppStyles.textLarge]}
             />
             <ConcealTextInput
               {...bindTwoFACode}
@@ -85,6 +112,19 @@ const Login = () => {
               keyboardType="numeric"
               textContentType="none"
               inputStyle={AppStyles.textLarge}
+              rightIcon={
+                <Icon
+                  onPress={() => {
+                    (async () => {
+                      setTwoFACode(await Clipboard.getString());
+                    })().catch(e => console.log(e));
+                  }}
+                  name='md-copy'
+                  type='ionicon'
+                  color='white'
+                  size={32 * getAspectRatio()}
+                />
+              }
             />
             <CheckBox
               {...bindRememberMe}
@@ -146,6 +186,7 @@ const Login = () => {
       <AuthCheck
         onSuccess={(userPass) => {
           setShowAuthCheck(false);
+          setIsLoggingIn(true);
           loginUser({
             email: localStorage.get('id_username'),
             password: userPass,
@@ -157,6 +198,7 @@ const Login = () => {
         onCancel={() => {
           setShowAuthCheck(false);
           setShowLoginForm(true);
+          setIsLoggingIn(false);
         }}
         showCheck={showAuthCheck}
       />

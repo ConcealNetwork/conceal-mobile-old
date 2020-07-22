@@ -21,6 +21,7 @@ const AppContextProvider = props => {
     let message;
     let msgType;
 
+    dispatch({ type: 'USER_LOGIN_STARTED', value: true });
     dispatch({ type: 'FORM_SUBMITTED', value: true });
 
     Auth.setRememberme(options.rememberMe ? "TRUE" : "FALSE");
@@ -36,6 +37,7 @@ const AppContextProvider = props => {
           dispatch({ type: 'USER_LOGGED_IN', password: options.password });
         } else {
           message = res.message;
+          dispatch({ type: 'USER_LOGIN_FAILED', password: options.password });
           showMessageDialog(message, "error");
         }
       })
