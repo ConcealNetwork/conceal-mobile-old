@@ -95,7 +95,7 @@ const Wallets = () => {
         {layout.userLoaded && walletsList.length === 0
           ? (<View style={styles.emptyWalletsWrapper}>
             <Text style={styles.emptyWalletsText}>
-              You have no wallets currently. Please create a wallet by clicking on the button, to start using Conceal Mobile.
+              You have no wallets currently. Please create a wallet by clicking on the + button, to start using Conceal Mobile.
             </Text>
           </View>)
           : (<FlatList

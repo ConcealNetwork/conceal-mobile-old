@@ -11,6 +11,7 @@ import SendMessageConfirm from '../screens/SendMessageConfirm';
 import Messages from '../screens/Messages';
 import Send from '../screens/Send';
 import SendConfirm from '../screens/SendConfirm';
+import AppMenu from '../screens/AppMenu';
 import Receive from '../screens/Receive';
 import Settings from '../screens/Settings';
 import Scanner from '../screens/Scanner';
@@ -93,6 +94,12 @@ const AppNavigator = createStackNavigator(
     },
     SendMessageConfirm: {
       screen: SendMessageConfirm,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    AppMenu: {
+      screen: AppMenu,
       navigationOptions: {
         header: null,
       },

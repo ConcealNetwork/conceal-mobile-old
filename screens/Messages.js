@@ -7,6 +7,7 @@ import ConcealTextInput from '../components/ccxTextInput';
 import GuideNavigation from '../helpers/GuideNav';
 import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
+import Tips from 'react-native-guide-tips';
 import Moment from 'moment';
 import {
   maskAddress,
@@ -32,42 +33,40 @@ const Messages = () => {
   // guide navigation state values
   const [guideState, setGuideState] = useState(null);
   const [guideNavigation] = useState(new GuideNavigation('messages', [
-    'overall',
-    'messages',
-    'wallets',
-    'addresses',
-    'market',
-    'send',
-    'receive'
+    'messageTypes',
+    'messageSearch',
+    'sendMessage'
   ]));
 
-  Object.keys(messages).forEach(item => {
-    messages[item].forEach(function (element) {
-      isValidItem = true;
-      counter++;
+  if (messages && (messages.length > 0)) {
+    Object.keys(messages).forEach(item => {
+      messages[item].forEach(function (element) {
+        isValidItem = true;
+        counter++;
 
-      // check if direction filter is set and the type of the message is appropriate
-      if (((element.type == 'in') && (state.appData.messages.filterState == 2)) || ((element.type == 'out') && (state.appData.messages.filterState == 1))) {
-        isValidItem = false;
-      }
+        // check if direction filter is set and the type of the message is appropriate
+        if (((element.type == 'in') && (state.appData.messages.filterState == 2)) || ((element.type == 'out') && (state.appData.messages.filterState == 1))) {
+          isValidItem = false;
+        }
 
-      // check if the text filter is set
-      if (state.appData.messages.filterText && (element.message.toLowerCase().search(state.appData.messages.filterText.toLowerCase()) == -1)) {
-        isValidItem = false;
-      }
+        // check if the text filter is set
+        if (state.appData.messages.filterText && (element.message.toLowerCase().search(state.appData.messages.filterText.toLowerCase()) == -1)) {
+          isValidItem = false;
+        }
 
-      if (isValidItem) {
-        messageList.push({
-          id: counter.toString(),
-          address: item,
-          message: element.message,
-          timestamp: element.timestamp,
-          type: element.type,
-          sdm: element.sdm
-        });
-      }
+        if (isValidItem) {
+          messageList.push({
+            id: counter.toString(),
+            address: item,
+            message: element.message,
+            timestamp: element.timestamp,
+            type: element.type,
+            sdm: element.sdm
+          });
+        }
+      });
     });
-  });
+  }
 
   // sort the array by timestamp
   messageList.sort(function (a, b) {
@@ -115,43 +114,73 @@ const Messages = () => {
           </View>
         }
         rightComponent={messagesLoaded ?
-          (< Icon
-            onPress={() => NavigationService.navigate('SendMessage')}
-            name='md-add-circle-outline'
-            type='ionicon'
-            color='white'
-            size={32 * getAspectRatio()}
-          />) : null}
+          (
+            <Tips
+              position={'bottom'}
+              visible={guideState == 'sendMessage'}
+              textStyle={AppStyles.guideTipText}
+              style={[AppStyles.guideTipContainer, styles.guideTipSendMessage]}
+              tooltipArrowStyle={[AppStyles.guideTipArrowTop, styles.guideTipArrowSendMessage]}
+              text="Click on this button to send a message..."
+              onRequestClose={() => setGuideState(guideNavigation.next())}
+            >
+              < Icon
+                onPress={() => NavigationService.navigate('SendMessage')}
+                name='md-add-circle-outline'
+                type='ionicon'
+                color='white'
+                size={32 * getAspectRatio()}
+              /></Tips>) : null}
       />
       <View style={styles.messagesWrapper}>
         <View>
-          <ButtonGroup
-            onPress={this.changeFilter}
-            selectedIndex={state.appData.messages.filterState}
-            buttons={filterButtons}
-            buttonStyle={styles.filterButton}
-            containerStyle={styles.filterButtons}
-            innerBorderStyle={styles.filterButtonBorder}
-            selectedButtonStyle={styles.filterButtonSelected}
-          />
-        </View>
-        <ConcealTextInput
-          placeholder='Enter text to search...'
-          value={state.appData.messages.filterText}
-          onChangeText={(text) => {
-            setAppData({ messages: { filterText: text } });
-          }}
-          rightIcon={
-            <Icon
-              onPress={() => setAppData({ messages: { filterText: null } })}
-              name='md-trash'
-              type='ionicon'
-              color='white'
-              size={32 * getAspectRatio()}
+          <Tips
+            position={'bottom'}
+            visible={guideState == 'messageTypes'}
+            textStyle={AppStyles.guideTipText}
+            tooltipArrowStyle={AppStyles.guideTipArrowTop}
+            style={AppStyles.guideTipContainer}
+            text="Here you can filter what type of messages you want to see"
+            onRequestClose={() => setGuideState(guideNavigation.next())}
+          >
+            <ButtonGroup
+              onPress={this.changeFilter}
+              selectedIndex={state.appData.messages.filterState}
+              buttons={filterButtons}
+              buttonStyle={styles.filterButton}
+              containerStyle={styles.filterButtons}
+              innerBorderStyle={styles.filterButtonBorder}
+              selectedButtonStyle={styles.filterButtonSelected}
             />
-          }
-        />
+          </Tips>
+        </View>
+        <Tips
+          position={'bottom'}
+          visible={guideState == 'messageSearch'}
+          textStyle={AppStyles.guideTipText}
+          tooltipArrowStyle={AppStyles.guideTipArrowTop}
+          style={AppStyles.guideTipContainer}
+          text="Here you can search for a specific messages by text"
+          onRequestClose={() => setGuideState(guideNavigation.next())}
+        >
 
+          <ConcealTextInput
+            placeholder='Enter text to search...'
+            value={state.appData.messages.filterText}
+            onChangeText={(text) => {
+              setAppData({ messages: { filterText: text } });
+            }}
+            rightIcon={
+              <Icon
+                onPress={() => setAppData({ messages: { filterText: null } })}
+                name='md-trash'
+                type='ionicon'
+                color='white'
+                size={32 * getAspectRatio()}
+              />
+            }
+          />
+        </Tips>
         {layout.userLoaded && messageList.length === 0
           ? (<View style={styles.emptyMessagesWrapper}>
             <Text style={styles.emptyMessagesText}>
@@ -186,11 +215,6 @@ const styles = EStyleSheet.create({
   pageWrapper: {
     flex: 1,
     backgroundColor: 'rgb(40, 45, 49)'
-  },
-  selectedWrapper: {
-    position: 'absolute',
-    right: 0,
-    top: '15rem'
   },
   icon: {
     color: 'orange'
@@ -268,6 +292,12 @@ const styles = EStyleSheet.create({
   },
   filterButtonBorder: {
     color: AppColors.concealBorderColor
+  },
+  guideTipSendMessage: {
+    left: '-130rem'
+  },
+  guideTipArrowSendMessage: {
+    left: '97%'
   }
 });
 

@@ -115,8 +115,8 @@ const AddressBook = () => {
         {layout.userLoaded && addressList.length === 0
           ? (<View style={styles.emptyAddressBookWrapper}>
             <Text style={styles.emptyAddressBookText}>
-              You have no contacts saved in your address book, or search did not find any
-              Add one by clicking on the button or when you are sending funds.
+              You have no contacts saved in your address book, or search did not find any.
+              Add one by clicking on the + button or when you are sending funds.
             </Text>
           </View>)
           : (<FlatList

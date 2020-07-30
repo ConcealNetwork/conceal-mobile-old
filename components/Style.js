@@ -134,4 +134,55 @@ export default EStyleSheet.create({
   buttonTitleDisabled: {
     color: 'rgb(75, 75, 75)',
   },
+  guideTipContainer: {
+    backgroundColor: '#FFFFFF'
+  },
+  guideTipText: {
+    color: "#000000",
+    fontSize: '18rem'
+  },
+  guideTipArrowLeft: {
+    left: -10,
+    top: '32%',
+    marginTop: 10,
+    borderTopWidth: 10,
+    borderRightWidth: 10,
+    borderBottomWidth: 10,
+    borderTopColor: 'transparent',
+    borderBottomColor: 'transparent',
+    borderRightColor: 'rgba(255, 255, 255, 1)'
+  },
+  guideTipArrowRight: {
+    right: -10,
+    top: '32%',
+    marginTop: 10,
+    borderTopWidth: 10,
+    borderLeftWidth: 10,
+    borderBottomWidth: 10,
+    borderTopColor: 'transparent',
+    borderBottomColor: 'transparent',
+    borderLeftColor: 'rgba(255, 255, 255, 1)'
+  },
+  guideTipArrowBottom: {
+    bottom: -10,
+    left: '50%',
+    marginLeft: 2.5,
+    borderTopWidth: 10,
+    borderLeftWidth: 10,
+    borderRightWidth: 10,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderTopColor: 'rgba(255, 255, 255, 1)'
+  },
+  guideTipArrowTop: {
+    top: -10,
+    left: '50%',
+    marginLeft: 2.5,
+    borderLeftWidth: 10,
+    borderRightWidth: 10,
+    borderBottomWidth: 10,
+    borderLeftColor: 'transparent',
+    borderRightColor: 'transparent',
+    borderBottomColor: 'rgba(255, 255, 255, 1)'
+  }
 });
