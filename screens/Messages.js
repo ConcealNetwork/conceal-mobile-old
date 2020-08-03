@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import { Icon, Header, ButtonGroup } from 'react-native-elements';
 import NavigationService from '../helpers/NavigationService';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -38,7 +38,7 @@ const Messages = () => {
     'sendMessage'
   ]));
 
-  if (messages && (messages.length > 0)) {
+  if (messages) {
     Object.keys(messages).forEach(item => {
       messages[item].forEach(function (element) {
         isValidItem = true;
@@ -76,7 +76,7 @@ const Messages = () => {
   });
 
 
-  this.changeFilter = (selectedIndex) => {
+  const changeFilter = (selectedIndex) => {
     setAppData({
       messages: {
         filterState: selectedIndex
@@ -144,7 +144,7 @@ const Messages = () => {
             onRequestClose={() => setGuideState(guideNavigation.next())}
           >
             <ButtonGroup
-              onPress={this.changeFilter}
+              onPress={changeFilter}
               selectedIndex={state.appData.messages.filterState}
               buttons={filterButtons}
               buttonStyle={styles.filterButton}
@@ -163,7 +163,6 @@ const Messages = () => {
           text="Here you can search for a specific messages by text"
           onRequestClose={() => setGuideState(guideNavigation.next())}
         >
-
           <ConcealTextInput
             placeholder='Enter text to search...'
             value={state.appData.messages.filterText}
@@ -188,11 +187,11 @@ const Messages = () => {
             </Text>
           </View>)
           : (<FlatList
-            style={styles.flatList}
             data={messageList}
+            style={styles.flatList}
             showsVerticalScrollIndicator={false}
             keyExtractor={item => item.id}
-            renderItem={({ item }) =>
+            renderItem={({ item, index }) =>
               <View style={(item.addr === appData.common.selectedWallet) ? [styles.flatview, styles.walletSelected] : styles.flatview}>
                 <TouchableOpacity>
                   <View>

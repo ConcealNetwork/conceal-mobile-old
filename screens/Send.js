@@ -20,8 +20,6 @@ import {
   Text,
   View,
   FlatList,
-  Clipboard,
-  ScrollView,
   TouchableOpacity
 } from "react-native";
 
@@ -74,7 +72,7 @@ const SendScreen = () => {
     });
   }
 
-  onScanAddressQRCode = () => {
+  const onScanAddressQRCode = () => {
     setAppData({
       scanCode: {
         scanned: false
@@ -85,9 +83,9 @@ const SendScreen = () => {
   }
 
   // key extractor for the list
-  keyExtractor = (item, index) => index.toString();
+  const keyExtractor = (item, index) => index.toString();
 
-  renderItem = ({ item }) => (
+  const renderItem = ({ item }) => (
     <ListItem
       title={item.value}
       subtitle={item.title}
@@ -103,7 +101,7 @@ const SendScreen = () => {
     />
   );
 
-  isFormValid = () => {
+  const isFormValid = () => {
     if (state.appData.sendScreen.toAddress && state.appData.sendScreen.toAmount) {
       var amountAsFloat = parseFloat(state.appData.sendScreen.toAmount);
       return ((amountAsFloat > 0) && (amountAsFloat <= (parseFloat(currWallet.balance) - 0.0001)));
@@ -112,7 +110,7 @@ const SendScreen = () => {
     }
   }
 
-  clearSend = () => {
+  const clearSend = () => {
     setAppData({
       sendScreen: {
         toAmount: '',
@@ -123,18 +121,7 @@ const SendScreen = () => {
     });
   }
 
-  readFromClipboard = async () => {
-    const clipboardContent = await Clipboard.getString();
-    setAppData({
-      sendScreen: {
-        toAddress: clipboardContent,
-        toPaymendId: '',
-        toLabel: ''
-      }
-    });
-  };
-
-  getAmountError = () => {
+  const getAmountError = () => {
     var amountAsFloat = parseFloat(state.appData.sendScreen.toAmount || 0);
     if ((amountAsFloat <= 0) && (state.appData.sendScreen.toAmount)) {
       return "Amount must be greater then 0"
@@ -145,7 +132,7 @@ const SendScreen = () => {
     }
   }
 
-  setAddress = (label, address, paymentID, entryID) => {
+  const setAddress = (label, address, paymentID, entryID) => {
     setAppData({
       sendScreen: {
         toAddress: address,
@@ -168,7 +155,7 @@ const SendScreen = () => {
         />}
         centerComponent={{ text: 'Send CCX', style: AppStyles.appHeaderText }}
         rightComponent={<Icon
-          onPress={() => this.clearSend()}
+          onPress={() => clearSend()}
           name='md-trash'
           type='ionicon'
           color='white'
@@ -196,7 +183,7 @@ const SendScreen = () => {
         </View>
 
         <ConcealTextInput
-          label={this.getAmountError()}
+          label={getAmountError()}
           keyboardType='numeric'
           placeholder='Select amount to send...'
           containerStyle={styles.sendInput}
@@ -232,7 +219,7 @@ const SendScreen = () => {
                       entryId: null
                     }
                   });
-                  NavigationService.navigate('EditAddress', { callback: this.setAddress });
+                  NavigationService.navigate('EditAddress', { callback: setAddress });
                 }}
                 name='md-add'
                 type='ionicon'
@@ -245,8 +232,8 @@ const SendScreen = () => {
         <FlatList
           data={sendSummaryList}
           style={styles.summaryList}
-          renderItem={this.renderItem}
-          keyExtractor={this.keyExtractor}
+          renderItem={renderItem}
+          keyExtractor={keyExtractor}
         />
       </View>
       <SearchAddress
@@ -258,7 +245,7 @@ const SendScreen = () => {
       <View style={styles.footer}>
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnLeft]}
-          disabled={!this.isFormValid()}
+          disabled={!isFormValid()}
           onPress={() => NavigationService.navigate('SendConfirm')}
           text="SEND"
         />

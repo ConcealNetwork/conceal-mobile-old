@@ -8,12 +8,15 @@ import { showMessageDialog } from '../helpers/utils';
 import ConcealButton from '../components/ccxButton';
 import localStorage from '../helpers/LocalStorage';
 import { getAspectRatio } from '../helpers/utils';
+import GuideNavigation from '../helpers/GuideNav';
 import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
+import Tips from 'react-native-guide-tips';
 import AppConf from '../app.json';
 import PinSetup from './PinSetup';
 import FgpSetup from './FgpSetup';
 import {
+  Text,
   View,
   FlatList,
 } from 'react-native';
@@ -29,6 +32,13 @@ const Settings = () => {
   const [showFgpModal, setShowFgpModal] = useState(false);
   const [showPinModal, setShowPinModal] = useState(false);
   let pickerRef;
+
+  // guide navigation state values
+  const [guideState, setGuideState] = useState(null);
+  const [guideNavigation] = useState(new GuideNavigation('addressBook', [
+    'logoutUser',
+    'changeAuth'
+  ]));
 
   const settingsList = [
     {
@@ -53,38 +63,48 @@ const Settings = () => {
       icon: 'md-lock',
       rightElement: function () {
         return (
-          <ModalSelector
-            data={[
-              { key: 1, section: true, label: 'Available options' },
-              { key: 2, value: "password", label: 'Password' },
-              { key: 3, value: "biometric", label: 'Biometric' },
-              { key: 4, value: "pin", label: 'PIN' }
-            ]}
-            ref={selector => { pickerRef = selector; }}
-            cancelStyle={styles.pickerCancelButton}
-            cancelTextStyle={styles.pickerCancelButtonText}
-            optionContainerStyle={styles.pickerContainer}
-            sectionTextStyle={styles.pickerSectionText}
-            optionTextStyle={styles.pickerOptionText}
-            onChange={(option) => {
-              localStorage.set('auth_method', option.value);
-              setAuthMode(option.value);
+          <Tips
+            position={'left'}
+            visible={guideState == 'changeAuth'}
+            textStyle={AppStyles.guideTipText}
+            tooltipArrowStyle={AppStyles.guideTipArrowRight}
+            style={[AppStyles.guideTipContainer, styles.guideTipChangeAuth]}
+            text="You can change authentication type to a more friendly one"
+            onRequestClose={() => setGuideState(guideNavigation.next())}
+          >
+            <ModalSelector
+              data={[
+                { key: 1, section: true, label: 'Available options' },
+                { key: 2, value: "password", label: 'Password' },
+                { key: 3, value: "biometric", label: 'Biometric' },
+                { key: 4, value: "pin", label: 'PIN' }
+              ]}
+              ref={selector => { pickerRef = selector; }}
+              cancelStyle={styles.pickerCancelButton}
+              cancelTextStyle={styles.pickerCancelButtonText}
+              optionContainerStyle={styles.pickerContainer}
+              sectionTextStyle={styles.pickerSectionText}
+              optionTextStyle={styles.pickerOptionText}
+              onChange={(option) => {
+                localStorage.set('auth_method', option.value);
+                setAuthMode(option.value);
 
-              if (option.value == "pin") {
-                setShowPinModal(true);
-              } else if (option.value == "biometric") {
-                setShowFgpModal(true);
-              }
-            }}
-            customSelector={
-              < Icon
-                name='md-menu'
-                type='ionicon'
-                color='white'
-                size={32 * getAspectRatio()}
-                onPress={() => pickerRef.open()}
-              />}
-          />);
+                if (option.value == "pin") {
+                  setShowPinModal(true);
+                } else if (option.value == "biometric") {
+                  setShowFgpModal(true);
+                }
+              }}
+              customSelector={
+                < Icon
+                  name='md-menu'
+                  type='ionicon'
+                  color='white'
+                  size={32 * getAspectRatio()}
+                  onPress={() => pickerRef.open()}
+                />}
+            />
+          </Tips>);
       }
     }, {
       value: AppConf.expo.version,
@@ -94,9 +114,9 @@ const Settings = () => {
   ];
 
   // key extractor for the list
-  keyExtractor = (item, index) => index.toString();
+  const keyExtractor = (item, index) => index.toString();
 
-  renderItem = ({ item }) => (
+  const renderItem = ({ item }) => (
     <ListItem
       title={item.value}
       subtitle={item.title}
@@ -130,20 +150,47 @@ const Settings = () => {
           color='white'
           size={32 * getAspectRatio()}
         />}
-        centerComponent={{ text: 'User Settings', style: AppStyles.appHeaderText }}
-        rightComponent={< Icon
-          onPress={logoutUser}
-          name='md-log-out'
-          type='ionicon'
-          color='white'
-          size={32 * getAspectRatio()}
-        />}
+        centerComponent={
+          <View style={AppStyles.appHeaderWrapper}>
+            <Text style={AppStyles.appHeaderText}>
+              User Settings
+            </Text>
+            <Icon
+              onPress={() => {
+                guideNavigation.reset();
+                setGuideState(guideNavigation.start());
+              }}
+              name='md-help'
+              type='ionicon'
+              color='white'
+              size={26 * getAspectRatio()}
+            />
+          </View>
+        }
+        rightComponent={
+          <Tips
+            position={'bottom'}
+            visible={guideState == 'logoutUser'}
+            textStyle={AppStyles.guideTipText}
+            style={[AppStyles.guideTipContainer, styles.guideTipLogout]}
+            tooltipArrowStyle={[AppStyles.guideTipArrowTop, styles.guideTipArrowLogout]}
+            text="Click here if you want to logout..."
+            onRequestClose={() => setGuideState(guideNavigation.next())}
+          >
+            < Icon
+              onPress={logoutUser}
+              name='md-log-out'
+              type='ionicon'
+              color='white'
+              size={32 * getAspectRatio()}
+            />
+          </Tips>}
       />
       <FlatList
         data={settingsList}
         style={styles.settingsList}
-        renderItem={this.renderItem}
-        keyExtractor={this.keyExtractor}
+        renderItem={renderItem}
+        keyExtractor={keyExtractor}
       />
       <Overlay
         isVisible={showPinModal}
@@ -246,6 +293,15 @@ const styles = EStyleSheet.create({
   passwordInput: {
     marginTop: '30rem',
     marginBottom: '50rem'
+  },
+  guideTipLogout: {
+    left: '-130rem'
+  },
+  guideTipArrowLogout: {
+    left: '97%'
+  },
+  guideTipChangeAuth: {
+    left: '280rem'
   }
 });
 

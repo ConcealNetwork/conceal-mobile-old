@@ -48,9 +48,9 @@ const SendConfirm = () => {
   addSummaryItem('0.0001 CCX', 'Transaction Fee', 'md-cash');
 
   // key extractor for the list
-  keyExtractor = (item, index) => index.toString();
+  const keyExtractor = (item, index) => index.toString();
 
-  renderItem = ({ item }) => (
+  const renderItem = ({ item }) => (
     <ListItem
       title={item.value}
       subtitle={item.title}
@@ -66,7 +66,7 @@ const SendConfirm = () => {
     />
   );
 
-  sendPayment = (password) => {
+  const sendPayment = (password) => {
     actions.sendPayment(
       currWallet.addr,
       state.appData.sendScreen.toAddress,
@@ -93,8 +93,8 @@ const SendConfirm = () => {
       <FlatList
         data={sendSummaryList}
         style={styles.summaryList}
-        renderItem={this.renderItem}
-        keyExtractor={this.keyExtractor}
+        renderItem={renderItem}
+        keyExtractor={keyExtractor}
       />
       <View style={styles.footer}>
         <ConcealButton
@@ -111,7 +111,7 @@ const SendConfirm = () => {
       <AuthCheck
         onSuccess={(password) => {
           setShowAuthCheck(false);
-          this.sendPayment(password);
+          sendPayment(password);
         }}
         onCancel={() => setShowAuthCheck(false)}
         showCheck={showAuthCheck}

@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import { Icon, Header, CheckBox } from 'react-native-elements';
 import NavigationService from '../helpers/NavigationService';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -7,25 +7,29 @@ import ConcealButton from '../components/ccxButton';
 import GuideNavigation from '../helpers/GuideNav';
 import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
+import Tips from 'react-native-guide-tips';
 import {
   maskAddress,
-  formatOptions,
   getAspectRatio,
-  format0Decimals,
-  format2Decimals,
   format4Decimals,
-  format6Decimals,
-  format8Decimals
 } from '../helpers/utils';
 import {
   Alert,
   Text,
   View,
   FlatList,
-  StyleSheet,
   TouchableOpacity
 } from 'react-native';
 
+let firstVisibleItem = -1;
+
+const handleViewableItemsChanged = (info) => {
+  if ((info.viewableItems) && (info.viewableItems.length > 0)) {
+    firstVisibleItem = info.viewableItems[0].index;
+  } else {
+    firstVisibleItem = -1;
+  }
+}
 
 const Wallets = () => {
   const { actions, state } = useContext(AppContext);
@@ -36,14 +40,15 @@ const Wallets = () => {
   // guide navigation state values
   const [guideState, setGuideState] = useState(null);
   const [guideNavigation] = useState(new GuideNavigation('wallets', [
-    'overall',
-    'messages',
-    'wallets',
-    'addresses',
-    'market',
-    'send',
-    'receive'
-  ]));
+    'addWallet',
+    'deleteWallet',
+    'exportWallet'
+  ], function (nextState) {
+    if ((nextState === 'addWallet') && !(walletsLoaded && (walletsList.length < appSettings.maxWallets || walletsList.length === 0))) {
+      console.log("set next state");
+      setGuideState(guideNavigation.next());
+    }
+  }));
 
   const walletsList = Object.keys(wallets)
     .reduce((acc, curr) => {
@@ -52,6 +57,13 @@ const Wallets = () => {
       acc.push(wallet);
       return acc;
     }, []);
+
+  // fire on mount
+  useEffect(() => {
+    setTimeout(() => {
+      setGuideState(guideNavigation.start());
+    }, 100);
+  }, []);
 
   return (
     <View style={styles.pageWrapper}>
@@ -83,13 +95,24 @@ const Wallets = () => {
           </View>
         }
         rightComponent={walletsLoaded && (walletsList.length < appSettings.maxWallets || walletsList.length === 0) ?
-          (< Icon
-            onPress={() => createWallet()}
-            name='md-add-circle-outline'
-            type='ionicon'
-            color='white'
-            size={32 * getAspectRatio()}
-          />) : null}
+          (
+            <Tips
+              position={'bottom'}
+              visible={guideState == 'addWallet'}
+              textStyle={AppStyles.guideTipText}
+              style={[AppStyles.guideTipContainer, styles.guideTipAddWallet]}
+              tooltipArrowStyle={[AppStyles.guideTipArrowTop, styles.guideTipArrowAddWallet]}
+              text="Click on this button to add a new wallet..."
+              onRequestClose={() => setGuideState(guideNavigation.next())}
+            >
+              < Icon
+                onPress={() => createWallet()}
+                name='md-add-circle-outline'
+                type='ionicon'
+                color='white'
+                size={32 * getAspectRatio()}
+              />
+            </Tips>) : null}
       />
       <View style={styles.walletsWrapper}>
         {layout.userLoaded && walletsList.length === 0
@@ -99,16 +122,18 @@ const Wallets = () => {
             </Text>
           </View>)
           : (<FlatList
-            style={styles.flatList}
             data={walletsList}
+            style={styles.flatList}
             showsVerticalScrollIndicator={false}
             keyExtractor={item => item.address}
-            renderItem={({ item }) =>
+            onViewableItemsChanged={handleViewableItemsChanged}
+            viewabilityConfig={{ viewAreaCoveragePercentThreshold: 50 }}
+            renderItem={({ item, index }) =>
               <View style={(item.addr === appData.common.selectedWallet) ? [styles.flatview, styles.walletSelected] : styles.flatview}>
                 <TouchableOpacity onPress={() => switchWallet(item.address)}>
                   <View>
                     <Text style={styles.address}>{maskAddress(item.address)}</Text>
-                    <Text style={styles.balance}>Balance: {item.total.toLocaleString(undefined, format4Decimals)} CCX</Text>
+                    <Text style={styles.balance}>Balance: {item.total ? item.total.toLocaleString(undefined, format4Decimals) : 0} CCX</Text>
                     <Text style={(item.locked && item.locked > 0) ? [styles.data, styles.lockedText] : styles.data}>Locked: {item.locked.toLocaleString(undefined, format4Decimals)} CCX</Text>
                     <Text style={styles.data}>{item.status}</Text>
                     <View style={styles.selectedWrapper}>
@@ -124,40 +149,63 @@ const Wallets = () => {
                   </View>
                 </TouchableOpacity>
                 <View style={styles.walletFooter}>
-                  <ConcealButton
-                    style={[!(walletsLoaded && (item.total > 0)) ? styles.footerBtn : styles.footerBtnDisabled, styles.footerBtnLeft]}
-                    disabled={(walletsLoaded && (item.total > 0))}
-                    buttonStyle={styles.btnStyle}
-                    onPress={() => {
-                      Alert.alert(
-                        'Delete Wallet',
-                        'You are about to delete this wallet PERMANENTLY! Do you really wish to proceed?',
-                        [
-                          { text: 'OK', onPress: () => deleteWallet(item.address) },
-                          { text: 'Cancel', style: 'cancel' },
-                        ],
-                        { cancelable: false },
-                      );
-                    }}
-                    text="DELETE"
-                  />
-
-                  <ConcealButton
-                    style={[styles.footerBtn, styles.footerBtnRight]}
-                    buttonStyle={styles.btnStyle}
-                    onPress={() => {
-                      Alert.alert(
-                        'Export Keys',
-                        'You are about to export the keys. Do you really wish to proceed?',
-                        [
-                          { text: 'OK', onPress: () => getWalletKeys(item.address, true) },
-                          { text: 'Cancel', style: 'cancel' },
-                        ],
-                        { cancelable: false },
-                      );
-                    }}
-                    text="EXPORT"
-                  />
+                  <View style={styles.btnWrapper}>
+                    <Tips
+                      position={'bottom'}
+                      visible={(guideState == 'deleteWallet') && (index == firstVisibleItem)}
+                      textStyle={AppStyles.guideTipText}
+                      style={[AppStyles.guideTipContainer, styles.guideTipDeleteWallet]}
+                      tooltipArrowStyle={[AppStyles.guideTipArrowTop, styles.guideTipArrowDeleteWallet]}
+                      text="Click on this button to delete the wallet..."
+                      onRequestClose={() => setGuideState(guideNavigation.next())}
+                    >
+                      <ConcealButton
+                        style={[!(walletsLoaded && (item.total > 0)) ? styles.footerBtn : styles.footerBtnDisabled, styles.footerBtnLeft]}
+                        disabled={(walletsLoaded && (item.total > 0))}
+                        buttonStyle={styles.btnStyle}
+                        onPress={() => {
+                          Alert.alert(
+                            'Delete Wallet',
+                            'You are about to delete this wallet PERMANENTLY! Do you really wish to proceed?',
+                            [
+                              { text: 'OK', onPress: () => deleteWallet(item.address) },
+                              { text: 'Cancel', style: 'cancel' },
+                            ],
+                            { cancelable: false },
+                          );
+                        }} I
+                        text="DELETE"
+                      />
+                    </Tips>
+                  </View>
+                  <View style={styles.btnWrapper}>
+                    <Tips
+                      position={'bottom'}
+                      visible={(guideState == 'exportWallet') && (index == firstVisibleItem)}
+                      textStyle={AppStyles.guideTipText}
+                      style={[AppStyles.guideTipContainer, styles.guideTipExportWallet]}
+                      tooltipArrowStyle={[AppStyles.guideTipArrowTop, styles.guideTipArrowExportWallet]}
+                      text="Click on this button to export the wallet..."
+                      onRequestClose={() => setGuideState(guideNavigation.next())}
+                    >
+                      <ConcealButton
+                        style={[styles.footerBtn, styles.footerBtnRight]}
+                        buttonStyle={styles.btnStyle}
+                        onPress={() => {
+                          Alert.alert(
+                            'Export Keys',
+                            'You are about to export the keys. Do you really wish to proceed?',
+                            [
+                              { text: 'OK', onPress: () => getWalletKeys(item.address, true) },
+                              { text: 'Cancel', style: 'cancel' },
+                            ],
+                            { cancelable: false },
+                          );
+                        }}
+                        text="EXPORT"
+                      />
+                    </Tips>
+                  </View>
                 </View>
               </View>
             }
@@ -227,8 +275,10 @@ const styles = EStyleSheet.create({
   btnStyle: {
     borderWidth: 0
   },
+  btnWrapper: {
+    flexGrow: 1,
+  },
   footerBtn: {
-    flex: 1,
     height: '40rem',
     marginTop: '10rem',
     borderWidth: 0,
@@ -238,7 +288,6 @@ const styles = EStyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0)'
   },
   footerBtnDisabled: {
-    flex: 1,
     height: '40rem',
     marginTop: '10rem',
     borderWidth: 0,
@@ -270,6 +319,24 @@ const styles = EStyleSheet.create({
     fontSize: '18rem',
     color: '#FFFFFF',
     textAlign: 'center'
+  },
+  guideTipAddWallet: {
+    left: '-130rem'
+  },
+  guideTipArrowAddWallet: {
+    left: '97%'
+  },
+  guideTipDeleteWallet: {
+    left: '20rem'
+  },
+  guideTipArrowDeleteWallet: {
+    left: '27%'
+  },
+  guideTipExportWallet: {
+    left: '-50rem'
+  },
+  guideTipArrowExportWallet: {
+    left: '68%'
   }
 });
 

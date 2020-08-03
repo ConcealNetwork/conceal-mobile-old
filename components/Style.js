@@ -1,4 +1,3 @@
-import { StyleSheet } from 'react-native';
 import { AppColors } from '../constants/Colors';
 import EStyleSheet from 'react-native-extended-stylesheet';
 

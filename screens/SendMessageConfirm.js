@@ -12,7 +12,6 @@ import AuthCheck from './AuthCheck';
 
 const SendMessageConfirm = () => {
   const { state, actions } = useContext(AppContext);
-  const { setAppData } = actions;
   const { wallets, appData } = state;
   const currWallet = wallets[appData.common.selectedWallet];
 
@@ -34,9 +33,9 @@ const SendMessageConfirm = () => {
   addSummaryItem(state.appData.sendMessage.message, 'Message', 'md-mail');
 
   // key extractor for the list
-  keyExtractor = (item, index) => index.toString();
+  const keyExtractor = (item, index) => index.toString();
 
-  renderItem = ({ item }) => (
+  const renderItem = ({ item }) => (
     <ListItem
       title={item.value}
       subtitle={item.title}
@@ -52,7 +51,7 @@ const SendMessageConfirm = () => {
     />
   );
 
-  sendMessage = () => {
+  const sendMessage = (password) => {
     actions.sendMessage(
       state.appData.sendMessage.message,
       state.appData.sendMessage.toAddress,
@@ -78,8 +77,8 @@ const SendMessageConfirm = () => {
       <FlatList
         data={sendSummaryList}
         style={styles.summaryList}
-        renderItem={this.renderItem}
-        keyExtractor={this.keyExtractor}
+        renderItem={renderItem}
+        keyExtractor={keyExtractor}
       />
       <View style={styles.footer}>
         <ConcealButton
@@ -96,8 +95,7 @@ const SendMessageConfirm = () => {
       <AuthCheck
         onSuccess={(password) => {
           setShowAuthCheck(false);
-          setPassword(password);
-          this.sendMessage();
+          sendMessage(password);
         }}
         onCancel={() => setShowAuthCheck(false)}
         showCheck={showAuthCheck}

@@ -86,8 +86,8 @@ const AppMenu = () => {
         );
       }
     }, {
-      value: 'Address Book',
-      title: 'This is the address book managment screen...',
+      value: 'Market Data',
+      title: 'This is the current market data...',
       icon: 'md-trending-up',
       rightElement: function () {
         return (<Icon

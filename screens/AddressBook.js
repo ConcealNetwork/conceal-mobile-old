@@ -1,20 +1,24 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Icon, Header } from 'react-native-elements';
 import NavigationService from '../helpers/NavigationService';
 import ConcealTextInput from '../components/ccxTextInput';
 import ConcealButton from '../components/ccxButton';
 import { AppContext } from '../components/ContextProvider';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { getAspectRatio } from '../helpers/utils';
+import GuideNavigation from '../helpers/GuideNav';
 import { maskAddress } from '../helpers/utils';
 import AppStyles from '../components/Style';
-import { getAspectRatio } from '../helpers/utils';
+import Tips from 'react-native-guide-tips';
 import {
-  Alert,
   Text,
   View,
+  Alert,
   FlatList,
   Clipboard
 } from 'react-native';
+
+let firstVisibleItem = -1;
 
 let readLabelromClipboard = async () => {
   const clipboardContent = await Clipboard.getString();
@@ -43,11 +47,28 @@ let readPaymentIdFromClipboard = async () => {
   });
 };
 
+const handleViewableItemsChanged = (info) => {
+  if ((info.viewableItems) && (info.viewableItems.length > 0)) {
+    firstVisibleItem = info.viewableItems[0].index;
+  } else {
+    firstVisibleItem = -1;
+  }
+}
+
 const AddressBook = () => {
   const { actions, state } = useContext(AppContext);
   const { deleteContact, setAppData } = actions;
   const { layout, user } = state;
   let addressList = [];
+
+  // guide navigation state values
+  const [guideState, setGuideState] = useState(null);
+  const [guideNavigation] = useState(new GuideNavigation('addressBook', [
+    'addressSearch',
+    'addAddress',
+    'deleteAddress',
+    'editAddress'
+  ]));
 
   user.addressBook.forEach(function (value, index, array) {
     var isValidItem = true;
@@ -62,6 +83,13 @@ const AddressBook = () => {
     }
   });
 
+  // fire on mount
+  useEffect(() => {
+    setTimeout(() => {
+      setGuideState(guideNavigation.start());
+    }, 100);
+  }, []);
+
   return (
     <View style={AppStyles.pageWrapper}>
       <Header
@@ -74,43 +102,78 @@ const AddressBook = () => {
           color='white'
           size={32 * getAspectRatio()}
         />}
-        centerComponent={{ text: 'Address Book', style: AppStyles.appHeaderText }}
-        rightComponent={<Icon
-          onPress={() => {
-            setAppData({
-              addressEntry: {
-                headerText: "Create Address",
-                label: '',
-                address: '',
-                paymentId: '',
-                entryId: null
-              }
-            });
-            NavigationService.navigate('EditAddress', { callback: null });
-          }}
-          name='md-add-circle-outline'
-          type='ionicon'
-          color='white'
-          size={32 * getAspectRatio()}
-        />}
-      />
-      <ConcealTextInput
-        placeholder='Enter text to search...'
-        value={state.appData.addressBook.filterText}
-        containerStyle={styles.searchInput}
-        onChangeText={(text) => {
-          setAppData({ addressBook: { filterText: text } });
-        }}
-        rightIcon={
+        centerComponent={
+          <View style={AppStyles.appHeaderWrapper}>
+            <Text style={AppStyles.appHeaderText}>
+              Address Book
+            </Text>
+            <Icon
+              onPress={() => {
+                guideNavigation.reset();
+                setGuideState(guideNavigation.start());
+              }}
+              name='md-help'
+              type='ionicon'
+              color='white'
+              size={26 * getAspectRatio()}
+            />
+          </View>
+        }
+        rightComponent={<Tips
+          position={'bottom'}
+          visible={guideState == 'addAddress'}
+          textStyle={AppStyles.guideTipText}
+          style={[AppStyles.guideTipContainer, styles.guideTipAddAddress]}
+          tooltipArrowStyle={[AppStyles.guideTipArrowTop, styles.guideTipArrowAddAddress]}
+          text="Click on this button to add an address..."
+          onRequestClose={() => setGuideState(guideNavigation.next())}
+        >
           <Icon
-            onPress={() => setAppData({ addressBook: { filterText: null } })}
-            name='md-trash'
+            onPress={() => {
+              setAppData({
+                addressEntry: {
+                  headerText: "Create Address",
+                  label: '',
+                  address: '',
+                  paymentId: '',
+                  entryId: null
+                }
+              });
+              NavigationService.navigate('EditAddress', { callback: null });
+            }}
+            name='md-add-circle-outline'
             type='ionicon'
             color='white'
             size={32 * getAspectRatio()}
-          />
-        }
+          /></Tips>}
       />
+      <Tips
+        position={'bottom'}
+        visible={guideState == 'addressSearch'}
+        textStyle={AppStyles.guideTipText}
+        tooltipArrowStyle={AppStyles.guideTipArrowTop}
+        style={AppStyles.guideTipContainer}
+        text="Here you can search for a specific address by text"
+        onRequestClose={() => setGuideState(guideNavigation.next())}
+      >
+        <ConcealTextInput
+          placeholder='Enter text to search...'
+          value={state.appData.addressBook.filterText}
+          containerStyle={styles.searchInput}
+          onChangeText={(text) => {
+            setAppData({ addressBook: { filterText: text } });
+          }}
+          rightIcon={
+            <Icon
+              onPress={() => setAppData({ addressBook: { filterText: null } })}
+              name='md-trash'
+              type='ionicon'
+              color='white'
+              size={32 * getAspectRatio()}
+            />
+          }
+        />
+      </Tips>
       <View style={styles.addressListWrapper}>
         {layout.userLoaded && addressList.length === 0
           ? (<View style={styles.emptyAddressBookWrapper}>
@@ -123,7 +186,9 @@ const AddressBook = () => {
             data={addressList}
             showsVerticalScrollIndicator={false}
             keyExtractor={item => item.entryID.toString()}
-            renderItem={({ item }) =>
+            onViewableItemsChanged={handleViewableItemsChanged}
+            viewabilityConfig={{ viewAreaCoveragePercentThreshold: 50 }}
+            renderItem={({ item, index }) =>
               <View style={styles.flatview}>
                 <View>
                   <Text style={styles.addressLabel}>{item.label}</Text>
@@ -131,40 +196,63 @@ const AddressBook = () => {
                   {item.paymentID ? (<Text style={styles.data}>Payment ID: {item.paymentID}</Text>) : null}
                 </View>
                 <View style={styles.addressListFooter}>
-                  <ConcealButton
-                    style={[styles.footerBtn, styles.footerBtnLeft]}
-                    buttonStyle={styles.btnStyle}
-                    onPress={() => {
-                      Alert.alert(
-                        'Delete Contact',
-                        'You are about to delete this contact! Do you really wish to proceed?',
-                        [
-                          { text: 'OK', onPress: () => deleteContact(item) },
-                          { text: 'Cancel', style: 'cancel' },
-                        ],
-                        { cancelable: false },
-                      );
-                    }}
-                    text="DELETE"
-                  />
-
-                  <ConcealButton
-                    style={[styles.footerBtn, styles.footerBtnRight]}
-                    buttonStyle={styles.btnStyle}
-                    onPress={() => {
-                      setAppData({
-                        addressEntry: {
-                          headerText: "Edit Address",
-                          label: item.label,
-                          address: item.address,
-                          paymentId: item.paymentID,
-                          entryId: item.entryID
-                        }
-                      });
-                      NavigationService.navigate('EditAddress', { callback: null });
-                    }}
-                    text="EDIT"
-                  />
+                  <View style={styles.btnWrapper}>
+                    <Tips
+                      position={'bottom'}
+                      visible={(guideState == 'deleteAddress') && (index == firstVisibleItem)}
+                      textStyle={AppStyles.guideTipText}
+                      style={[AppStyles.guideTipContainer, styles.guideTipDeleteAddress]}
+                      tooltipArrowStyle={[AppStyles.guideTipArrowTop, styles.guideTipArrowDeleteAddress]}
+                      text="Click on this button to delete the address..."
+                      onRequestClose={() => setGuideState(guideNavigation.next())}
+                    >
+                      <ConcealButton
+                        style={[styles.footerBtn, styles.footerBtnLeft]}
+                        buttonStyle={styles.btnStyle}
+                        onPress={() => {
+                          Alert.alert(
+                            'Delete Contact',
+                            'You are about to delete this contact! Do you really wish to proceed?',
+                            [
+                              { text: 'OK', onPress: () => deleteContact(item) },
+                              { text: 'Cancel', style: 'cancel' },
+                            ],
+                            { cancelable: false },
+                          );
+                        }}
+                        text="DELETE"
+                      />
+                    </Tips>
+                  </View>
+                  <View style={styles.btnWrapper}>
+                    <Tips
+                      position={'bottom'}
+                      visible={(guideState == 'editAddress') && (index == firstVisibleItem)}
+                      textStyle={AppStyles.guideTipText}
+                      style={[AppStyles.guideTipContainer, styles.guideTipEditAddress]}
+                      tooltipArrowStyle={[AppStyles.guideTipArrowTop, styles.guideTipArrowEditAddress]}
+                      text="Click on this button to edit the address..."
+                      onRequestClose={() => setGuideState(guideNavigation.next())}
+                    >
+                      <ConcealButton
+                        style={[styles.footerBtn, styles.footerBtnRight]}
+                        buttonStyle={styles.btnStyle}
+                        onPress={() => {
+                          setAppData({
+                            addressEntry: {
+                              headerText: "Edit Address",
+                              label: item.label,
+                              address: item.address,
+                              paymentId: item.paymentID,
+                              entryId: item.entryID
+                            }
+                          });
+                          NavigationService.navigate('EditAddress', { callback: null });
+                        }}
+                        text="EDIT"
+                      />
+                    </Tips>
+                  </View>
                 </View>
               </View>
             }
@@ -229,8 +317,10 @@ const styles = EStyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
+  btnWrapper: {
+    flexGrow: 1,
+  },
   footerBtn: {
-    flex: 1,
     height: '40rem',
     marginTop: '10rem',
     borderWidth: 0,
@@ -262,6 +352,24 @@ const styles = EStyleSheet.create({
     color: '#FFFFFF',
     textAlign: 'center'
   },
+  guideTipAddAddress: {
+    left: '-130rem'
+  },
+  guideTipArrowAddAddress: {
+    left: '97%'
+  },
+  guideTipDeleteAddress: {
+    left: '20rem'
+  },
+  guideTipArrowDeleteAddress: {
+    left: '27%'
+  },
+  guideTipEditAddress: {
+    left: '-50rem'
+  },
+  guideTipArrowEditAddress: {
+    left: '68%'
+  }
 });
 
 export default AddressBook;
