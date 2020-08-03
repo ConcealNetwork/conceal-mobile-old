@@ -19,13 +19,15 @@ const AppMenu = () => {
       value: 'Setting',
       title: 'Settings for your profile...',
       icon: 'md-settings',
+      onPress: function () {
+        NavigationService.navigate('Settings');
+      },
       rightElement: function () {
         return (<Icon
           name='md-play'
           type='ionicon'
           color='white'
           size={32 * getAspectRatio()}
-          onPress={() => NavigationService.navigate('Settings')}
         />
         );
       }
@@ -33,13 +35,15 @@ const AppMenu = () => {
       value: 'Default Wallet',
       title: 'This is your default selected wallet screen...',
       icon: 'md-wallet',
+      onPress: function () {
+        NavigationService.navigate('Wallet');
+      },
       rightElement: function () {
         return (<Icon
           name='md-play'
           type='ionicon'
           color='white'
           size={32 * getAspectRatio()}
-          onPress={() => NavigationService.navigate('Wallet')}
         />
         );
       }
@@ -47,13 +51,15 @@ const AppMenu = () => {
       value: 'Wallets',
       title: 'This is the wallet selection screen...',
       icon: 'md-wallet',
+      onPress: function () {
+        NavigationService.navigate('Wallets');
+      },
       rightElement: function () {
         return (<Icon
           name='md-play'
           type='ionicon'
           color='white'
           size={32 * getAspectRatio()}
-          onPress={() => NavigationService.navigate('Wallets')}
         />
         );
       }
@@ -61,13 +67,15 @@ const AppMenu = () => {
       value: 'Messages',
       title: 'Go to sending and receiving messages...',
       icon: 'md-mail',
+      onPress: function () {
+        NavigationService.navigate('Messages');
+      },
       rightElement: function () {
         return (<Icon
           name='md-play'
           type='ionicon'
           color='white'
           size={32 * getAspectRatio()}
-          onPress={() => NavigationService.navigate('Messages')}
         />
         );
       }
@@ -75,13 +83,15 @@ const AppMenu = () => {
       value: 'Address Book',
       title: 'This is the address book managment screen...',
       icon: 'md-book',
+      onPress: function () {
+        NavigationService.navigate('AddressBook');
+      },
       rightElement: function () {
         return (<Icon
           name='md-play'
           type='ionicon'
           color='white'
           size={32 * getAspectRatio()}
-          onPress={() => NavigationService.navigate('AddressBook')}
         />
         );
       }
@@ -89,13 +99,15 @@ const AppMenu = () => {
       value: 'Market Data',
       title: 'This is the current market data...',
       icon: 'md-trending-up',
+      onPress: function () {
+        NavigationService.navigate('Market');
+      },
       rightElement: function () {
         return (<Icon
           name='md-play'
           type='ionicon'
           color='white'
           size={32 * getAspectRatio()}
-          onPress={() => NavigationService.navigate('Market')}
         />
         );
       }
@@ -103,9 +115,9 @@ const AppMenu = () => {
   ];
 
   // key extractor for the list
-  keyExtractor = (item, index) => index.toString();
+  const keyExtractor = (item, index) => index.toString();
 
-  renderItem = ({ item }) => (
+  const renderItem = ({ item }) => (
     <ListItem
       title={item.value}
       subtitle={item.title}
@@ -113,6 +125,7 @@ const AppMenu = () => {
       titleStyle={styles.settingsText}
       subtitleStyle={styles.settingsLabel}
       containerStyle={styles.settingsItem}
+      onPress={item.onPress}
       leftIcon={< Icon
         name={item.icon}
         type='ionicon'
@@ -146,8 +159,8 @@ const AppMenu = () => {
       <FlatList
         data={settingsList}
         style={styles.settingsList}
-        renderItem={this.renderItem}
-        keyExtractor={this.keyExtractor}
+        renderItem={renderItem}
+        keyExtractor={keyExtractor}
       />
     </View>
   )
