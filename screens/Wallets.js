@@ -110,7 +110,7 @@ const Wallets = () => {
                 name='md-add-circle-outline'
                 type='ionicon'
                 color='white'
-                size={32 * getAspectRatio()}
+                size={42 * getAspectRatio()}
               />
             </Tips>) : null}
       />

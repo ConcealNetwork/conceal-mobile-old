@@ -14,6 +14,7 @@ import SendConfirm from '../screens/SendConfirm';
 import AppMenu from '../screens/AppMenu';
 import Receive from '../screens/Receive';
 import Settings from '../screens/Settings';
+import Deposits from '../screens/Deposits';
 import Scanner from '../screens/Scanner';
 import Market from '../screens/Market';
 
@@ -100,6 +101,12 @@ const AppNavigator = createStackNavigator(
     },
     AppMenu: {
       screen: AppMenu,
+      navigationOptions: {
+        header: null,
+      },
+    },
+    Deposits: {
+      screen: Deposits,
       navigationOptions: {
         header: null,
       },

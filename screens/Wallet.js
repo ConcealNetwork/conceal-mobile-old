@@ -199,7 +199,7 @@ const Wallet = () => {
                 >
                   <Icon
                     containerStyle={styles.iconGeneral}
-                    onPress={() => NavigationService.navigate('Market')}
+                    onPress={() => NavigationService.navigate('Deposits')}
                     name='md-cube'
                     type='ionicon'
                     color='#FFFFFF'
