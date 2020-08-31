@@ -1,6 +1,6 @@
 # Basic dependabot.yml file with
 
-version: 1
+version: 2
 updates:
   # Enable version updates for npm
   - package-ecosystem: "npm"
