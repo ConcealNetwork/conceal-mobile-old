@@ -11,7 +11,7 @@
     "@react-native-community/async-storage": "^1.9.0",
     "crypto-js": "^4.0.0",
     "expo": "^38.0.9",
-    "expo-barcode-scanner": "~8.0.0",
+    "expo-barcode-scanner": "~8.2.1",
     "expo-font": "~8.0.0",
     "expo-local-authentication": "~8.0.0",
     "expo-secure-store": "~8.0.0",
