@@ -6,8 +6,8 @@ import { showMessageDialog } from '../helpers/utils';
 import AuthHelper from '../helpers/AuthHelper';
 import ApiHelper from '../helpers/ApiHelper';
 import { logger } from '../helpers/Logger';
-export const AppContext = React.createContext();
 
+export const AppContext = React.createContext();
 
 const AppContextProvider = props => {
   const [state, dispatch, updatedState] = useAppState();
@@ -459,6 +459,66 @@ const AppContextProvider = props => {
       });
   };
 
+  const getDeposits = () => {
+    logger.log('GETTING MESSAGES...');
+    let message;
+    let msgType;
+    Api.getDeposits()
+      .then(res => { dispatch({ type: 'DEPOSITS_LOADED', deposits: res.message.deposits }) })
+      .catch(err => { message = `ERROR ${err}` })
+      .finally(() => {
+        showMessageDialog(message, msgType);
+      });
+  };
+
+  const createDeposit = (amount, term, wallet, password) => {
+    logger.log('CREATING DEPOSIT...');
+    dispatch({ type: 'FORM_SUBMITTED', value: true });
+    let message;
+    let msgType;
+    Api.createDeposit(amount, term, wallet, null, password)
+      .then(res => {
+        console.log(res);
+        if (res.result === 'success') {
+          getDeposits();
+          NavigationService.goBack(2);
+          dispatch({ type: 'DEPOSIT_CREATED', res });
+          message = 'Your deposit was successfully created';
+          msgType = 'info';
+        } else {
+          message = res.message;
+        }
+      })
+      .catch(err => { console.log(err); message = `ERROR ${err}` })
+      .finally(() => {
+        dispatch({ type: 'FORM_SUBMITTED', value: false });
+        showMessageDialog(message, msgType);
+      });
+  };
+
+  const unlockDeposit = (id) => {
+    logger.log('UNLOCKING DEPOSIT...');
+    dispatch({ type: 'FORM_SUBMITTED', value: true });
+    let message;
+    let msgType;
+    Api.unlockDeposit(id)
+      .then(res => {
+        if (res.result === 'success') {
+          getDeposits();
+          dispatch({ type: 'DEPOSIT_UNLOCKED', res });
+          message = 'Your deposit was successfully unlocked';
+          msgType = 'info';
+        } else {
+          message = res.message;
+        }
+      })
+      .catch(err => { console.log(err); message = `ERROR ${err}` })
+      .finally(() => {
+        dispatch({ type: 'FORM_SUBMITTED', value: false });
+        showMessageDialog(message, msgType);
+      });
+  };
+
   const setAppData = (appData) => {
     logger.log('SETTING APP DATA...');
     dispatch({ type: 'SET_APP_DATA', appData });
@@ -483,6 +543,9 @@ const AppContextProvider = props => {
     deleteWallet,
     setDefaultWallet,
     getWalletKeys,
+    getDeposits,
+    createDeposit,
+    unlockDeposit,
     setAppData
   };
 
@@ -504,6 +567,7 @@ const AppContextProvider = props => {
       check2FA();
       getWallets();
       getMessages();
+      getDeposits();
       getBlockchainHeight();
       getMarketPrices();
       getPrices();
@@ -525,7 +589,7 @@ const AppContextProvider = props => {
   }, [state.user.loggedIn, state.intervals]);
 
   useEffect(() => {
-    if (state.layout.userLoaded && state.layout.walletsLoaded) {
+    if (state.layout.userLoaded && state.layout.walletsLoaded && state.layout.messagesLoaded && state.layout.depositsLoaded) {
       if (!state.layout.loginFinished) {
         NavigationService.navigate('Wallet');
         state.layout.loginFinished = true;

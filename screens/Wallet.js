@@ -271,7 +271,7 @@ const Wallet = () => {
                         toLabel: ''
                       }
                     });
-                    NavigationService.navigate('Send')
+                    NavigationService.navigate('SendPayment')
                   }}
                   disabled={currWallet.balance < 0.0001}
                   text="SEND"

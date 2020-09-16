@@ -20,6 +20,7 @@ const useAppState = () => {
       userLoaded: false,
       walletsLoaded: false,
       messagesLoaded: false,
+      depositsLoaded: false,
     },
     markets: {
       stex: {
@@ -64,6 +65,12 @@ const useAppState = () => {
     appData: {
       sendScreen: {
         sendConfirmVisible: false,
+        securePasswordEntry: true
+      },
+      createDeposit: {
+        duration: 1,
+        durationText: "Deposit duration: 1 month",
+        ConfirmVisible: false,
         securePasswordEntry: true
       },
       messages: {
@@ -174,6 +181,16 @@ const useAppState = () => {
           }
         };
         break;
+      case 'DEPOSITS_LOADED':
+        result = {
+          ...state,
+          layout: {
+            ...state.layout,
+            depositsLoaded: true,
+          },
+          deposits: action.deposits
+        };
+        break;
       case '2FA_CHECK':
         result = {
           ...state,
@@ -228,6 +245,7 @@ const useAppState = () => {
           },
         };
         break;
+      case 'SET_DEFAULT_WALLET':
       case 'UPDATE_WALLETS':
         result = {
           ...state,
@@ -235,11 +253,6 @@ const useAppState = () => {
             ...state.wallets,
             ...action.wallets,
           },
-        };
-        break;
-      case 'SWITCH_WALLET':
-        result = {
-          ...state
         };
         break;
       case 'DELETE_WALLET':
@@ -256,15 +269,6 @@ const useAppState = () => {
         result = {
           ...state,
           wallets: {},
-        };
-        break;
-      case 'SET_DEFAULT_WALLET':
-        result = {
-          ...state,
-          wallets: {
-            ...state.wallets,
-            ...action.wallets,
-          },
         };
         break;
       case 'SEND_TX':
@@ -339,12 +343,11 @@ const useAppState = () => {
           },
         };
         break;
+      case 'SWITCH_WALLET':
       case 'PAYMENT_SENT':
-        result = {
-          ...state
-        };
-        break;
       case 'MESSAGE_SENT':
+      case 'DEPOSIT_CREATED':
+      case 'DEPOSIT_UNLOCKED':
         result = {
           ...state
         };

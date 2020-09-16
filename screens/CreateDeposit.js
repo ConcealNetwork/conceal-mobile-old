@@ -3,11 +3,13 @@ import NavigationService from '../helpers/NavigationService';
 import { AppContext } from '../components/ContextProvider';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import ConcealTextInput from '../components/ccxTextInput';
+import { getDepositInterest } from '../helpers/utils';
 import ConcealButton from '../components/ccxButton';
 import { AppColors } from '../constants/Colors';
 import SearchAddress from './SearchAddress';
 import AppStyles from '../components/Style';
 import React, { useContext } from "react";
+import { Slider } from 'react-native';
 import {
   maskAddress,
   getAspectRatio,
@@ -22,7 +24,7 @@ import {
   TouchableOpacity
 } from "react-native";
 
-const SendScreen = () => {
+const CreateDepositScreen = () => {
   const { state, actions } = useContext(AppContext);
   const { setAppData } = actions;
   const { user, wallets, appData } = state;
@@ -30,37 +32,21 @@ const SendScreen = () => {
 
   const sendSummaryList = [];
 
-  if (state.appData.sendScreen.toLabel) {
+  if (state.appData.createDeposit.duration) {
     sendSummaryList.push({
-      value: state.appData.sendScreen.toLabel,
-      title: 'Label',
-      icon: 'md-eye'
+      value: `${state.appData.createDeposit.duration} month${state.appData.createDeposit.duration > 1 ? 's' : ''}`,
+      title: 'Deposit Duration',
+      icon: 'md-clock'
     });
   }
 
-  if (state.appData.sendScreen.toAddress) {
-    sendSummaryList.push({
-      value: maskAddress(state.appData.sendScreen.toAddress),
-      title: 'Address',
-      icon: 'md-mail'
-    });
-  }
-
-  if (state.appData.sendScreen.toPaymendId) {
-    sendSummaryList.push({
-      value: maskAddress(state.appData.sendScreen.toPaymendId),
-      title: 'Payment ID',
-      icon: 'md-key'
-    });
-  }
-
-  if (state.appData.sendScreen.toAmount) {
-    let totalAmount = parseFloat(state.appData.sendScreen.toAmount);
+  if (state.appData.createDeposit.amount) {
+    let totalAmount = parseFloat(state.appData.createDeposit.amount);
     totalAmount = totalAmount + 0.0001;
 
     sendSummaryList.push({
       value: `${totalAmount.toLocaleString(undefined, format6Decimals)} CCX`,
-      title: 'Total Amount',
+      title: 'Deposit Amount',
       icon: 'md-cash'
     });
 
@@ -71,14 +57,12 @@ const SendScreen = () => {
     });
   }
 
-  const onScanAddressQRCode = () => {
-    setAppData({
-      scanCode: {
-        scanned: false
-      }
+  if (state.appData.createDeposit.duration && state.appData.createDeposit.amount) {
+    sendSummaryList.push({
+      value: `${getDepositInterest(state.appData.createDeposit.amount, state.appData.createDeposit.duration).toLocaleString(undefined, format6Decimals)} CCX`,
+      title: 'Interest earned',
+      icon: 'md-cash'
     });
-
-    NavigationService.navigate('Scanner', { path: ["sendScreen", "toAddress"] });
   }
 
   // key extractor for the list
@@ -101,8 +85,8 @@ const SendScreen = () => {
   );
 
   const isFormValid = () => {
-    if (state.appData.sendScreen.toAddress && state.appData.sendScreen.toAmount) {
-      var amountAsFloat = parseFloat(state.appData.sendScreen.toAmount);
+    if (state.appData.createDeposit.duration && state.appData.createDeposit.amount) {
+      var amountAsFloat = parseFloat(state.appData.createDeposit.amount);
       return ((amountAsFloat > 0) && (amountAsFloat <= (parseFloat(currWallet.balance) - 0.0001)));
     } else {
       return false;
@@ -111,11 +95,10 @@ const SendScreen = () => {
 
   const clearSend = () => {
     setAppData({
-      sendScreen: {
-        toAmount: '',
-        toAddress: '',
-        toPaymendId: '',
-        toLabel: ''
+      createDeposit: {
+        amount: '',
+        duration: 1,
+        durationText: `Deposit duration: 1 month`,
       }
     });
   }
@@ -129,15 +112,6 @@ const SendScreen = () => {
     } else {
       return "";
     }
-  }
-
-  const setAddress = (label, address, paymentID, entryID) => {
-    setAppData({
-      sendScreen: {
-        toAddress: address,
-        toPaymendId: paymentID
-      }
-    });
   }
 
   return (
@@ -175,59 +149,67 @@ const SendScreen = () => {
                 size={16 * getAspectRatio()}
               />
               <Text style={currWallet.locked ? [styles.worthBTC, styles.lockedText] : styles.worthBTC}>
-                {`${currWallet.locked.toLocaleString(undefined, format4Decimals)} CCX`}
+                {`${currWallet.locked.toLocaleString(undefined, format4Decimals)} CCX'`}
               </Text>
             </View>)
             : null}
         </View>
 
-        <ConcealTextInput
-          label={getAmountError()}
-          keyboardType='numeric'
-          placeholder='Select amount to send...'
-          containerStyle={styles.sendInput}
-          value={state.appData.sendScreen.toAmount}
-          onChangeText={(text) => {
-            setAppData({ sendScreen: { toAmount: text } });
-          }}
-          rightIcon={
-            <Icon
-              onPress={() => setAppData({ sendScreen: { toAmount: (parseFloat(currWallet.balance) - 0.0001).toLocaleString(undefined, format8Decimals) } })}
-              name='md-add'
-              type='ionicon'
-              color='white'
-              size={32 * getAspectRatio()}
-            />
-          }
-        />
-        <TouchableOpacity onPress={() => setAppData({ searchAddress: { addrListVisible: true } })}>
+        <View style={styles.amountWrapper}>
           <ConcealTextInput
-            editable={false}
-            placeholder='Select recipient address...'
-            containerStyle={[styles.sendInput, styles.addressInput]}
-            value={state.appData.sendScreen.toLabel ? state.appData.sendScreen.toLabel : maskAddress(state.appData.sendScreen.toAddress)}
-            rightIcon={
-              <Icon
-                onPress={() => {
-                  setAppData({
-                    addressEntry: {
-                      headerText: "Create Address",
-                      label: '',
-                      address: '',
-                      paymentId: '',
-                      entryId: null
-                    }
-                  });
-                  NavigationService.navigate('EditAddress', { callback: setAddress });
-                }}
-                name='md-add'
-                type='ionicon'
-                color='white'
-                size={32 * getAspectRatio()}
-              />
-            }
+            label={getAmountError()}
+            keyboardType='numeric'
+            placeholder='Select amount to deposit...'
+            containerStyle={styles.sendInput}
+            value={state.appData.createDeposit.amount}
+            onChangeText={(text) => {
+              setAppData({ createDeposit: { amount: text } });
+            }}
           />
-        </TouchableOpacity>
+        </View>
+        <View style={styles.amountPercentWrapper}>
+          <ConcealButton
+            style={styles.btnDepositPercent}
+            onPress={() => setAppData({ createDeposit: { amount: ((parseFloat(currWallet.balance) - 0.0001) * 0.25).toLocaleString(undefined, format8Decimals) } })}
+            text="25%"
+          />
+          <ConcealButton
+            style={styles.btnDepositPercent}
+            onPress={() => setAppData({ createDeposit: { amount: ((parseFloat(currWallet.balance) - 0.0001) * 0.50).toLocaleString(undefined, format8Decimals) } })}
+            text="50%"
+          />
+          <ConcealButton
+            style={styles.btnDepositPercent}
+            onPress={() => setAppData({ createDeposit: { amount: ((parseFloat(currWallet.balance) - 0.0001) * 0.75).toLocaleString(undefined, format8Decimals) } })}
+            text="75%"
+          />
+          <ConcealButton
+            style={styles.btnDepositPercent}
+            onPress={() => setAppData({ createDeposit: { amount: (parseFloat(currWallet.balance) - 0.0001).toLocaleString(undefined, format8Decimals) } })}
+            text="100%"
+          />
+        </View>
+        <View style={styles.durationWrapper}>
+          <Text style={styles.durationLabel}>{state.appData.createDeposit.durationText}</Text>
+          <Slider
+            style={styles.durationSlider}
+            step={1}
+            minimumValue={1}
+            maximumValue={12}
+            minimumTrackTintColor={AppColors.concealOrange}
+            thumbTintColor={AppColors.concealOrange}
+            maximumTrackTintColor="#FFFFFF"
+            onValueChange={(value) => {
+              console.log(value);
+              setAppData({
+                createDeposit: {
+                  duration: value,
+                  durationText: `Deposit duration: ${value.toString()} month${value > 1 ? 's' : ''}`,
+                }
+              });
+            }}
+          />
+        </View>
         <FlatList
           data={sendSummaryList}
           style={styles.summaryList}
@@ -235,23 +217,17 @@ const SendScreen = () => {
           keyExtractor={keyExtractor}
         />
       </View>
-      <SearchAddress
-        selectAddress={(item) => setAppData({ searchAddress: { addrListVisible: false }, sendScreen: { toAddress: item.address, toPaymendId: item.paymentID, toLabel: item.label } })}
-        closeOverlay={() => setAppData({ searchAddress: { addrListVisible: false } })}
-        addressData={user.addressBook}
-        currWallet={currWallet}
-      />
       <View style={styles.footer}>
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnLeft]}
           disabled={!isFormValid()}
-          onPress={() => NavigationService.navigate('SendConfirm')}
-          text="SEND"
+          onPress={() => NavigationService.navigate('CreateDepositConfirm')}
+          text="CREATE"
         />
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnRight]}
-          onPress={() => onScanAddressQRCode()}
-          text="SCAN QR"
+          onPress={() => NavigationService.goBack()}
+          text="CANCEL"
         />
       </View>
     </View>
@@ -278,8 +254,8 @@ const styles = EStyleSheet.create({
     borderWidth: 1
   },
   sendInput: {
-    marginTop: '10rem',
-    marginBottom: '20rem'
+    marginTop: '5rem',
+    marginBottom: '5rem'
   },
   addressInput: {
     marginBottom: '5rem'
@@ -398,9 +374,31 @@ const styles = EStyleSheet.create({
   },
   lockedText: {
     color: '#FF0000'
+  },
+  amountPercentWrapper: {
+    padding: '10rem',
+    marginTop: '10rem',
+    flexDirection: 'row'
+  },
+  btnDepositPercent: {
+    flex: 1,
+    margin: '1rem',
+  },
+  durationSlider: {
+    marginTop: '10rem',
+    height: '20rem'
+  },
+  amountWrapper: {
+    flexDirection: 'row'
+  },
+  durationLabel: {
+    color: 'rgb(255, 255, 255)',
+    marginLeft: '10rem',
+    marginTop: '10rem',
+    fontSize: '18rem'
   }
 
 });
 
 
-export default SendScreen;
+export default CreateDepositScreen;

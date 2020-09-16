@@ -2,6 +2,7 @@ import { Share, Dimensions } from "react-native";
 import { appSettings } from '../constants/appSettings';
 import { AppColors } from '../constants/Colors';
 import { showMessage, hideMessage } from "react-native-flash-message";
+import * as LocalAuthentication from 'expo-local-authentication';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
 export const shareContent = async (content) => {
@@ -85,6 +86,35 @@ const styles = EStyleSheet.create({
   }
 });
 
+export const hasBiometricCapabilites = () => {
+  return new Promise((resolve, reject) => {
+    (async () => {
+      resolve(await LocalAuthentication.hasHardwareAsync() && await LocalAuthentication.isEnrolledAsync());
+    })().catch(err => {
+      resolve(false);
+    });
+  });
+}
+
+export const getDepositInterest = (amount, duration) => {
+  let InterestRates = [
+    [0.24, 0.33, 0.41],
+    [0.50, 0.67, 0.83],
+    [0.78, 1.03, 1.28],
+    [1.07, 1.40, 1.73],
+    [1.38, 1.79, 2.21],
+    [1.70, 2.20, 4.70],
+    [2.04, 2.63, 3.21],
+    [2.40, 3.07, 3.73],
+    [2.78, 3.53, 4.28],
+    [3.17, 4.00, 4.83],
+    [3.58, 4.49, 5.41],
+    [4.00, 5.00, 6.00],
+  ];
+
+  // return the correct interest rate percent from the 2D table
+  return InterestRates[duration - 1][Math.min(Math.floor(amount / 10000), 2)] * amount / 100;
+}
 
 export const getAspectRatio = () => {
   return Dimensions.get('window').width / 360;

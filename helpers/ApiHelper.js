@@ -191,6 +191,31 @@ export default class ApiHelper {
       .then(res => Promise.resolve(res));
   };
 
+  getDeposits = () => {
+    return this.fetch(`${this.apiURL}/deposits/list`, { method: 'GET' })
+      .then(res => Promise.resolve(res));
+  };
+
+  createDeposit = (amount, term, wallet, twoFACode, password) => {
+    const body = {
+      term: term,
+      amount: amount,
+      wallet: wallet
+    };
+    if (twoFACode && twoFACode !== '') body.code = twoFACode;
+    if (password && password !== '') body.password = password;
+    return this.fetch(`${this.apiURL}/deposits`, { method: 'POST', body: JSON.stringify(body) })
+      .then(res => Promise.resolve(res));
+  };
+
+  unlockDeposit = (id) => {
+    const body = {
+      depositId: id
+    };
+    return this.fetch(`${this.apiURL}/deposits`, { method: 'PUT', body: JSON.stringify(body) })
+      .then(res => Promise.resolve(res));
+  };
+
   _checkStatus = response => {
     if (response.status >= 200 && response.status < 300) {
       return response;

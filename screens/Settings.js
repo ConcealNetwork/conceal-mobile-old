@@ -1,4 +1,5 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
+import { getAspectRatio, hasBiometricCapabilites } from '../helpers/utils';
 import { Icon, Header, ListItem, Overlay } from 'react-native-elements';
 import NavigationService from '../helpers/NavigationService';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -6,7 +7,6 @@ import { AppContext } from '../components/ContextProvider';
 import ModalSelector from 'react-native-modal-selector';
 import { showMessageDialog } from '../helpers/utils';
 import localStorage from '../helpers/LocalStorage';
-import { getAspectRatio } from '../helpers/utils';
 import GuideNavigation from '../helpers/GuideNav';
 import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
@@ -25,11 +25,13 @@ const Settings = () => {
   const { actions, state } = useContext(AppContext);
   const { logoutUser, check2FA } = actions;
   const { network, user, userSettings } = state;
+  let loginData = [];
 
   // our hook into the state of the function component for the authentication mode
   const [authMode, setAuthMode] = useState(localStorage.get('auth_method', 'password'));
   const [showFgpModal, setShowFgpModal] = useState(false);
   const [showPinModal, setShowPinModal] = useState(false);
+  const [hasBiometric, setHasBiometric] = useState(false);
   let pickerRef;
 
   // guide navigation state values
@@ -38,6 +40,27 @@ const Settings = () => {
     'logoutUser',
     'changeAuth'
   ]));
+
+  useEffect(() => {
+    hasBiometricCapabilites().then(result => {
+      setHasBiometric(result);
+    });
+  }, []);
+
+  if (hasBiometric) {
+    loginData = [
+      { key: 1, section: true, label: 'Available options' },
+      { key: 2, value: "password", label: 'Password' },
+      { key: 3, value: "biometric", label: 'Biometric' },
+      { key: 4, value: "pin", label: 'PIN' }
+    ];
+  } else {
+    loginData = [
+      { key: 1, section: true, label: 'Available options' },
+      { key: 2, value: "password", label: 'Password' },
+      { key: 3, value: "pin", label: 'PIN' }
+    ];
+  }
 
   const settingsList = [
     {
@@ -72,12 +95,7 @@ const Settings = () => {
             onRequestClose={() => setGuideState(guideNavigation.next())}
           >
             <ModalSelector
-              data={[
-                { key: 1, section: true, label: 'Available options' },
-                { key: 2, value: "password", label: 'Password' },
-                { key: 3, value: "biometric", label: 'Biometric' },
-                { key: 4, value: "pin", label: 'PIN' }
-              ]}
+              data={loginData}
               ref={selector => { pickerRef = selector; }}
               cancelStyle={styles.pickerCancelButton}
               cancelTextStyle={styles.pickerCancelButtonText}
