@@ -4,7 +4,7 @@ import NavigationService from '../helpers/NavigationService';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { AppContext } from '../components/ContextProvider';
 import { getDepositInterest } from '../helpers/utils';
-import { Col, Row, Grid } from "react-native-easy-grid";
+import InterestTable from '../components/InterestTable';
 import ConcealButton from '../components/ccxButton';
 import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
@@ -96,190 +96,9 @@ const CreateDepositConfirm = () => {
           renderItem={renderListItem}
           keyExtractor={keyExtractor}
         />
-        <Grid style={styles.interestGrid}>
-          <Row style={styles.rowHeader}>
-            <Col style={styles.colHeader}>
-              <Text style={styles.headerText}>Month</Text>
-            </Col>
-            <Col style={styles.colHeader}>
-              <Text style={styles.headerText}>Tier 1</Text>
-            </Col>
-            <Col style={styles.colHeader}>
-              <Text style={styles.headerText}>Tier 2</Text>
-            </Col>
-            <Col style={styles.colHeader}>
-              <Text style={styles.headerText}>Tier 3</Text>
-            </Col>
-          </Row>
-          <Row style={styles.rowData}>
-            <Col style={styles.colData}>
-              <Text style={styles.dataText}>1</Text>
-            </Col>
-            <Col style={(interestClass != 1) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>0.24</Text>
-            </Col>
-            <Col style={(interestClass != 2) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>0.33</Text>
-            </Col>
-            <Col style={(interestClass != 3) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>0.41</Text>
-            </Col>
-          </Row>
-          <Row style={styles.rowData}>
-            <Col style={styles.colData}>
-              <Text style={styles.dataText}>2</Text>
-            </Col>
-            <Col style={(interestClass != 4) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>0.50</Text>
-            </Col>
-            <Col style={(interestClass != 5) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>0.67</Text>
-            </Col>
-            <Col style={(interestClass != 6) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>0.83</Text>
-            </Col>
-          </Row>
-          <Row style={styles.rowData}>
-            <Col style={styles.colData}>
-              <Text style={styles.dataText}>3</Text>
-            </Col>
-            <Col style={(interestClass != 7) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>0.78</Text>
-            </Col>
-            <Col style={(interestClass != 8) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>1.03</Text>
-            </Col>
-            <Col style={(interestClass != 9) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>1.28</Text>
-            </Col>
-          </Row>
-          <Row style={styles.rowData}>
-            <Col style={styles.colData}>
-              <Text style={styles.dataText}>4</Text>
-            </Col>
-            <Col style={(interestClass != 10) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>1.07</Text>
-            </Col>
-            <Col style={(interestClass != 11) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>1.40</Text>
-            </Col>
-            <Col style={(interestClass != 12) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>1.73</Text>
-            </Col>
-          </Row>
-          <Row style={styles.rowData}>
-            <Col style={styles.colData}>
-              <Text style={styles.dataText}>5</Text>
-            </Col>
-            <Col style={(interestClass != 13) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>1.38</Text>
-            </Col>
-            <Col style={(interestClass != 14) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>1.79</Text>
-            </Col>
-            <Col style={(interestClass != 15) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>2.21</Text>
-            </Col>
-          </Row>
-          <Row style={styles.rowData}>
-            <Col style={styles.colData}>
-              <Text style={styles.dataText}>6</Text>
-            </Col>
-            <Col style={(interestClass != 16) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>1.70</Text>
-            </Col>
-            <Col style={(interestClass != 17) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>2.20</Text>
-            </Col>
-            <Col style={(interestClass != 18) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>2.70</Text>
-            </Col>
-          </Row>
-          <Row style={styles.rowData}>
-            <Col style={styles.colData}>
-              <Text style={styles.dataText}>7</Text>
-            </Col>
-            <Col style={(interestClass != 19) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>2.04</Text>
-            </Col>
-            <Col style={(interestClass != 20) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>2.63</Text>
-            </Col>
-            <Col style={(interestClass != 21) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>3.21</Text>
-            </Col>
-          </Row>
-          <Row style={styles.rowData}>
-            <Col style={styles.colData}>
-              <Text style={styles.dataText}>8</Text>
-            </Col>
-            <Col style={(interestClass != 22) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>2.40</Text>
-            </Col>
-            <Col style={(interestClass != 23) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>3.07</Text>
-            </Col>
-            <Col style={(interestClass != 24) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>3.73</Text>
-            </Col>
-          </Row>
-          <Row style={styles.rowData}>
-            <Col style={styles.colData}>
-              <Text style={styles.dataText}>9</Text>
-            </Col>
-            <Col style={(interestClass != 25) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>2.78</Text>
-            </Col>
-            <Col style={(interestClass != 26) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>3.53</Text>
-            </Col>
-            <Col style={(interestClass != 27) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>4.28</Text>
-            </Col>
-          </Row>
-          <Row style={styles.rowData}>
-            <Col style={styles.colData}>
-              <Text style={styles.dataText}>10</Text>
-            </Col>
-            <Col style={(interestClass != 28) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>3.17</Text>
-            </Col>
-            <Col style={(interestClass != 29) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>4.00</Text>
-            </Col>
-            <Col style={(interestClass != 30) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>4.83</Text>
-            </Col>
-          </Row>
-          <Row style={styles.rowData}>
-            <Col style={styles.colData}>
-              <Text style={styles.dataText}>11</Text>
-            </Col>
-            <Col style={(interestClass != 31) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>3.58</Text>
-            </Col>
-            <Col style={(interestClass != 32) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>4.49</Text>
-            </Col>
-            <Col style={(interestClass != 33) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>5.41</Text>
-            </Col>
-          </Row>
-          <Row style={styles.rowData}>
-            <Col style={styles.colData}>
-              <Text style={styles.dataText}>12</Text>
-            </Col>
-            <Col style={(interestClass != 34) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>4.00</Text>
-            </Col>
-            <Col style={(interestClass != 35) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>5.00</Text>
-            </Col>
-            <Col style={(interestClass != 36) ? styles.colData : styles.colSelected}>
-              <Text style={styles.dataText}>6.00</Text>
-            </Col>
-          </Row>
-        </Grid>
+        <InterestTable
+          interestClass={interestClass}
+        />
         <View style={styles.footer}>
           <ConcealButton
             style={[styles.footerBtn, styles.footerBtnLeft]}
@@ -336,33 +155,8 @@ const styles = EStyleSheet.create({
   data: {
     color: "#AAAAAA"
   },
-  sendSummary: {
-    color: "#AAAAAA",
-    backgroundColor: '#212529',
-    borderColor: '#333',
-    borderWidth: 1,
-    marginBottom: '2rem',
-    marginTop: '2rem',
-    padding: '10rem',
-    fontSize: '16rem'
-  },
   buttonContainer: {
     margin: '5rem'
-  },
-  sendSummaryWrapper: {
-    margin: '10rem',
-    marginTop: '20rem'
-  },
-  sendSummaryHighlight: {
-    color: AppColors.concealOrange
-  },
-  addressWrapper: {
-    top: '10rem',
-    left: '10rem',
-    right: '10rem',
-    bottom: '80rem',
-    borderRadius: 10,
-    position: 'absolute'
   },
   footer: {
     flexDirection: 'row'
@@ -398,42 +192,6 @@ const styles = EStyleSheet.create({
     paddingBottom: '5rem',
     borderBottomWidth: 1,
     borderBottomColor: AppColors.concealBackground,
-  },
-  interestGrid: {
-    marginBottom: '10rem',
-    marginTop: '10rem',
-    flexGrow: 1.6
-  },
-  rowHeader: {
-    backgroundColor: AppColors.concealOrange,
-    alignItems: 'center'
-  },
-  colHeader: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  colData: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  colSelected: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: AppColors.concealOrange
-  },
-  headerText: {
-    fontSize: '16rem',
-    color: '#FFFFFF'
-  },
-  dataText: {
-    fontSize: '14rem',
-    color: '#FFFFFF'
   }
 });
 
