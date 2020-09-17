@@ -31,7 +31,7 @@
       "package": "com.ConcealNetwork.ConcealMobile",
       "versionCode": 22,
       "permissions": [
-        "CAMERA"
+        "CAMERA", "USE_FINGERPRINT"
       ]
     },
     "description": ""

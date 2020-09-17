@@ -12,7 +12,7 @@ import AuthCheck from './AuthCheck';
 
 const SendMessageConfirm = () => {
   const { state, actions } = useContext(AppContext);
-  const { wallets, appData } = state;
+  const { wallets, appData, appSettings } = state;
   const currWallet = wallets[appData.common.selectedWallet];
 
   const [showAuthCheck, setShowAuthCheck] = useState(false);
@@ -29,7 +29,7 @@ const SendMessageConfirm = () => {
 
   addSummaryItem(maskAddress(currWallet.addr), 'From address', 'md-mail');
   addSummaryItem(maskAddress(state.appData.sendMessage.toAddress), 'To address', 'md-mail');
-  addSummaryItem('0.0001 CCX', 'Transaction Fee', 'md-cash');
+  addSummaryItem(`${appSettings.defaultFee} CCX`, 'Transaction Fee', 'md-cash');
   addSummaryItem(state.appData.sendMessage.message, 'Message', 'md-mail');
 
   // key extractor for the list

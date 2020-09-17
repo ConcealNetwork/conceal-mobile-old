@@ -19,7 +19,7 @@ import {
 
 const SendConfirm = () => {
   const { state, actions } = useContext(AppContext);
-  const { wallets, appData } = state;
+  const { wallets, appData, appSettings } = state;
   const currWallet = wallets[appData.common.selectedWallet];
 
   const [showAuthCheck, setShowAuthCheck] = useState(false);
@@ -33,19 +33,19 @@ const SendConfirm = () => {
     });
   }
 
-  let totalAmount = parseFloat(state.appData.sendScreen.toAmount);
-  totalAmount = totalAmount + 0.0001;
+  let totalAmount = parseFloat(appData.sendScreen.toAmount);
+  totalAmount = totalAmount + appSettings.defaultFee;
 
-  addSummaryItem(sprintf('%s CCX', totalAmount.toLocaleString(undefined, format6Decimals)), 'You are sending', 'md-cash');
+  addSummaryItem(`${totalAmount.toLocaleString(undefined, format6Decimals)} CCX`, 'You are sending', 'md-cash');
   addSummaryItem(maskAddress(currWallet.addr), 'From address', 'md-mail');
-  addSummaryItem(maskAddress(state.appData.sendScreen.toAddress), 'To address', 'md-mail');
-  if (state.appData.sendScreen.toPaymendId) {
-    addSummaryItem(maskAddress(state.appData.sendScreen.toPaymendId), 'Payment ID', 'md-key');
+  addSummaryItem(maskAddress(appData.sendScreen.toAddress), 'To address', 'md-mail');
+  if (appData.sendScreen.toPaymendId) {
+    addSummaryItem(maskAddress(appData.sendScreen.toPaymendId), 'Payment ID', 'md-key');
   }
-  if (state.appData.sendScreen.toLabel) {
-    addSummaryItem(state.appData.sendScreen.toLabel, 'Label', 'md-eye');
+  if (appData.sendScreen.toLabel) {
+    addSummaryItem(appData.sendScreen.toLabel, 'Label', 'md-eye');
   }
-  addSummaryItem('0.0001 CCX', 'Transaction Fee', 'md-cash');
+  addSummaryItem(`${appSettings.defaultFee} CCX`, 'Transaction Fee', 'md-cash');
 
   // key extractor for the list
   const keyExtractor = (item, index) => index.toString();
@@ -69,9 +69,9 @@ const SendConfirm = () => {
   const sendPayment = (password) => {
     actions.sendPayment(
       currWallet.addr,
-      state.appData.sendScreen.toAddress,
-      state.appData.sendScreen.toPaymendId,
-      state.appData.sendScreen.toAmount,
+      appData.sendScreen.toAddress,
+      appData.sendScreen.toPaymendId,
+      appData.sendScreen.toAmount,
       '', password
     );
   }

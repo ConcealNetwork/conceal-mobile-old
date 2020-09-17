@@ -27,7 +27,7 @@ import {
 const CreateDepositScreen = () => {
   const { state, actions } = useContext(AppContext);
   const { setAppData } = actions;
-  const { user, wallets, appData } = state;
+  const { appSettings, wallets, appData } = state;
   const currWallet = wallets[appData.common.selectedWallet];
 
   const sendSummaryList = [];
@@ -42,7 +42,7 @@ const CreateDepositScreen = () => {
 
   if (state.appData.createDeposit.amount) {
     let totalAmount = parseFloat(state.appData.createDeposit.amount);
-    totalAmount = totalAmount + 0.0001;
+    totalAmount = totalAmount + appSettings.defaultFee;
 
     sendSummaryList.push({
       value: `${totalAmount.toLocaleString(undefined, format6Decimals)} CCX`,
@@ -51,7 +51,7 @@ const CreateDepositScreen = () => {
     });
 
     sendSummaryList.push({
-      value: '0.0001 CCX',
+      value: `${appSettings.defaultFee} CCX`,
       title: 'Transaction Fee',
       icon: 'md-cash'
     });
@@ -87,7 +87,7 @@ const CreateDepositScreen = () => {
   const isFormValid = () => {
     if (state.appData.createDeposit.duration && state.appData.createDeposit.amount) {
       var amountAsFloat = parseFloat(state.appData.createDeposit.amount);
-      return ((amountAsFloat > 0) && (amountAsFloat <= (parseFloat(currWallet.balance) - 0.0001)));
+      return ((amountAsFloat > 0) && (amountAsFloat <= (parseFloat(currWallet.balance) - appSettings.defaultFee)));
     } else {
       return false;
     }
@@ -107,7 +107,7 @@ const CreateDepositScreen = () => {
     var amountAsFloat = parseFloat(state.appData.sendScreen.toAmount || 0);
     if ((amountAsFloat <= 0) && (state.appData.sendScreen.toAmount)) {
       return "Amount must be greater then 0"
-    } else if (amountAsFloat > (parseFloat(currWallet.balance) - 0.0001)) {
+    } else if (amountAsFloat > (parseFloat(currWallet.balance) - state.appSettings.defaultFee)) {
       return "The amount exceeds wallet balance"
     } else {
       return "";
@@ -170,22 +170,22 @@ const CreateDepositScreen = () => {
         <View style={styles.amountPercentWrapper}>
           <ConcealButton
             style={styles.btnDepositPercent}
-            onPress={() => setAppData({ createDeposit: { amount: ((parseFloat(currWallet.balance) - 0.0001) * 0.25).toLocaleString(undefined, format8Decimals) } })}
+            onPress={() => setAppData({ createDeposit: { amount: ((parseFloat(currWallet.balance) - appSettings.defaultFee) * 0.25).toLocaleString(undefined, format8Decimals) } })}
             text="25%"
           />
           <ConcealButton
             style={styles.btnDepositPercent}
-            onPress={() => setAppData({ createDeposit: { amount: ((parseFloat(currWallet.balance) - 0.0001) * 0.50).toLocaleString(undefined, format8Decimals) } })}
+            onPress={() => setAppData({ createDeposit: { amount: ((parseFloat(currWallet.balance) - appSettings.defaultFee) * 0.50).toLocaleString(undefined, format8Decimals) } })}
             text="50%"
           />
           <ConcealButton
             style={styles.btnDepositPercent}
-            onPress={() => setAppData({ createDeposit: { amount: ((parseFloat(currWallet.balance) - 0.0001) * 0.75).toLocaleString(undefined, format8Decimals) } })}
+            onPress={() => setAppData({ createDeposit: { amount: ((parseFloat(currWallet.balance) - appSettings.defaultFee) * 0.75).toLocaleString(undefined, format8Decimals) } })}
             text="75%"
           />
           <ConcealButton
             style={styles.btnDepositPercent}
-            onPress={() => setAppData({ createDeposit: { amount: (parseFloat(currWallet.balance) - 0.0001).toLocaleString(undefined, format8Decimals) } })}
+            onPress={() => setAppData({ createDeposit: { amount: (parseFloat(currWallet.balance) - appSettings.defaultFee).toLocaleString(undefined, format8Decimals) } })}
             text="100%"
           />
         </View>

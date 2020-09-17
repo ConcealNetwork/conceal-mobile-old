@@ -25,7 +25,7 @@ import {
 const SendScreen = () => {
   const { state, actions } = useContext(AppContext);
   const { setAppData } = actions;
-  const { user, wallets, appData } = state;
+  const { appSettings, user, wallets, appData } = state;
   const currWallet = wallets[appData.common.selectedWallet];
 
   const sendSummaryList = [];
@@ -56,7 +56,7 @@ const SendScreen = () => {
 
   if (state.appData.sendScreen.toAmount) {
     let totalAmount = parseFloat(state.appData.sendScreen.toAmount);
-    totalAmount = totalAmount + 0.0001;
+    totalAmount = totalAmount + appSettings.defaultFee;
 
     sendSummaryList.push({
       value: `${totalAmount.toLocaleString(undefined, format6Decimals)} CCX`,
@@ -65,7 +65,7 @@ const SendScreen = () => {
     });
 
     sendSummaryList.push({
-      value: '0.0001 CCX',
+      value: `${appSettings.defaultFee} CCX`,
       title: 'Transaction Fee',
       icon: 'md-cash'
     });
@@ -103,7 +103,7 @@ const SendScreen = () => {
   const isFormValid = () => {
     if (state.appData.sendScreen.toAddress && state.appData.sendScreen.toAmount) {
       var amountAsFloat = parseFloat(state.appData.sendScreen.toAmount);
-      return ((amountAsFloat > 0) && (amountAsFloat <= (parseFloat(currWallet.balance) - 0.0001)));
+      return ((amountAsFloat > 0) && (amountAsFloat <= (parseFloat(currWallet.balance) - appSettings.defaultFee)));
     } else {
       return false;
     }
@@ -124,7 +124,7 @@ const SendScreen = () => {
     var amountAsFloat = parseFloat(state.appData.sendScreen.toAmount || 0);
     if ((amountAsFloat <= 0) && (state.appData.sendScreen.toAmount)) {
       return "Amount must be greater then 0"
-    } else if (amountAsFloat > (parseFloat(currWallet.balance) - 0.0001)) {
+    } else if (amountAsFloat > (parseFloat(currWallet.balance) - appSettings.defaultFee)) {
       return "The amount exceeds wallet balance"
     } else {
       return "";
@@ -192,7 +192,7 @@ const SendScreen = () => {
           }}
           rightIcon={
             <Icon
-              onPress={() => setAppData({ sendScreen: { toAmount: (parseFloat(currWallet.balance) - 0.0001).toLocaleString(undefined, format8Decimals) } })}
+              onPress={() => setAppData({ sendScreen: { toAmount: (parseFloat(currWallet.balance) - appSettings.defaultFee).toLocaleString(undefined, format8Decimals) } })}
               name='md-add'
               type='ionicon'
               color='white'

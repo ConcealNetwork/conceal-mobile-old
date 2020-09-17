@@ -22,7 +22,7 @@ import {
 const Wallet = () => {
   const { state, actions } = useContext(AppContext);
   const { setAppData, createWallet } = actions;
-  const { layout, prices, wallets, appData } = state;
+  const { layout, prices, wallets, appData, appSettings } = state;
   const currWallet = wallets[appData.common.selectedWallet];
   var transactions = [];
 
@@ -273,7 +273,7 @@ const Wallet = () => {
                     });
                     NavigationService.navigate('SendPayment')
                   }}
-                  disabled={currWallet.balance < 0.0001}
+                  disabled={currWallet.balance < appSettings.defaultFee}
                   text="SEND"
                 />
               </Tips>

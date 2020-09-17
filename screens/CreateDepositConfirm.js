@@ -22,7 +22,7 @@ import {
 
 const CreateDepositConfirm = () => {
   const { state, actions } = useContext(AppContext);
-  const { wallets, appData } = state;
+  const { wallets, appData, appSettings } = state;
   const currWallet = wallets[appData.common.selectedWallet];
 
   const [showAuthCheck, setShowAuthCheck] = useState(false);
@@ -36,16 +36,13 @@ const CreateDepositConfirm = () => {
     });
   }
 
-  let totalAmount = parseFloat(appData.createDeposit.amount);
-  totalAmount = totalAmount + 0.0001;
-
   // calculate the interest class from the data
   let interestClass = ((appData.createDeposit.duration - 1) * 3) + Math.min(Math.floor(parseFloat(appData.createDeposit.amount) / 10000) + 1, 3)
 
-  addSummaryItem(`${totalAmount.toLocaleString(undefined, format6Decimals)} CCX`, 'You are depositing', 'md-cash');
+  addSummaryItem(`${appData.createDeposit.amount.toLocaleString(undefined, format6Decimals)} CCX`, 'You are depositing', 'md-cash');
   addSummaryItem(`${getDepositInterest(appData.createDeposit.amount, appData.createDeposit.duration).toLocaleString(undefined, format6Decimals)} CCX`, 'Interest you will earn', 'md-cash');
   addSummaryItem(`${appData.createDeposit.duration} month${state.appData.createDeposit.duration > 1 ? 's' : ''}`, 'For a duration of', 'md-clock');
-  addSummaryItem('0.0001 CCX', 'Transaction Fee', 'md-cash');
+  addSummaryItem(`${appSettings.defaultFee} CCX`, 'Transaction Fee', 'md-cash');
 
   // key extractor for the list
   const keyExtractor = (item, index) => index.toString();
