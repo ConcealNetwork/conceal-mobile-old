@@ -140,7 +140,7 @@ const Wallet = () => {
                 style={AppStyles.guideTipContainer}
                 textStyle={AppStyles.guideTipText}
                 tooltipArrowStyle={AppStyles.guideTipArrowBottom}
-                text="Here you can see your overall funds current state"
+                text="Here you can see your wallet funds current state"
                 onRequestClose={() => setGuideState(guideNavigation.next())}
               >
                 <View style={styles.walletStateWrapper}>

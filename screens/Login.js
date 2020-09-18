@@ -35,7 +35,7 @@ const Login = () => {
   const { setAppData } = actions;
   const Auth = new AuthHelper(state.appSettings.apiURL);
 
-  const { value: email, bind: bindEmail, setValue: setEmailValue } = useFormInput(localStorage.get('id_username'));
+  const { value: email, bind: bindEmail, setValue: setEmailValue } = useFormInput((localStorage.get('id_rememberme') == "TRUE") ? localStorage.get('id_username') : '');
   const { value: password, bind: bindPassword, setValue: setPassword } = useFormInput('');
   const { value: twoFACode, bind: bindTwoFACode, setValue: setTwoFACode } = useFormInput('');
   const { checked: rememberMe, bind: bindRememberMe } = useCheckbox(localStorage.get('id_rememberme') == "TRUE");

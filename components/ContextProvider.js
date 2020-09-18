@@ -19,17 +19,12 @@ const AppContextProvider = props => {
     // always set the uuid for the login user
     options.uuid = Expo.Constants.installationId;
     let message;
-    let msgType;
 
     dispatch({ type: 'USER_LOGIN_STARTED', value: true });
     dispatch({ type: 'FORM_SUBMITTED', value: true });
 
     Auth.setRememberme(options.rememberMe ? "TRUE" : "FALSE");
-    if (options.rememberMe) {
-      Auth.setUsername(options.email);
-    } else {
-      Auth.setUsername('');
-    }
+    Auth.setUsername(options.email);
     Auth.login(options)
       .then(res => {
         if (res.result === 'success') {
@@ -413,7 +408,7 @@ const AppContextProvider = props => {
     logger.log('GETTING BLOCKCHAIN HEIGHT...');
     Api.getBlockchainHeight()
       .then(res => dispatch({ type: 'UPDATE_BLOCKCHAIN_HEIGHT', blockchainHeight: res.message.height }))
-      .catch(err => { let message = `ERROR ${err}` })
+      .catch(err => { console.log(`ERROR ${err}`) })
   };
 
   const getMarketPrices = () => {
@@ -424,7 +419,7 @@ const AppContextProvider = props => {
         .then(res => {
           dispatch({ type: 'UPDATE_MARKET', market, marketData: res })
         })
-        .catch(err => { message = `ERROR ${err}` })
+        .catch(err => { console.log(`ERROR ${err}`) })
     });
   };
 
@@ -433,7 +428,7 @@ const AppContextProvider = props => {
     const { appSettings } = state;
     Api.getPrices(appSettings.coingeckoAPI)
       .then(res => dispatch({ type: 'UPDATE_PRICES', pricesData: res }))
-      .catch(err => { message = `ERROR ${err}` })
+      .catch(err => { console.log(`ERROR ${err}`) })
   };
 
   const sendPayment = (wallet, address, paymentID, amount, aMessage, password) => {

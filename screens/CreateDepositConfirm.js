@@ -1,13 +1,15 @@
+import React, { useContext, useState, useEffect } from "react";
 import { Icon, Header, ListItem } from 'react-native-elements';
-import React, { useContext, useState } from "react";
 import NavigationService from '../helpers/NavigationService';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { AppContext } from '../components/ContextProvider';
 import { getDepositInterest } from '../helpers/utils';
 import InterestTable from '../components/InterestTable';
 import ConcealButton from '../components/ccxButton';
+import GuideNavigation from '../helpers/GuideNav';
 import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
+import Tips from 'react-native-guide-tips';
 import AuthCheck from './AuthCheck';
 import Moment from 'moment';
 import {
@@ -15,7 +17,6 @@ import {
   format6Decimals
 } from '../helpers/utils';
 import {
-  Text,
   View,
   FlatList,
 } from "react-native";
@@ -63,6 +64,12 @@ const CreateDepositConfirm = () => {
     />
   );
 
+  // guide navigation state values
+  const [guideState, setGuideState] = useState(null);
+  const [guideNavigation] = useState(new GuideNavigation('createDeposit', [
+    'summary', 'interest', 'create', 'cancel'
+  ]));
+
   const createDeposit = (password) => {
     let currentTS = Moment();
     var depositTS = Moment(currentTS).add(state.appData.createDeposit.duration, 'M');
@@ -71,6 +78,13 @@ const CreateDepositConfirm = () => {
     // call the API with the correct parameters (duration is in number of blocks, each block being 2 min)
     actions.createDeposit(state.appData.createDeposit.amount, durationBlocks, currWallet.addr, password);
   }
+
+  // fire on mount
+  useEffect(() => {
+    setTimeout(() => {
+      setGuideState(guideNavigation.start());
+    }, 100);
+  }, []);
 
   return (
     <View style={styles.pageWrapper}>
@@ -85,7 +99,7 @@ const CreateDepositConfirm = () => {
           color='white'
           size={32 * getAspectRatio()}
         />}
-        centerComponent={{ text: 'Confirm sending', style: AppStyles.appHeaderText }}
+        centerComponent={{ text: 'Confirm desposit creation', style: AppStyles.appHeaderText }}
       />
       <View style={styles.contentWrapper}>
         <FlatList

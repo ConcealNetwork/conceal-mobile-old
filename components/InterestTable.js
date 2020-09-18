@@ -57,7 +57,7 @@ const styles = EStyleSheet.create({
   interestGrid: {
     marginBottom: '10rem',
     marginTop: '10rem',
-    flexGrow: 1.6
+    flexGrow: 2
   },
   rowHeader: {
     backgroundColor: AppColors.concealOrange,

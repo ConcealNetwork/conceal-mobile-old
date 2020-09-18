@@ -2,7 +2,6 @@ import React from 'react';
 import { Overlay } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import localStorage from '../helpers/LocalStorage';
-import { showMessageDialog } from '../helpers/utils';
 import { AppColors } from '../constants/Colors';
 import { View } from 'react-native';
 import PassCheck from './PassCheck';
@@ -53,7 +52,7 @@ const AuthCheck = props => {
         </View>
       </Overlay>
       <Overlay
-        isVisible={showCheck && (getAuthMethod() == "password"}
+        isVisible={showCheck && getAuthMethod() == "password"}
         overlayBackgroundColor={AppColors.concealBackground}
         width="100%"
         height="100%"

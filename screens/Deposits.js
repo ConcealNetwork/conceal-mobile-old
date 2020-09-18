@@ -44,8 +44,7 @@ const Deposits = () => {
   // guide navigation state values
   const [guideState, setGuideState] = useState(null);
   const [guideNavigation] = useState(new GuideNavigation('deposits', [
-    'createDeposit',
-    'depositProgress'
+    'createDeposit'
   ]));
 
   const getUnlockTimestamp = (unlockHeight) => {
@@ -105,11 +104,11 @@ const Deposits = () => {
         }
         rightComponent={<Tips
           position={'bottom'}
-          visible={guideState == 'addAddress'}
+          visible={guideState == 'createDeposit'}
           textStyle={AppStyles.guideTipText}
-          style={[AppStyles.guideTipContainer, styles.guideTipAddAddress]}
-          tooltipArrowStyle={[AppStyles.guideTipArrowTop, styles.guideTipArrowAddAddress]}
-          text="Click on this button to add an address..."
+          style={[AppStyles.guideTipContainer, styles.guideTipCreateDeposit]}
+          tooltipArrowStyle={[AppStyles.guideTipArrowTop, styles.guideTipArrowCreateDeposit]}
+          text="Click on this button to create new deposit..."
           onRequestClose={() => setGuideState(guideNavigation.next())}
         >
           <Icon
@@ -302,23 +301,11 @@ const styles = EStyleSheet.create({
     color: '#FFFFFF',
     fontSize: '14rem'
   },
-  guideTipAddAddress: {
+  guideTipCreateDeposit: {
     left: '-130rem'
   },
-  guideTipArrowAddAddress: {
+  guideTipArrowCreateDeposit: {
     left: '97%'
-  },
-  guideTipDeleteAddress: {
-    left: '20rem'
-  },
-  guideTipArrowDeleteAddress: {
-    left: '27%'
-  },
-  guideTipEditAddress: {
-    left: '-50rem'
-  },
-  guideTipArrowEditAddress: {
-    left: '68%'
   }
 });
 
