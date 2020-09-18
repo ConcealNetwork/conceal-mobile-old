@@ -18,7 +18,6 @@ import {
   View,
   Alert,
   FlatList,
-  StatusBar,
   TouchableOpacity
 } from 'react-native';
 
@@ -69,7 +68,7 @@ const Wallets = () => {
     <View style={styles.pageWrapper}>
       <Header
         placement="left"
-        statusBarProps={{ translucent: true }}
+        statusBarProps={{ translucent: false, backgroundColor: "#212529" }}
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
           onPress={() => NavigationService.goBack()}
@@ -99,7 +98,6 @@ const Wallets = () => {
           (
             <Tips
               position={'bottom'}
-              offsetTop={-1 * StatusBar.currentHeight}
               visible={guideState == 'addWallet'}
               textStyle={AppStyles.guideTipText}
               style={[AppStyles.guideTipContainer, styles.guideTipAddWallet]}
@@ -154,7 +152,6 @@ const Wallets = () => {
                   <View style={styles.btnWrapper}>
                     <Tips
                       position={'bottom'}
-                      offsetTop={-1 * StatusBar.currentHeight}
                       visible={(guideState == 'deleteWallet') && (index == firstVisibleItem)}
                       textStyle={AppStyles.guideTipText}
                       style={[AppStyles.guideTipContainer, styles.guideTipDeleteWallet]}
@@ -184,7 +181,6 @@ const Wallets = () => {
                   <View style={styles.btnWrapper}>
                     <Tips
                       position={'bottom'}
-                      offsetTop={-1 * StatusBar.currentHeight}
                       visible={(guideState == 'exportWallet') && (index == firstVisibleItem)}
                       textStyle={AppStyles.guideTipText}
                       style={[AppStyles.guideTipContainer, styles.guideTipExportWallet]}

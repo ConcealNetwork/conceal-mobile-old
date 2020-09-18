@@ -36,7 +36,8 @@
       ]
     },
     "androidStatusBar": {
-      "translucent": true
+      "backgroundColor": "#212529",
+      "translucent": false
     },
     "description": "Conceal Mobile Wallet"
   }

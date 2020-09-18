@@ -76,6 +76,7 @@ const CreateDepositConfirm = () => {
     <View style={styles.pageWrapper}>
       <Header
         placement="left"
+        statusBarProps={{ translucent: false, backgroundColor: "#212529" }}
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
           onPress={() => NavigationService.goBack()}

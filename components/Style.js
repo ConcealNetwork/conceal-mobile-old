@@ -17,6 +17,8 @@ export default EStyleSheet.create({
   },
   '@media (max-width: 499)': {
     appHeader: {
+      height: '60rem',
+      paddingTop: '0rem',
       borderBottomWidth: 1,
       backgroundColor: '#212529',
       borderBottomColor: '#343a40',
@@ -24,7 +26,8 @@ export default EStyleSheet.create({
   },
   '@media (min-width: 500)': {
     appHeader: {
-      height: '50rem',
+      height: '60rem',
+      paddingTop: '0rem',
       borderBottomWidth: 1,
       backgroundColor: '#212529',
       borderBottomColor: '#343a40',

@@ -9,6 +9,9 @@ import PassCheck from './PassCheck';
 import FgpCheck from './FgpCheck';
 import PinCheck from './PinCheck';
 
+function getAuthMethod() {
+  return localStorage.get('auth_method') || "password";
+}
 
 const AuthCheck = props => {
   const { onSuccess, onCancel, showCheck } = props;
@@ -16,7 +19,7 @@ const AuthCheck = props => {
   return (
     <View style={styles.AuthWrapper}>
       <Overlay
-        isVisible={showCheck && localStorage.get('auth_method') == "biometric"}
+        isVisible={showCheck && getAuthMethod() == "biometric"}
         overlayBackgroundColor={AppColors.concealBackground}
         width="100%"
         height="100%"
@@ -33,7 +36,7 @@ const AuthCheck = props => {
         </View>
       </Overlay>
       <Overlay
-        isVisible={showCheck && localStorage.get('auth_method') == "pin"}
+        isVisible={showCheck && getAuthMethod() == "pin"}
         overlayBackgroundColor={AppColors.concealBackground}
         width="100%"
         height="100%"
@@ -50,7 +53,7 @@ const AuthCheck = props => {
         </View>
       </Overlay>
       <Overlay
-        isVisible={showCheck && localStorage.get('auth_method') == "password"}
+        isVisible={showCheck && (getAuthMethod() == "password"}
         overlayBackgroundColor={AppColors.concealBackground}
         width="100%"
         height="100%"
