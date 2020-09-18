@@ -1,7 +1,6 @@
 import { Share, Dimensions } from "react-native";
 import { appSettings } from '../constants/appSettings';
-import { AppColors } from '../constants/Colors';
-import { showMessage, hideMessage } from "react-native-flash-message";
+import { showMessage } from "react-native-flash-message";
 import * as LocalAuthentication from 'expo-local-authentication';
 import EStyleSheet from 'react-native-extended-stylesheet';
 

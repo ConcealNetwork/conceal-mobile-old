@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Icon, Header } from 'react-native-elements';
-import { Text, View, FlatList } from 'react-native';
+import { Text, View, FlatList, StatusBar } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { AppColors } from '../constants/Colors';
 import NavigationService from '../helpers/NavigationService';
@@ -55,6 +55,7 @@ const Wallet = () => {
     <View style={styles.pageWrapper}>
       <Header
         placement="left"
+        statusBarProps={{ translucent: true }}
         containerStyle={AppStyles.appHeader}
         centerComponent={
           <View style={AppStyles.appHeaderWrapper}>
@@ -94,6 +95,7 @@ const Wallet = () => {
               <View style={[styles.iconWrapper]}>
                 <Tips
                   position={'right'}
+                  offsetTop={-1 * StatusBar.currentHeight}
                   visible={guideState == 'messages'}
                   textStyle={AppStyles.guideTipText}
                   tooltipArrowStyle={AppStyles.guideTipArrowLeft}
@@ -114,6 +116,7 @@ const Wallet = () => {
               <View style={[styles.iconWrapper]}>
                 <Tips
                   position={'right'}
+                  offsetTop={-1 * StatusBar.currentHeight}
                   visible={guideState == 'wallets'}
                   textStyle={AppStyles.guideTipText}
                   tooltipArrowStyle={AppStyles.guideTipArrowLeft}
@@ -135,6 +138,7 @@ const Wallet = () => {
             <View style={styles.walletState}>
               <Tips
                 position={'top'}
+                offsetTop={-1 * StatusBar.currentHeight}
                 visible={guideState == 'overall'}
                 style={AppStyles.guideTipContainer}
                 textStyle={AppStyles.guideTipText}
@@ -170,6 +174,7 @@ const Wallet = () => {
               <View style={[styles.iconWrapper]}>
                 <Tips
                   position={'left'}
+                  offsetTop={-1 * StatusBar.currentHeight}
                   visible={guideState == 'addresses'}
                   textStyle={AppStyles.guideTipText}
                   tooltipArrowStyle={AppStyles.guideTipArrowRight}
@@ -190,6 +195,7 @@ const Wallet = () => {
               <View style={[styles.iconWrapper]}>
                 <Tips
                   position={'left'}
+                  offsetTop={-1 * StatusBar.currentHeight}
                   visible={guideState == 'market'}
                   textStyle={AppStyles.guideTipText}
                   tooltipArrowStyle={AppStyles.guideTipArrowRight}
@@ -253,6 +259,7 @@ const Wallet = () => {
             <View style={[styles.footerBtn, styles.footerBtnLeft]}>
               <Tips
                 position={'top'}
+                offsetTop={-1 * StatusBar.currentHeight}
                 visible={guideState == 'send'}
                 textStyle={AppStyles.guideTipText}
                 text="Click here to send funds to other people"
@@ -273,7 +280,7 @@ const Wallet = () => {
                     });
                     NavigationService.navigate('SendPayment')
                   }}
-                  disabled={currWallet.balance < appSettings.defaultFee}
+                  disabled={currWallet.balance < appSettings}
                   text="SEND"
                 />
               </Tips>
@@ -281,6 +288,7 @@ const Wallet = () => {
             <View style={[styles.footerBtn, styles.footerBtnRight]}>
               <Tips
                 position={'top'}
+                offsetTop={-1 * StatusBar.currentHeight}
                 visible={guideState == 'receive'}
                 textStyle={AppStyles.guideTipText}
                 text="Click here to receive funds from other people"

@@ -31,9 +31,13 @@
       "package": "com.ConcealNetwork.ConcealMobile",
       "versionCode": 22,
       "permissions": [
-        "CAMERA", "USE_FINGERPRINT"
+        "CAMERA",
+        "USE_FINGERPRINT"
       ]
     },
-    "description": ""
+    "androidStatusBar": {
+      "translucent": true
+    },
+    "description": "Conceal Mobile Wallet"
   }
 }

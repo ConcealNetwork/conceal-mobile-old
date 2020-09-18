@@ -413,7 +413,7 @@ const AppContextProvider = props => {
     logger.log('GETTING BLOCKCHAIN HEIGHT...');
     Api.getBlockchainHeight()
       .then(res => dispatch({ type: 'UPDATE_BLOCKCHAIN_HEIGHT', blockchainHeight: res.message.height }))
-      .catch(err => { message = `ERROR ${err}` })
+      .catch(err => { let message = `ERROR ${err}` })
   };
 
   const getMarketPrices = () => {

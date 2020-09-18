@@ -6,7 +6,6 @@ import ConcealTextInput from '../components/ccxTextInput';
 import { getDepositInterest } from '../helpers/utils';
 import ConcealButton from '../components/ccxButton';
 import { AppColors } from '../constants/Colors';
-import SearchAddress from './SearchAddress';
 import AppStyles from '../components/Style';
 import React, { useContext } from "react";
 import { Slider } from 'react-native';
@@ -21,7 +20,6 @@ import {
   Text,
   View,
   FlatList,
-  TouchableOpacity
 } from "react-native";
 
 const CreateDepositScreen = () => {

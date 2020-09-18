@@ -15,7 +15,8 @@ import {
   View,
   Alert,
   FlatList,
-  Clipboard
+  Clipboard,
+  StatusBar
 } from 'react-native';
 
 let firstVisibleItem = -1;
@@ -94,6 +95,7 @@ const AddressBook = () => {
     <View style={AppStyles.pageWrapper}>
       <Header
         placement="left"
+        statusBarProps={{ translucent: true }}
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
           onPress={() => NavigationService.goBack()}
@@ -121,6 +123,7 @@ const AddressBook = () => {
         }
         rightComponent={<Tips
           position={'bottom'}
+          offsetTop={-1 * StatusBar.currentHeight}
           visible={guideState == 'addAddress'}
           textStyle={AppStyles.guideTipText}
           style={[AppStyles.guideTipContainer, styles.guideTipAddAddress]}
@@ -149,6 +152,7 @@ const AddressBook = () => {
       />
       <Tips
         position={'bottom'}
+        offsetTop={-1 * StatusBar.currentHeight}
         visible={guideState == 'addressSearch'}
         textStyle={AppStyles.guideTipText}
         tooltipArrowStyle={AppStyles.guideTipArrowTop}
@@ -199,6 +203,7 @@ const AddressBook = () => {
                   <View style={styles.btnWrapper}>
                     <Tips
                       position={'bottom'}
+                      offsetTop={-1 * StatusBar.currentHeight}
                       visible={(guideState == 'deleteAddress') && (index == firstVisibleItem)}
                       textStyle={AppStyles.guideTipText}
                       style={[AppStyles.guideTipContainer, styles.guideTipDeleteAddress]}
@@ -227,6 +232,7 @@ const AddressBook = () => {
                   <View style={styles.btnWrapper}>
                     <Tips
                       position={'bottom'}
+                      offsetTop={-1 * StatusBar.currentHeight}
                       visible={(guideState == 'editAddress') && (index == firstVisibleItem)}
                       textStyle={AppStyles.guideTipText}
                       style={[AppStyles.guideTipContainer, styles.guideTipEditAddress]}

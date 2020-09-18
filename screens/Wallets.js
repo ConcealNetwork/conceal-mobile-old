@@ -14,10 +14,11 @@ import {
   format4Decimals,
 } from '../helpers/utils';
 import {
-  Alert,
   Text,
   View,
+  Alert,
   FlatList,
+  StatusBar,
   TouchableOpacity
 } from 'react-native';
 
@@ -45,7 +46,6 @@ const Wallets = () => {
     'exportWallet'
   ], function (nextState) {
     if ((nextState === 'addWallet') && !(walletsLoaded && (walletsList.length < appSettings.maxWallets || walletsList.length === 0))) {
-      console.log("set next state");
       setGuideState(guideNavigation.next());
     }
   }));
@@ -69,6 +69,7 @@ const Wallets = () => {
     <View style={styles.pageWrapper}>
       <Header
         placement="left"
+        statusBarProps={{ translucent: true }}
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
           onPress={() => NavigationService.goBack()}
@@ -98,6 +99,7 @@ const Wallets = () => {
           (
             <Tips
               position={'bottom'}
+              offsetTop={-1 * StatusBar.currentHeight}
               visible={guideState == 'addWallet'}
               textStyle={AppStyles.guideTipText}
               style={[AppStyles.guideTipContainer, styles.guideTipAddWallet]}
@@ -152,6 +154,7 @@ const Wallets = () => {
                   <View style={styles.btnWrapper}>
                     <Tips
                       position={'bottom'}
+                      offsetTop={-1 * StatusBar.currentHeight}
                       visible={(guideState == 'deleteWallet') && (index == firstVisibleItem)}
                       textStyle={AppStyles.guideTipText}
                       style={[AppStyles.guideTipContainer, styles.guideTipDeleteWallet]}
@@ -181,6 +184,7 @@ const Wallets = () => {
                   <View style={styles.btnWrapper}>
                     <Tips
                       position={'bottom'}
+                      offsetTop={-1 * StatusBar.currentHeight}
                       visible={(guideState == 'exportWallet') && (index == firstVisibleItem)}
                       textStyle={AppStyles.guideTipText}
                       style={[AppStyles.guideTipContainer, styles.guideTipExportWallet]}

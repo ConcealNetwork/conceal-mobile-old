@@ -17,6 +17,7 @@ import {
   Text,
   View,
   FlatList,
+  StatusBar,
   TouchableOpacity
 } from 'react-native';
 
@@ -88,6 +89,7 @@ const Messages = () => {
     <View style={styles.pageWrapper}>
       <Header
         placement="left"
+        statusBarProps={{ translucent: true }}
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
           onPress={() => NavigationService.goBack()}
@@ -117,6 +119,7 @@ const Messages = () => {
           (
             <Tips
               position={'bottom'}
+              offsetTop={-1 * StatusBar.currentHeight}
               visible={guideState == 'sendMessage'}
               textStyle={AppStyles.guideTipText}
               style={[AppStyles.guideTipContainer, styles.guideTipSendMessage]}
@@ -136,6 +139,7 @@ const Messages = () => {
         <View>
           <Tips
             position={'bottom'}
+            offsetTop={-1 * StatusBar.currentHeight}
             visible={guideState == 'messageTypes'}
             textStyle={AppStyles.guideTipText}
             tooltipArrowStyle={AppStyles.guideTipArrowTop}
@@ -156,6 +160,7 @@ const Messages = () => {
         </View>
         <Tips
           position={'bottom'}
+          offsetTop={-1 * StatusBar.currentHeight}
           visible={guideState == 'messageSearch'}
           textStyle={AppStyles.guideTipText}
           tooltipArrowStyle={AppStyles.guideTipArrowTop}
