@@ -303,10 +303,12 @@ const styles = EStyleSheet.create({
     backgroundColor: AppColors.concealBackground
   },
   pickerOptionText: {
-    color: AppColors.concealTextColor
+    color: AppColors.concealTextColor,
+    fontSize: '16rem'
   },
   pickerSectionText: {
-    color: AppColors.concealOrange
+    color: AppColors.concealOrange,
+    fontSize: '18rem'
   },
   passwordInput: {
     marginTop: '30rem',
