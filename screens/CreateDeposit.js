@@ -223,6 +223,9 @@ const CreateDepositScreen = () => {
               onChangeText={(text) => {
                 setAppData({ createDeposit: { amount: text } });
               }}
+              rightIcon={
+                <Text style={styles.ccxUnit}>CCX</Text>
+              }
             />
           </View>
         </Tips>
@@ -515,6 +518,10 @@ const styles = EStyleSheet.create({
   },
   guideTipArrowCancel: {
     left: '72%'
+  },
+  ccxUnit: {
+    fontSize: '16rem',
+    color: AppColors.concealTextColor
   }
 });
 

@@ -184,22 +184,38 @@ const SendScreen = () => {
         <ConcealTextInput
           label={getAmountError()}
           keyboardType='numeric'
-          placeholder='Select amount to send...'
+          placeholder='Type in amount to send...'
           containerStyle={styles.sendInput}
           value={state.appData.sendScreen.toAmount}
           onChangeText={(text) => {
             setAppData({ sendScreen: { toAmount: text } });
           }}
           rightIcon={
-            <Icon
-              onPress={() => setAppData({ sendScreen: { toAmount: (parseFloat(currWallet.balance) - appSettings.defaultFee).toLocaleString(undefined, format8Decimals) } })}
-              name='md-add'
-              type='ionicon'
-              color='white'
-              size={32 * getAspectRatio()}
-            />
+            <Text style={styles.ccxUnit}>CCX</Text>
           }
         />
+        <View style={styles.amountPercentWrapper}>
+          <ConcealButton
+            style={styles.btnSendPercent}
+            onPress={() => setAppData({ sendScreen: { toAmount: ((parseFloat(currWallet.balance) - appSettings.defaultFee) * 0.25).toLocaleString(undefined, format8Decimals) } })}
+            text="25%"
+          />
+          <ConcealButton
+            style={styles.btnSendPercent}
+            onPress={() => setAppData({ sendScreen: { toAmount: ((parseFloat(currWallet.balance) - appSettings.defaultFee) * 0.50).toLocaleString(undefined, format8Decimals) } })}
+            text="50%"
+          />
+          <ConcealButton
+            style={styles.btnSendPercent}
+            onPress={() => setAppData({ sendScreen: { toAmount: ((parseFloat(currWallet.balance) - appSettings.defaultFee) * 0.75).toLocaleString(undefined, format8Decimals) } })}
+            text="75%"
+          />
+          <ConcealButton
+            style={styles.btnSendPercent}
+            onPress={() => setAppData({ sendScreen: { toAmount: (parseFloat(currWallet.balance) - appSettings.defaultFee).toLocaleString(undefined, format8Decimals) } })}
+            text="100%"
+          />
+        </View>
         <TouchableOpacity onPress={() => setAppData({ searchAddress: { addrListVisible: true } })}>
           <ConcealTextInput
             editable={false}
@@ -398,8 +414,20 @@ const styles = EStyleSheet.create({
   },
   lockedText: {
     color: '#FF0000'
+  },
+  amountPercentWrapper: {
+    padding: '10rem',
+    marginTop: '0rem',
+    flexDirection: 'row'
+  },
+  btnSendPercent: {
+    flex: 1,
+    margin: '1rem'
+  },
+  ccxUnit: {
+    fontSize: '16rem',
+    color: AppColors.concealTextColor
   }
-
 });
 
 
