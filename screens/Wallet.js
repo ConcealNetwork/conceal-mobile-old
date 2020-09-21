@@ -49,7 +49,7 @@ const Wallet = () => {
         setGuideState(guideNavigation.start());
       }, 100);
     }
-  }, []);
+  }, [currWallet]);
 
   return (
     <View style={styles.pageWrapper}>

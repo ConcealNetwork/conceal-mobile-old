@@ -478,7 +478,7 @@ const AppContextProvider = props => {
           getDeposits();
           NavigationService.goBack(2);
           dispatch({ type: 'DEPOSIT_CREATED', res });
-          message = 'Your deposit was successfully created';
+          message = 'Your deposit was successfully created. It may take a while for deposit to be shown in the list, since it needs to be confirmed first!';
           msgType = 'info';
         } else {
           message = res.message;
