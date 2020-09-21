@@ -473,7 +473,6 @@ const AppContextProvider = props => {
     let msgType;
     Api.createDeposit(amount, term, wallet, null, password)
       .then(res => {
-        console.log(res);
         if (res.result === 'success') {
           getDeposits();
           NavigationService.goBack(2);
