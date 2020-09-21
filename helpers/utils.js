@@ -110,6 +110,16 @@ export const InterestRates = [
   [4.00, 5.00, 6.00],
 ];
 
+export const parseLocaleNumber = (stringNumber) => {
+  if (stringNumber) {
+    var decimalSeparator = (1.1).toLocaleString().replace(/1/g, '');
+    var thousandSeparator = (1111).toLocaleString().replace(/1/g, '');
+    return parseFloat(stringNumber.replace(new RegExp('\\' + thousandSeparator, 'g'), '').replace(new RegExp('\\' + decimalSeparator), '.'));
+  } else {
+    return 0;
+  }
+}
+
 export const getDepositInterest = (amount, duration) => {
   // return the correct interest rate percent from the 2D table
   return InterestRates[duration - 1][Math.min(Math.floor(amount / 10000), 2)] * amount / 100;

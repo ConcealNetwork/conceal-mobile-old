@@ -17,6 +17,7 @@ export const appSettings = {
   maxWallets: 3,
   coinDecimals: 5,
   defaultFee: 0.0001,
+  minValue: 0.000001,
   coinMetrics: 1000000,
   qrCodePrefix: 'conceal',
   donationURL: 'https://conceal.cloud/donate',

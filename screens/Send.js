@@ -13,7 +13,8 @@ import {
   getAspectRatio,
   format4Decimals,
   format6Decimals,
-  format8Decimals
+  format8Decimals,
+  parseLocaleNumber
 } from '../helpers/utils';
 import {
   Text,
@@ -55,7 +56,7 @@ const SendScreen = () => {
   }
 
   if (state.appData.sendScreen.toAmount) {
-    let totalAmount = parseFloat(state.appData.sendScreen.toAmount);
+    let totalAmount = parseLocaleNumber(state.appData.sendScreen.toAmount);
     totalAmount = totalAmount + appSettings.defaultFee;
 
     sendSummaryList.push({
@@ -102,8 +103,8 @@ const SendScreen = () => {
 
   const isFormValid = () => {
     if (state.appData.sendScreen.toAddress && state.appData.sendScreen.toAmount) {
-      var amountAsFloat = parseFloat(state.appData.sendScreen.toAmount);
-      return ((amountAsFloat > 0) && (amountAsFloat <= (parseFloat(currWallet.balance) - appSettings.defaultFee)));
+      var amountAsFloat = parseLocaleNumber(state.appData.sendScreen.toAmount);
+      return ((amountAsFloat > 0) && (amountAsFloat <= (currWallet.balance - appSettings.defaultFee)));
     } else {
       return false;
     }
@@ -121,7 +122,8 @@ const SendScreen = () => {
   }
 
   const getAmountError = () => {
-    var amountAsFloat = parseFloat(state.appData.sendScreen.toAmount || 0);
+    var amountAsFloat = parseLocaleNumber(state.appData.sendScreen.toAmount);
+
     if ((amountAsFloat <= 0) && (state.appData.sendScreen.toAmount)) {
       return "Amount must be greater then 0"
     } else if (amountAsFloat > (parseFloat(currWallet.balance) - appSettings.defaultFee)) {
@@ -197,22 +199,22 @@ const SendScreen = () => {
         <View style={styles.amountPercentWrapper}>
           <ConcealButton
             style={styles.btnSendPercent}
-            onPress={() => setAppData({ sendScreen: { toAmount: ((parseFloat(currWallet.balance) - appSettings.defaultFee) * 0.25).toLocaleString(undefined, format8Decimals) } })}
+            onPress={() => setAppData({ sendScreen: { toAmount: ((currWallet.balance - appSettings.defaultFee) * 0.25).toLocaleString(undefined, format8Decimals) } })}
             text="25%"
           />
           <ConcealButton
             style={styles.btnSendPercent}
-            onPress={() => setAppData({ sendScreen: { toAmount: ((parseFloat(currWallet.balance) - appSettings.defaultFee) * 0.50).toLocaleString(undefined, format8Decimals) } })}
+            onPress={() => setAppData({ sendScreen: { toAmount: ((currWallet.balance - appSettings.defaultFee) * 0.50).toLocaleString(undefined, format8Decimals) } })}
             text="50%"
           />
           <ConcealButton
             style={styles.btnSendPercent}
-            onPress={() => setAppData({ sendScreen: { toAmount: ((parseFloat(currWallet.balance) - appSettings.defaultFee) * 0.75).toLocaleString(undefined, format8Decimals) } })}
+            onPress={() => setAppData({ sendScreen: { toAmount: ((currWallet.balance - appSettings.defaultFee) * 0.75).toLocaleString(undefined, format8Decimals) } })}
             text="75%"
           />
           <ConcealButton
             style={styles.btnSendPercent}
-            onPress={() => setAppData({ sendScreen: { toAmount: (parseFloat(currWallet.balance) - appSettings.defaultFee).toLocaleString(undefined, format8Decimals) } })}
+            onPress={() => setAppData({ sendScreen: { toAmount: (currWallet.balance - appSettings.defaultFee - appSettings.minValue).toLocaleString(undefined, format8Decimals) } })}
             text="100%"
           />
         </View>

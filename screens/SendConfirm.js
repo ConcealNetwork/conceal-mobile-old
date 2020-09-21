@@ -10,7 +10,8 @@ import AuthCheck from './AuthCheck';
 import {
   maskAddress,
   getAspectRatio,
-  format6Decimals
+  format6Decimals,
+  parseLocaleNumber
 } from '../helpers/utils';
 import {
   View,
@@ -33,7 +34,7 @@ const SendConfirm = () => {
     });
   }
 
-  let totalAmount = parseFloat(appData.sendScreen.toAmount);
+  let totalAmount = parseLocaleNumber(appData.sendScreen.toAmount);
   totalAmount = totalAmount + appSettings.defaultFee;
 
   addSummaryItem(`${totalAmount.toLocaleString(undefined, format6Decimals)} CCX`, 'You are sending', 'md-cash');
@@ -71,7 +72,7 @@ const SendConfirm = () => {
       currWallet.addr,
       appData.sendScreen.toAddress,
       appData.sendScreen.toPaymendId,
-      appData.sendScreen.toAmount,
+      parseLocaleNumber(appData.sendScreen.toAmount),
       '', password
     );
   }

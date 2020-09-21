@@ -4,7 +4,6 @@ import NavigationService from '../helpers/NavigationService';
 import { AppContext } from '../components/ContextProvider';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import ConcealTextInput from '../components/ccxTextInput';
-import { getDepositInterest } from '../helpers/utils';
 import ConcealButton from '../components/ccxButton';
 import GuideNavigation from '../helpers/GuideNav';
 import { AppColors } from '../constants/Colors';
@@ -16,7 +15,9 @@ import {
   getAspectRatio,
   format4Decimals,
   format6Decimals,
-  format8Decimals
+  format8Decimals,
+  parseLocaleNumber,
+  getDepositInterest
 } from '../helpers/utils';
 import {
   Text,
@@ -41,11 +42,8 @@ const CreateDepositScreen = () => {
   }
 
   if (state.appData.createDeposit.amount) {
-    let totalAmount = parseFloat(state.appData.createDeposit.amount);
-    totalAmount = totalAmount + appSettings.defaultFee;
-
     sendSummaryList.push({
-      value: `${totalAmount.toLocaleString(undefined, format6Decimals)} CCX`,
+      value: `${parseLocaleNumber(state.appData.createDeposit.amount).toLocaleString(undefined, format6Decimals)} CCX`,
       title: 'Deposit Amount',
       icon: 'md-cash'
     });
@@ -59,7 +57,7 @@ const CreateDepositScreen = () => {
 
   if (state.appData.createDeposit.duration && state.appData.createDeposit.amount) {
     sendSummaryList.push({
-      value: `${getDepositInterest(state.appData.createDeposit.amount, state.appData.createDeposit.duration).toLocaleString(undefined, format6Decimals)} CCX`,
+      value: `${getDepositInterest(parseLocaleNumber(state.appData.createDeposit.amount), state.appData.createDeposit.duration).toLocaleString(undefined, format6Decimals)} CCX`,
       title: 'Interest earned',
       icon: 'md-cash'
     });
@@ -86,8 +84,8 @@ const CreateDepositScreen = () => {
 
   const isFormValid = () => {
     if (state.appData.createDeposit.duration && state.appData.createDeposit.amount) {
-      var amountAsFloat = parseFloat(state.appData.createDeposit.amount);
-      return ((amountAsFloat > 0) && (amountAsFloat <= (parseFloat(currWallet.balance) - appSettings.defaultFee)));
+      let amountAsFloat = parseLocaleNumber(state.appData.createDeposit.amount);
+      return ((amountAsFloat > 0) && (amountAsFloat <= (currWallet.balance - appSettings.defaultFee)));
     } else {
       return false;
     }
@@ -104,10 +102,10 @@ const CreateDepositScreen = () => {
   }
 
   const getAmountError = () => {
-    var amountAsFloat = parseFloat(state.appData.sendScreen.toAmount || 0);
+    var amountAsFloat = parseLocaleNumber(state.appData.sendScreen.toAmount || 0);
     if ((amountAsFloat <= 0) && (state.appData.sendScreen.toAmount)) {
       return "Amount must be greater then 0"
-    } else if (amountAsFloat > (parseFloat(currWallet.balance) - state.appSettings.defaultFee)) {
+    } else if (amountAsFloat > (currWallet.balance - state.appSettings.defaultFee)) {
       return "The amount exceeds wallet balance"
     } else {
       return "";
@@ -232,22 +230,22 @@ const CreateDepositScreen = () => {
         <View style={styles.amountPercentWrapper}>
           <ConcealButton
             style={styles.btnDepositPercent}
-            onPress={() => setAppData({ createDeposit: { amount: ((parseFloat(currWallet.balance) - appSettings.defaultFee) * 0.25).toLocaleString(undefined, format8Decimals) } })}
+            onPress={() => setAppData({ createDeposit: { amount: ((currWallet.balance - appSettings.defaultFee) * 0.25).toLocaleString(undefined, format6Decimals) } })}
             text="25%"
           />
           <ConcealButton
             style={styles.btnDepositPercent}
-            onPress={() => setAppData({ createDeposit: { amount: ((parseFloat(currWallet.balance) - appSettings.defaultFee) * 0.50).toLocaleString(undefined, format8Decimals) } })}
+            onPress={() => setAppData({ createDeposit: { amount: ((currWallet.balance - appSettings.defaultFee) * 0.50).toLocaleString(undefined, format6Decimals) } })}
             text="50%"
           />
           <ConcealButton
             style={styles.btnDepositPercent}
-            onPress={() => setAppData({ createDeposit: { amount: ((parseFloat(currWallet.balance) - appSettings.defaultFee) * 0.75).toLocaleString(undefined, format8Decimals) } })}
+            onPress={() => setAppData({ createDeposit: { amount: ((currWallet.balance - appSettings.defaultFee) * 0.75).toLocaleString(undefined, format6Decimals) } })}
             text="75%"
           />
           <ConcealButton
             style={styles.btnDepositPercent}
-            onPress={() => setAppData({ createDeposit: { amount: (parseFloat(currWallet.balance) - appSettings.defaultFee).toLocaleString(undefined, format8Decimals) } })}
+            onPress={() => setAppData({ createDeposit: { amount: (currWallet.balance - appSettings.defaultFee - appSettings.minValue).toLocaleString(undefined, format6Decimals) } })}
             text="100%"
           />
         </View>
@@ -271,7 +269,6 @@ const CreateDepositScreen = () => {
               thumbTintColor={AppColors.concealOrange}
               maximumTrackTintColor="#FFFFFF"
               onValueChange={(value) => {
-                console.log(value);
                 setAppData({
                   createDeposit: {
                     duration: value,

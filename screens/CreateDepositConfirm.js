@@ -3,18 +3,18 @@ import { Icon, Header, ListItem } from 'react-native-elements';
 import NavigationService from '../helpers/NavigationService';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { AppContext } from '../components/ContextProvider';
-import { getDepositInterest } from '../helpers/utils';
 import InterestTable from '../components/InterestTable';
 import ConcealButton from '../components/ccxButton';
 import GuideNavigation from '../helpers/GuideNav';
 import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
-import Tips from 'react-native-guide-tips';
 import AuthCheck from './AuthCheck';
 import Moment from 'moment';
 import {
   getAspectRatio,
-  format6Decimals
+  format6Decimals,
+  parseLocaleNumber,
+  getDepositInterest
 } from '../helpers/utils';
 import {
   View,
@@ -38,10 +38,10 @@ const CreateDepositConfirm = () => {
   }
 
   // calculate the interest class from the data
-  let interestClass = ((appData.createDeposit.duration - 1) * 3) + Math.min(Math.floor(parseFloat(appData.createDeposit.amount) / 10000) + 1, 3)
+  let interestClass = ((appData.createDeposit.duration - 1) * 3) + Math.min(Math.floor(parseLocaleNumber(appData.createDeposit.amount) / 10000) + 1, 3)
 
-  addSummaryItem(`${appData.createDeposit.amount.toLocaleString(undefined, format6Decimals)} CCX`, 'You are depositing', 'md-cash');
-  addSummaryItem(`${getDepositInterest(appData.createDeposit.amount, appData.createDeposit.duration).toLocaleString(undefined, format6Decimals)} CCX`, 'Interest you will earn', 'md-cash');
+  addSummaryItem(`${appData.createDeposit.amount} CCX`, 'You are depositing', 'md-cash');
+  addSummaryItem(`${getDepositInterest(parseLocaleNumber(appData.createDeposit.amount), appData.createDeposit.duration).toLocaleString(undefined, format6Decimals)} CCX`, 'Interest you will earn', 'md-cash');
   addSummaryItem(`${appData.createDeposit.duration} month${state.appData.createDeposit.duration > 1 ? 's' : ''}`, 'For a duration of', 'md-clock');
   addSummaryItem(`${appSettings.defaultFee} CCX`, 'Transaction Fee', 'md-cash');
 
@@ -76,7 +76,7 @@ const CreateDepositConfirm = () => {
     let durationBlocks = Moment.duration(depositTS.diff(currentTS)).asMinutes() / 2;
 
     // call the API with the correct parameters (duration is in number of blocks, each block being 2 min)
-    actions.createDeposit(state.appData.createDeposit.amount, durationBlocks, currWallet.addr, password);
+    actions.createDeposit(parseLocaleNumber(state.appData.createDeposit.amount), durationBlocks, currWallet.addr, password);
   }
 
   // fire on mount
