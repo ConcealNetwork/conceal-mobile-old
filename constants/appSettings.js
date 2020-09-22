@@ -19,6 +19,7 @@ export const appSettings = {
   defaultFee: 0.0001,
   minValue: 0.000001,
   coinMetrics: 1000000,
+  blocksPerMonth: 21900,
   qrCodePrefix: 'conceal',
   donationURL: 'https://conceal.cloud/donate',
   IPNURL: 'https://conceal.cloud/pay',

@@ -9,7 +9,6 @@ import GuideNavigation from '../helpers/GuideNav';
 import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
 import AuthCheck from './AuthCheck';
-import Moment from 'moment';
 import {
   getAspectRatio,
   format6Decimals,
@@ -38,10 +37,10 @@ const CreateDepositConfirm = () => {
   }
 
   // calculate the interest class from the data
-  let interestClass = ((appData.createDeposit.duration - 1) * 3) + Math.min(Math.floor(parseLocaleNumber(appData.createDeposit.amount) / 10000) + 1, 3)
+  let interestClass = ((appData.createDeposit.duration - 1) * 3) + Math.min(Math.floor(parseLocaleNumber(appData.createDeposit.amount, true) / 10000) + 1, 3)
 
-  addSummaryItem(`${appData.createDeposit.amount} CCX`, 'You are depositing', 'md-cash');
-  addSummaryItem(`${getDepositInterest(parseLocaleNumber(appData.createDeposit.amount), appData.createDeposit.duration).toLocaleString(undefined, format6Decimals)} CCX`, 'Interest you will earn', 'md-cash');
+  addSummaryItem(`${parseLocaleNumber(state.appData.createDeposit.amount, true).toLocaleString(undefined, format6Decimals)} CCX`, 'You are depositing', 'md-cash');
+  addSummaryItem(`${getDepositInterest(parseLocaleNumber(appData.createDeposit.amount, true), appData.createDeposit.duration).toLocaleString(undefined, format6Decimals)} CCX`, 'Interest you will earn', 'md-cash');
   addSummaryItem(`${appData.createDeposit.duration} month${state.appData.createDeposit.duration > 1 ? 's' : ''}`, 'For a duration of', 'md-clock');
   addSummaryItem(`${appSettings.defaultFee} CCX`, 'Transaction Fee', 'md-cash');
 
@@ -71,12 +70,9 @@ const CreateDepositConfirm = () => {
   ]));
 
   const createDeposit = (password) => {
-    let currentTS = Moment();
-    var depositTS = Moment(currentTS).add(state.appData.createDeposit.duration, 'M');
-    let durationBlocks = Moment.duration(depositTS.diff(currentTS)).asMinutes() / 2;
-
+    let durationBlocks = appSettings.blocksPerMonth * state.appData.createDeposit.duration;
     // call the API with the correct parameters (duration is in number of blocks, each block being 2 min)
-    actions.createDeposit(parseLocaleNumber(state.appData.createDeposit.amount), durationBlocks, currWallet.addr, password);
+    actions.createDeposit(parseLocaleNumber(state.appData.createDeposit.amount, true), durationBlocks, currWallet.addr, password);
   }
 
   // fire on mount

@@ -15,7 +15,6 @@ import {
   getAspectRatio,
   format4Decimals,
   format6Decimals,
-  format8Decimals,
   parseLocaleNumber,
   getDepositInterest
 } from '../helpers/utils';
@@ -43,7 +42,7 @@ const CreateDepositScreen = () => {
 
   if (state.appData.createDeposit.amount) {
     sendSummaryList.push({
-      value: `${parseLocaleNumber(state.appData.createDeposit.amount).toLocaleString(undefined, format6Decimals)} CCX`,
+      value: `${parseLocaleNumber(state.appData.createDeposit.amount, true).toLocaleString(undefined, format6Decimals)} CCX`,
       title: 'Deposit Amount',
       icon: 'md-cash'
     });
@@ -57,7 +56,7 @@ const CreateDepositScreen = () => {
 
   if (state.appData.createDeposit.duration && state.appData.createDeposit.amount) {
     sendSummaryList.push({
-      value: `${getDepositInterest(parseLocaleNumber(state.appData.createDeposit.amount), state.appData.createDeposit.duration).toLocaleString(undefined, format6Decimals)} CCX`,
+      value: `${getDepositInterest(parseLocaleNumber(state.appData.createDeposit.amount, true), state.appData.createDeposit.duration).toLocaleString(undefined, format6Decimals)} CCX`,
       title: 'Interest earned',
       icon: 'md-cash'
     });
@@ -84,8 +83,8 @@ const CreateDepositScreen = () => {
 
   const isFormValid = () => {
     if (state.appData.createDeposit.duration && state.appData.createDeposit.amount) {
-      let amountAsFloat = parseLocaleNumber(state.appData.createDeposit.amount);
-      return ((amountAsFloat > 0) && (amountAsFloat <= (currWallet.balance - appSettings.defaultFee)));
+      let amountAsFloat = parseLocaleNumber(state.appData.createDeposit.amount, true);
+      return ((amountAsFloat >= 1) && (amountAsFloat <= (currWallet.balance - appSettings.defaultFee)));
     } else {
       return false;
     }
@@ -102,9 +101,9 @@ const CreateDepositScreen = () => {
   }
 
   const getAmountError = () => {
-    var amountAsFloat = parseLocaleNumber(state.appData.sendScreen.toAmount || 0);
-    if ((amountAsFloat <= 0) && (state.appData.sendScreen.toAmount)) {
-      return "Amount must be greater then 0"
+    var amountAsFloat = parseLocaleNumber(state.appData.createDeposit.amount, true);
+    if ((amountAsFloat < 1) && (state.appData.createDeposit.amount)) {
+      return "Amount must be at least 1 CCX"
     } else if (amountAsFloat > (currWallet.balance - state.appSettings.defaultFee)) {
       return "The amount exceeds wallet balance"
     } else {
@@ -219,7 +218,7 @@ const CreateDepositScreen = () => {
               containerStyle={styles.sendInput}
               value={state.appData.createDeposit.amount}
               onChangeText={(text) => {
-                setAppData({ createDeposit: { amount: text } });
+                setAppData({ createDeposit: { amount: text.replace(/[^0-9,.]/g, '') } });
               }}
               rightIcon={
                 <Text style={styles.ccxUnit}>CCX</Text>

@@ -110,11 +110,22 @@ export const InterestRates = [
   [4.00, 5.00, 6.00],
 ];
 
-export const parseLocaleNumber = (stringNumber) => {
+export const round = (number, decimalPlaces) => {
+  const factorOfTen = Math.pow(10, decimalPlaces);
+  return Math.round(number * factorOfTen) / factorOfTen;
+}
+
+export const parseLocaleNumber = (stringNumber, truncate) => {
   if (stringNumber) {
     var decimalSeparator = (1.1).toLocaleString().replace(/1/g, '');
     var thousandSeparator = (1111).toLocaleString().replace(/1/g, '');
-    return parseFloat(stringNumber.replace(new RegExp('\\' + thousandSeparator, 'g'), '').replace(new RegExp('\\' + decimalSeparator), '.'));
+    let parsedNumber = parseFloat(stringNumber.replace(new RegExp('\\' + thousandSeparator, 'g'), '').replace(new RegExp('\\' + decimalSeparator), '.'));
+
+    if (truncate) {
+      return Math.floor(parsedNumber);
+    } else {
+      return parsedNumber;
+    }
   } else {
     return 0;
   }
