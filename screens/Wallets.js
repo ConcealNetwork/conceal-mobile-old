@@ -134,7 +134,7 @@ const Wallets = () => {
                   <View>
                     <Text style={styles.address}>{maskAddress(item.address)}</Text>
                     <Text style={styles.balance}>Balance: {item.total ? item.total.toLocaleString(undefined, format4Decimals) : 0} CCX</Text>
-                    <Text style={(item.locked && item.locked > 0) ? [styles.data, styles.lockedText] : styles.data}>Locked: {item.locked.toLocaleString(undefined, format4Decimals)} CCX</Text>
+                    <Text style={(item.locked && item.locked > 0) ? [styles.data, styles.lockedText] : styles.data}>Locked: {item.locked ? item.locked.toLocaleString(undefined, format4Decimals) : 0} CCX</Text>
                     <Text style={styles.data}>{item.status}</Text>
                     <View style={styles.selectedWrapper}>
                       <CheckBox

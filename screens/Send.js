@@ -72,6 +72,15 @@ const SendScreen = () => {
     });
   }
 
+  this.onScanSuccess = (data) => {
+    setAppData({
+      sendScreen: {
+        toAddress: data.address,
+        toPaymendId: data.paymentId
+      }
+    });
+  }
+
   const onScanAddressQRCode = () => {
     setAppData({
       scanCode: {
@@ -79,7 +88,7 @@ const SendScreen = () => {
       }
     });
 
-    NavigationService.navigate('Scanner', { path: ["sendScreen", "toAddress"] });
+    NavigationService.navigate('Scanner', { onSuccess: this.onScanSuccess });
   }
 
   // key extractor for the list

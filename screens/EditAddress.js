@@ -21,6 +21,15 @@ const EditAddress = (props) => {
     return (state.appData.addressEntry.label && state.appData.addressEntry.address);
   }
 
+  this.onScanSuccess = (data) => {
+    setAppData({
+      addressEntry: {
+        address: data.address,
+        paymentId: data.paymentId
+      }
+    });
+  }
+
   this.onScanAddressQRCode = () => {
     setAppData({
       scanCode: {
@@ -28,9 +37,8 @@ const EditAddress = (props) => {
       }
     });
 
-    NavigationService.navigate('Scanner', { path: ["addressEntry", "address"] });
+    NavigationService.navigate('Scanner', { onSuccess: this.onScanSuccess });
   }
-
 
   return (
     <View style={styles.pageWrapper}>

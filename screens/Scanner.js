@@ -1,33 +1,20 @@
-import React, { useContext, useState } from "react";
-import { AppContext } from '../components/ContextProvider';
+import React, { useState } from "react";
 import NavigationService from '../helpers/NavigationService';
-import { Text, View, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import * as Permissions from 'expo-permissions';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { showSuccessMessage } from '../helpers/utils';
 
 const BarcodeScanner = (props) => {
-  const params = props.navigation.state.params
+  const onSuccess = props.navigation.state.params.onSuccess;
 
   const [hasPermission, setHasPermission] = useState(false);
   const [hasScanned, setHasScanned] = useState(false);
-  const { actions } = useContext(AppContext);
-  const { setAppData } = actions;
-
-
-  function constructPayload(codeObject, index, path, data) {
-    if (index < (path.length - 1)) {
-      codeObject[path[index]] = {};
-      constructPayload(codeObject[path[index]], index + 1, path, data);
-    } else if (index < path.length) {
-      codeObject[path[index]] = data;
-      constructPayload(codeObject[path[index]], index + 1, path, data);
-    }
-  }
 
   this.handleBarCodeScanned = ({ type, data }) => {
-    var codeObject = {};
     var scannedCode = null;
+    var paymentId = null;
+    var address = null;
 
     if (data.search("conceal:") === 0) {
       scannedCode = data.substring(8);
@@ -35,9 +22,19 @@ const BarcodeScanner = (props) => {
       scannedCode = data;
     }
 
-    constructPayload(codeObject, 0, params.path, scannedCode);
-    setAppData(codeObject);
+    if (scannedCode.search(":") > 0) {
+      address = scannedCode.substr(0, scannedCode.indexOf(':'));
+      paymentId = scannedCode.substring(scannedCode.indexOf(':') + 1);
+    } else {
+      address = scannedCode;
+      paymentId = '';
+    }
+
     setHasScanned(true);
+    onSuccess({
+      address: address,
+      paymentId: paymentId
+    });
 
     showSuccessMessage("Successfully scanned the address");
     NavigationService.goBack();

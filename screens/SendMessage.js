@@ -27,6 +27,14 @@ const SendMessage = () => {
   const { user, wallets, appData } = state;
   const currWallet = wallets[appData.common.selectedWallet];
 
+  this.onScanSuccess = (data) => {
+    setAppData({
+      sendMessage: {
+        toAddress: data.address
+      }
+    });
+  }
+
   this.onScanAddressQRCode = () => {
     setAppData({
       scanCode: {
@@ -34,7 +42,7 @@ const SendMessage = () => {
       }
     });
 
-    NavigationService.navigate('Scanner', { path: ["sendMessage", "toAddress"] });
+    NavigationService.navigate('Scanner', { onSuccess: this.onScanSuccess });
   }
 
   this.isFormValid = () => {
