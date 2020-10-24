@@ -29,7 +29,7 @@
     },
     "android": {
       "package": "com.ConcealNetwork.ConcealMobile",
-      "versionCode": 27,
+      "versionCode": 28,
       "permissions": [
         "CAMERA",
         "USE_FINGERPRINT"
