@@ -37,7 +37,8 @@ const Deposits = () => {
   const { userLoaded, walletsLoaded, depositsLoaded } = layout;
   const { setAppData, unlockDeposit } = actions;
 
-  let sortedDeposits = deposits.slice().sort(function (a, b) {
+  let viableDeposits = deposits.filter(item => !item.spendingTransactionHash);
+  let sortedDeposits = viableDeposits.slice().sort(function (a, b) {
     return parseFloat(a.unlockHeight) - parseFloat(b.unlockHeight);
   });
 
