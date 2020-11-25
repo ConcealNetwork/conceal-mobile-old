@@ -11,7 +11,7 @@
     "@react-native-community/async-storage": "^1.9.0",
     "@react-native-community/slider": "^3.0.3",
     "crypto-js": "^4.0.0",
-    "expo": "^36.0.2",
+    "expo": "^39.0.5",
     "expo-barcode-scanner": "~8.0.0",
     "expo-font": "~8.0.0",
     "expo-local-authentication": "~8.0.0",
