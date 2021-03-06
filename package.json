@@ -36,7 +36,7 @@
     "react-native-reanimated": "^1.4.0",
     "react-native-screens": "2.18.1",
     "react-native-svg": "9.13.3",
-    "react-native-walkthrough": "^0.2.0",
+    "react-native-walkthrough": "^0.2.1",
     "react-navigation": "^4.3.7",
     "react-navigation-drawer": "^2.4.11",
     "react-navigation-stack": "^1.9.0",
