@@ -41,7 +41,7 @@
     "react-navigation-drawer": "^2.4.11",
     "react-navigation-stack": "^1.9.0",
     "react-navigation-tabs": "^2.8.11",
-    "react-pattern-lock": "^2.0.6",
+    "react-pattern-lock": "^2.0.10",
     "sprintf-js": "^1.1.2"
   },
   "devDependencies": {
