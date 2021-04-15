@@ -14,7 +14,7 @@
     "expo": "^41.0.0",
     "expo-barcode-scanner": "~10.1.2",
     "expo-font": "~9.1.0",
-    "expo-local-authentication": "~10.0.0",
+    "expo-local-authentication": "~11.0.2",
     "expo-secure-store": "~10.1.0",
     "intl": "^1.2.5",
     "jwt-decode": "^3.1.2",
