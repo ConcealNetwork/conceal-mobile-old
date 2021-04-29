@@ -40,7 +40,7 @@
     "react-navigation": "^4.4.4",
     "react-navigation-drawer": "^2.7.1",
     "react-navigation-stack": "^1.9.0",
-    "react-navigation-tabs": "^2.11.0",
+    "react-navigation-tabs": "^2.11.1",
     "react-pattern-lock": "^2.0.11",
     "sprintf-js": "^1.1.2"
   },
