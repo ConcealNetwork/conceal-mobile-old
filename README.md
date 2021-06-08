@@ -6,8 +6,8 @@ A mobile wallet that connects to Conceal Network through Conceal Cloud. Uses the
 Download the official app from Github or PlayStore and follow these steps https://conceal.network/wiki/doku.php?id=wallets#creating_a_mobile_wallet
 
 ## Android
-APK Download: https://github.com/ConcealNetwork/conceal-mobile/releases
-Google PlayStore: https://play.google.com/store/apps/details?id=com.ConcealNetwork.ConcealMobile
+1. APK Download: https://github.com/ConcealNetwork/conceal-mobile/releases
+2. Google PlayStore: https://play.google.com/store/apps/details?id=com.ConcealNetwork.ConcealMobile
 
 ## iOS
 You can add your Conceal Cloud web wallet to your Home Screen turning it into a mobile app:
