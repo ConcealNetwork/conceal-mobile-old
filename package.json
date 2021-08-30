@@ -47,7 +47,7 @@
   "devDependencies": {
     "babel-preset-expo": "^8.4.1",
     "eslint": "^7.32.0",
-    "eslint-plugin-react": "^7.24.0"
+    "eslint-plugin-react": "^7.25.1"
   },
   "private": true
 }
