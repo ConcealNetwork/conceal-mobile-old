@@ -12,7 +12,7 @@
     "@react-native-community/slider": "^3.0.3",
     "crypto-js": "^4.1.1",
     "expo": "^43.0.0",
-    "expo-barcode-scanner": "~10.2.2",
+    "expo-barcode-scanner": "~11.1.2",
     "expo-font": "~9.2.1",
     "expo-local-authentication": "~11.0.2",
     "expo-secure-store": "~10.2.0",
