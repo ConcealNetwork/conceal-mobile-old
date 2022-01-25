@@ -9,7 +9,7 @@
   "dependencies": {
     "@expo/vector-icons": "^12.0.5",
     "@react-native-community/async-storage": "^1.12.1",
-    "@react-native-community/slider": "^4.1.12",
+    "@react-native-community/slider": "^4.2.0",
     "crypto-js": "^4.1.1",
     "expo": "^44.0.5",
     "expo-barcode-scanner": "~11.2.0",
