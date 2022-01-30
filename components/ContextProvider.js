@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import Constants from 'expo-constants';
 
 import useAppState from './useAppState';
 import NavigationService from '../helpers/NavigationService';
@@ -17,7 +18,7 @@ const AppContextProvider = props => {
 
   const loginUser = options => {
     // always set the uuid for the login user
-    options.uuid = Expo.Constants.installationId;
+    options.uuid = Constants.installationId;
     let message;
 
     dispatch({ type: 'USER_LOGIN_STARTED', value: true });

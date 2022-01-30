@@ -1,10 +1,10 @@
 import React, { Component, useContext } from 'react';
 import { AppContext } from '../components/ContextProvider';
-import { Bars } from 'react-native-loader';
 import {
   View,
   Modal,
   StyleSheet,
+  ActivityIndicator,
 } from 'react-native';
 
 const ConcealLoader = props => {
@@ -23,7 +23,7 @@ const ConcealLoader = props => {
       onRequestClose={() => { }}>
       <View style={styles.modalBackground}>
         <View style={styles.activityIndicatorWrapper}>
-          {isLoading && <Bars size={20} color="#FFFFFF" />}
+          {isLoading && <ActivityIndicator size="large" color="#FFFFFF" />}
         </View>
       </View>
     </Modal>

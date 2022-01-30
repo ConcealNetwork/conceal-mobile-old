@@ -1,3 +1,5 @@
+import Constants from 'expo-constants';
+
 export default class ApiHelper {
   constructor(options) {
     this.apiURL = options.state.appSettings.apiURL;
@@ -156,7 +158,7 @@ export default class ApiHelper {
     };
 
     // always set the installationId
-    headers.uuid = Expo.Constants.installationId;
+    headers.uuid = Constants.installationId;
 
     const f = (url, { headers, ...options }) =>
       fetch(url, { headers, ...options })
