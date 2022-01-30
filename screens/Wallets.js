@@ -72,7 +72,7 @@ const Wallets = () => {
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
           onPress={() => NavigationService.goBack()}
-          name='md-return-left'
+          name='arrow-back-outline'
           type='ionicon'
           color='white'
           size={32 * getAspectRatio()}

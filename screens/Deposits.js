@@ -81,7 +81,7 @@ const Deposits = () => {
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
           onPress={() => NavigationService.goBack()}
-          name='md-return-left'
+          name='arrow-back-outline'
           type='ionicon'
           color='white'
           size={32 * getAspectRatio()}
@@ -184,7 +184,7 @@ const Deposits = () => {
                       ) : (
                         <Icon
                           onPress={() => { unlockDeposit(item.depositId) }}
-                          name='md-unlock'
+                          name='lock-open-outline'
                           type='ionicon'
                           color='white'
                           size={64 * getAspectRatio()}
