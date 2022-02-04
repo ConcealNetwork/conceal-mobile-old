@@ -46,7 +46,7 @@ const Login = () => {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const formValidation = (
-    email !== '' && /\S+@\S+\.\S+/.test(email) &&
+    email !== '' &&
     password !== '' && password.length >= userSettings.minimumPasswordLength &&
     (twoFACode !== '' ? (twoFACode.length === 6 && parseInt(twoFACode)) : true)
   );
@@ -82,8 +82,8 @@ const Login = () => {
             <Text style={AppStyles.title}>SIGN IN</Text>
             <ConcealTextInput
               {...bindEmail}
-              placeholder="E-mail"
-              keyboardType="email-address"
+              placeholder="please enter your username"
+              keyboardType="default"
               textContentType="emailAddress"
               inputStyle={AppStyles.textLarge}
               rightIcon={
@@ -163,7 +163,8 @@ const Login = () => {
       }
       <Overlay
         isVisible={state.appData.login.signUpVisible}
-        overlayBackgroundColor={AppColors.concealBlack}
+        overlayBackgroundColor={AppColors.concealBackground}
+        overlayStyle={styles.overlayStyle}
         fullScreen={true}
       >
         <SignUp
@@ -174,6 +175,7 @@ const Login = () => {
       <Overlay
         isVisible={state.appData.login.resetPasswordVisible}
         overlayBackgroundColor={AppColors.concealBlack}
+        overlayStyle={styles.overlayStyle}
         fullScreen={true}
       >
         <ResetPassword
@@ -210,6 +212,10 @@ const styles = EStyleSheet.create({
     right: '10rem',
     left: '10rem',
     top: '15%'
+  },
+  overlayStyle: {
+    flex: 1,
+    backgroundColor: AppColors.concealBlack,
   },
   loggingH1: {
     fontSize: '26rem',

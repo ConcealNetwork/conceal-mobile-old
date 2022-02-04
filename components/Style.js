@@ -47,8 +47,10 @@ export default EStyleSheet.create({
     padding: '10rem',
   },
   loginView: {
+    flex: 1,
     paddingTop: '40rem',
     alignItems: 'center',
+    backgroundColor: AppColors.concealBlack,
   },
   contentContainer: {
     paddingTop: '30rem',
