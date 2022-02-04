@@ -41,8 +41,7 @@ const SearchAddress = props => {
     <Overlay
       isVisible={state.appData.searchAddress.addrListVisible}
       overlayBackgroundColor={AppColors.concealBackground}
-      width="100%"
-      height="100%"
+      fullScreen={true}
     >
       <View style={styles.overlayWrapper}>
         <ConcealTextInput
@@ -100,7 +99,9 @@ const styles = EStyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    position: 'absolute'
+    position: 'absolute',
+    backgroundColor: AppColors.concealBackground
+
   },
   searchInput: {
     top: '5rem'

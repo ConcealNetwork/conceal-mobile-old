@@ -213,8 +213,7 @@ const Settings = () => {
       <Overlay
         isVisible={showPinModal}
         overlayBackgroundColor={AppColors.concealBackground}
-        width="100%"
-        height="100%"
+        fullScreen={true}
       >
         <View style={styles.overlayWrapper}>
           <PinSetup
@@ -231,8 +230,7 @@ const Settings = () => {
       <Overlay
         isVisible={showFgpModal}
         overlayBackgroundColor={AppColors.concealBackground}
-        width="100%"
-        height="100%"
+        fullScreen={true}
       >
         <View style={styles.overlayWrapper}>
           <FgpSetup

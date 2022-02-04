@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Dimensions } from 'react-native';
 import { YellowBox } from 'react-native';
 import * as Font from 'expo-font';
-import { AppLoading } from 'expo-app-loading';
+import AppLoading from 'expo-app-loading';
 import { Platform, StatusBar, View } from 'react-native';
 import { createAppContainer } from 'react-navigation';
 import FlashMessage from "react-native-flash-message";
@@ -50,7 +50,6 @@ const App = props => {
   const handleFinishLoading = () => setIsLoadingComplete(true);
 
   return (
-    /*
     (!isLoadingComplete && !props.skipLoadingScreen)
       ? <AppLoading
         startAsync={loadResourcesAsync}
@@ -58,7 +57,6 @@ const App = props => {
         onFinish={handleFinishLoading}
       />
       :
-      */
       <WalkthroughProvider>
         <AppContextProvider>
           <ConcealLoader />

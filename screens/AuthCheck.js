@@ -20,8 +20,7 @@ const AuthCheck = props => {
       <Overlay
         isVisible={showCheck && getAuthMethod() == "biometric"}
         overlayBackgroundColor={AppColors.concealBackground}
-        width="100%"
-        height="100%"
+        fullScreen={true}
       >
         <View style={styles.overlayWrapper}>
           <FgpCheck
@@ -37,8 +36,7 @@ const AuthCheck = props => {
       <Overlay
         isVisible={showCheck && getAuthMethod() == "pin"}
         overlayBackgroundColor={AppColors.concealBackground}
-        width="100%"
-        height="100%"
+        fullScreen={true}
       >
         <View style={styles.overlayWrapper}>
           <PinCheck

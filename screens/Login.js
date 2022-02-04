@@ -164,8 +164,7 @@ const Login = () => {
       <Overlay
         isVisible={state.appData.login.signUpVisible}
         overlayBackgroundColor={AppColors.concealBlack}
-        width="100%"
-        height="100%"
+        fullScreen={true}
       >
         <SignUp
           hidePanel={() => setAppData({ login: { signUpVisible: false } })}
@@ -175,8 +174,7 @@ const Login = () => {
       <Overlay
         isVisible={state.appData.login.resetPasswordVisible}
         overlayBackgroundColor={AppColors.concealBlack}
-        width="100%"
-        height="100%"
+        fullScreen={true}
       >
         <ResetPassword
           hidePanel={() => setAppData({ login: { resetPasswordVisible: false } })}

@@ -36,8 +36,7 @@ export default function ConcealTextInput({ onAuthenticate }) {
       <Overlay
         isVisible={showPinModal}
         overlayBackgroundColor={AppColors.concealBackground}
-        width="100%"
-        height="100%"
+        fullScreen={true}
       >
         <View style={styles.overlayWrapper}>
           <ConcealPinView
