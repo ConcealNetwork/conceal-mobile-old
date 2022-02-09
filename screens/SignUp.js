@@ -1,7 +1,8 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 import { Image } from 'react-native-elements';
 import ConcealButton from '../components/ccxButton';
-
+import EStyleSheet from 'react-native-extended-stylesheet';
+import ConcealCaptcha from '../components/hCaptcha';
 import { AppContext } from '../components/ContextProvider';
 import { useFormInput, useFormValidation } from '../helpers/hooks';
 import { getAspectRatio } from '../helpers/utils';
@@ -12,7 +13,8 @@ import {
   View,
   TextInput,
   StyleSheet,
-  ScrollView
+  ScrollView,
+  TouchableOpacity 
 } from 'react-native';
 
 
@@ -23,17 +25,24 @@ const SignUp = props => {
   const { signUpUser } = actions;
   const { hidePanel } = props;
 
+  // captcha related fields and hooks
+  const [hCode, setHCode] = React.useState("");
 
   const { value: userName, bind: bindUserName } = useFormInput('');
   const { value: email, bind: bindEmail } = useFormInput('');
   const { value: password, bind: bindPassword } = useFormInput('');
 
   const formValidation = (
-    userName !== '' && userName.length >= 3 &&
+    hCode !== '' &&
+    userName !== '' && userName.length >= 3 &&    
     email !== '' && /\S+@\S+\.\S+/.test(email) &&
     password !== '' && password.length >= userSettings.minimumPasswordLength
   );
   const formValid = useFormValidation(formValidation);
+
+  const onCaptchaChange = (code) => {
+    setHCode(code);
+  };
 
   return (
     <ScrollView contentContainerStyle={AppStyles.loginView}>
@@ -71,6 +80,7 @@ const SignUp = props => {
         placeholderTextColor={AppColors.placeholderTextColor}
         textContentType="newPassword"
       />
+      <ConcealCaptcha onCaptchaChange={onCaptchaChange} />
 
       <View style={styles.footer}>
         <ConcealButton
@@ -98,7 +108,7 @@ const SignUp = props => {
   )
 };
 
-const styles = StyleSheet.create({
+const styles = EStyleSheet.create({
   footer: {
     flex: 1,
     marginTop: 15,

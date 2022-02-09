@@ -7,13 +7,16 @@ export default class AuthHelper {
   }
 
   login = options => {
-    const { email, password, twoFACode, uuid } = options;
+    const { email, password, twoFACode, captcha, uuid } = options;
     const body = {
       uuid,
       email,
-      password,
+      password,      
       rememberme: true,
     };
+    
+    // add the captcha response code
+    body["h-captcha-response"] = captcha;
 
     if (!twoFACode && this.getIsAltAuth()) {
       body.checksum = this.getChecksum();

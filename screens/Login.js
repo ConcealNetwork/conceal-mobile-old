@@ -1,5 +1,6 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useRef, useEffect } from 'react';
 import ConcealTextInput from '../components/ccxTextInput';
+import ConcealCaptcha from '../components/hCaptcha';
 import ConcealButton from '../components/ccxButton';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import localStorage from '../helpers/LocalStorage';
@@ -35,6 +36,9 @@ const Login = () => {
   const { setAppData } = actions;
   const Auth = new AuthHelper(state.appSettings.apiURL);
 
+  // captcha related fields and hooks
+  const [hCode, setHCode] = React.useState("");
+
   const { value: email, bind: bindEmail, setValue: setEmailValue } = useFormInput((localStorage.get('id_rememberme') == "TRUE") ? localStorage.get('id_username') : '');
   const { value: password, bind: bindPassword, setValue: setPassword } = useFormInput('');
   const { value: twoFACode, bind: bindTwoFACode, setValue: setTwoFACode } = useFormInput('');
@@ -46,6 +50,7 @@ const Login = () => {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const formValidation = (
+    hCode !== '' &&
     email !== '' &&
     password !== '' && password.length >= userSettings.minimumPasswordLength &&
     (twoFACode !== '' ? (twoFACode.length === 6 && parseInt(twoFACode)) : true)
@@ -62,6 +67,10 @@ const Login = () => {
       }
     }
   }, [state.layout.loginFinished]);
+
+  const onCaptchaChange = (code) => {
+    setHCode(code);
+  };
 
   return (
     <View style={AppStyles.viewContainer}>
@@ -126,6 +135,7 @@ const Login = () => {
                 />
               }
             />
+            <ConcealCaptcha onCaptchaChange={onCaptchaChange} />
             <CheckBox
               {...bindRememberMe}
               title='Remember username'
@@ -138,7 +148,7 @@ const Login = () => {
 
             <View style={styles.footer}>
               <ConcealButton
-                onPress={() => loginUser({ email, password, twoFACode, rememberMe, id: 'loginForm' })}
+                onPress={() => loginUser({ email, password, twoFACode, rememberMe, captcha: hCode, id: 'loginForm' })}
                 text='Sign In'
                 accessibilityLabel="Log In Button"
                 disabled={formSubmitted || !formValid}

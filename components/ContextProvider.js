@@ -20,7 +20,7 @@ const AppContextProvider = props => {
     // always set the uuid for the login user
     options.uuid = Constants.installationId;
     let message;
-
+    
     dispatch({ type: 'USER_LOGIN_STARTED', value: true });
     dispatch({ type: 'FORM_SUBMITTED', value: true });
 
