@@ -1,30 +1,25 @@
-import React, { useContext, useState, useEffect } from "react";
-import { Icon, Header, ListItem } from 'react-native-elements';
-import NavigationService from '../helpers/NavigationService';
-import { AppContext } from '../components/ContextProvider';
+import Slider from '@react-native-community/slider';
+import React, { useContext, useEffect, useState } from 'react';
+import { FlatList, Text, View } from 'react-native';
+import { Header, Icon, ListItem } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import ConcealTextInput from '../components/ccxTextInput';
-import ConcealButton from '../components/ccxButton';
-import GuideNavigation from '../helpers/GuideNav';
-import { AppColors } from '../constants/Colors';
-import AppStyles from '../components/Style';
 import Tips from 'react-native-guide-tips';
-import { Slider } from 'react-native';
+import ConcealButton from '../components/ccxButton';
+import ConcealTextInput from '../components/ccxTextInput';
+import { AppContext } from '../components/ContextProvider';
+import AppStyles from '../components/Style';
+import { AppColors } from '../constants/Colors';
+import GuideNavigation from '../helpers/GuideNav';
 import {
-  maskAddress,
-  getAspectRatio,
   format4Decimals,
   format6Decimals,
-  parseLocaleNumber,
-  getDepositInterest
+  getAspectRatio,
+  getDepositInterest,
+  maskAddress,
+  parseLocaleNumber
 } from '../helpers/utils';
-import {
-  Text,
-  View,
-  FlatList,
-} from "react-native";
 
-const CreateDepositScreen = () => {
+const CreateDepositScreen = ({ navigation: { goBack, navigate } }) => {
   const { state, actions } = useContext(AppContext);
   const { setAppData } = actions;
   const { appSettings, wallets, appData } = state;
@@ -101,7 +96,7 @@ const CreateDepositScreen = () => {
   }
 
   const getAmountError = () => {
-    var amountAsFloat = parseLocaleNumber(state.appData.createDeposit.amount, true);
+    let amountAsFloat = parseLocaleNumber(state.appData.createDeposit.amount, true);
     if ((amountAsFloat < 1) && (state.appData.createDeposit.amount)) {
       return "Amount must be at least 1 CCX"
     } else if (amountAsFloat > (currWallet.balance - state.appSettings.defaultFee)) {
@@ -127,11 +122,11 @@ const CreateDepositScreen = () => {
   return (
     <View style={styles.pageWrapper}>
       <Header
-        placement="left"
+        placement='left'
         statusBarProps={{ translucent: false, backgroundColor: "#212529" }}
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
-          onPress={() => NavigationService.goBack()}
+          onPress={() => goBack()}
           name='arrow-back-outline'
           type='ionicon'
           color='white'
@@ -156,7 +151,7 @@ const CreateDepositScreen = () => {
         }
         rightComponent={<Tips
           position={'bottom'}
-          visible={guideState == 'clear'}
+          visible={guideState === 'clear'}
           textStyle={AppStyles.guideTipText}
           style={[AppStyles.guideTipContainer, styles.guideTipClearDeposit]}
           tooltipArrowStyle={[AppStyles.guideTipArrowTop, styles.guideTipArrowClearDeposit]}
@@ -174,7 +169,7 @@ const CreateDepositScreen = () => {
       <View style={styles.walletWrapper}>
         <Tips
           position={'top'}
-          visible={guideState == 'balance'}
+          visible={guideState === 'balance'}
           textStyle={AppStyles.guideTipText}
           tooltipArrowStyle={AppStyles.guideTipArrowBottom}
           style={[AppStyles.guideTipContainer, styles.guideTipBalance]}
@@ -203,7 +198,7 @@ const CreateDepositScreen = () => {
 
         <Tips
           position={'top'}
-          visible={guideState == 'amount'}
+          visible={guideState === 'amount'}
           textStyle={AppStyles.guideTipText}
           tooltipArrowStyle={AppStyles.guideTipArrowBottom}
           style={[AppStyles.guideTipContainer, styles.guideTipAmount]}
@@ -250,7 +245,7 @@ const CreateDepositScreen = () => {
         </View>
         <Tips
           position={'top'}
-          visible={guideState == 'duration'}
+          visible={guideState === 'duration'}
           textStyle={AppStyles.guideTipText}
           style={AppStyles.guideTipContainer}
           tooltipArrowStyle={AppStyles.guideTipArrowBottom}
@@ -267,7 +262,7 @@ const CreateDepositScreen = () => {
               minimumTrackTintColor={AppColors.concealOrange}
               thumbTintColor={AppColors.concealOrange}
               maximumTrackTintColor="#FFFFFF"
-              onValueChange={(value) => {
+              onValueChange={value => {
                 setAppData({
                   createDeposit: {
                     duration: value,
@@ -289,7 +284,7 @@ const CreateDepositScreen = () => {
         <View style={[styles.footerBtn, styles.footerBtnLeft]}>
           <Tips
             position={'top'}
-            visible={guideState == 'create'}
+            visible={guideState === 'create'}
             textStyle={AppStyles.guideTipText}
             text="Click here to create the deposit"
             style={[AppStyles.guideTipContainer, styles.guideTipCreate]}
@@ -299,7 +294,7 @@ const CreateDepositScreen = () => {
             <ConcealButton
               style={[styles.footerBtn, styles.footerBtnLeft]}
               disabled={!isFormValid()}
-              onPress={() => NavigationService.navigate('CreateDepositConfirm')}
+              onPress={() => navigate('CreateDepositConfirm')}
               text="CREATE"
             />
           </Tips>
@@ -307,7 +302,7 @@ const CreateDepositScreen = () => {
         <View style={[styles.footerBtn, styles.footerBtnLeft]}>
           <Tips
             position={'top'}
-            visible={guideState == 'cancel'}
+            visible={guideState === 'cancel'}
             textStyle={AppStyles.guideTipText}
             text="Click here to cancel the deposit creation"
             style={[AppStyles.guideTipContainer, styles.guideTipCancel]}
@@ -316,7 +311,7 @@ const CreateDepositScreen = () => {
           >
             <ConcealButton
               style={[styles.footerBtn, styles.footerBtnRight]}
-              onPress={() => NavigationService.goBack()}
+              onPress={() => goBack()}
               text="CANCEL"
             />
           </Tips>

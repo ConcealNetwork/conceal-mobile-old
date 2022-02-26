@@ -1,21 +1,13 @@
 import React, { useContext } from 'react';
+import { Keyboard, ScrollView, StyleSheet, Text, TextInput, TouchableWithoutFeedback, View } from 'react-native';
 import { Image } from 'react-native-elements';
 import ConcealButton from '../components/ccxButton';
 
 import { AppContext } from '../components/ContextProvider';
+import AppStyles from '../components/Style';
+import { AppColors } from '../constants/Colors';
 import { useFormInput, useFormValidation } from '../helpers/hooks';
 import { getAspectRatio } from '../helpers/utils';
-import { AppColors } from '../constants/Colors';
-import AppStyles from '../components/Style';
-import {
-  View,
-  Text,
-  Keyboard,
-  TextInput,
-  StyleSheet,
-  ScrollView,
-  TouchableWithoutFeedback
-} from 'react-native';
 
 
 const ResetPassword = props => {

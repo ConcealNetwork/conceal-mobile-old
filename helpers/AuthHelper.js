@@ -1,5 +1,5 @@
-import localStorage from './LocalStorage';
 import decode from 'jwt-decode';
+import localStorage from './LocalStorage';
 
 export default class AuthHelper {
   constructor(domain) {
@@ -11,10 +11,10 @@ export default class AuthHelper {
     const body = {
       uuid,
       email,
-      password,      
+      password,
       rememberme: true,
     };
-    
+
     // add the captcha response code
     body["h-captcha-response"] = captcha;
 
@@ -47,9 +47,9 @@ export default class AuthHelper {
 
   setUsername = idUsername => localStorage.set('id_username', idUsername);
   getUsername = () => { return localStorage.get('id_username') };
-  getIsAltAuth = () => { return (localStorage.get('auth_method', 'password') !== "password") };
+  getIsAltAuth = () => { return (localStorage.get('auth_method', 'password') !== 'password') };
   setRememberme = idRememberme => localStorage.set('id_rememberme', idRememberme);
-  getRememberme = () => { return localStorage.get('id_rememberme') == "TRUE"; }
+  getRememberme = () => { return localStorage.get('id_rememberme') === 'TRUE'; }
   setChecksum = checksum => localStorage.set('id_checksum', checksum);
   getChecksum = () => { return localStorage.get('id_checksum') }
   setToken = idToken => localStorage.set('id_token', idToken);

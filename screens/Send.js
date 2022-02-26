@@ -1,29 +1,23 @@
-import { Icon, Header, ListItem } from 'react-native-elements';
-import NavigationService from '../helpers/NavigationService';
-import { AppContext } from '../components/ContextProvider';
+import React, { useContext, useEffect } from 'react';
+import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { Header, Icon, ListItem } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import ConcealTextInput from '../components/ccxTextInput';
 import ConcealButton from '../components/ccxButton';
-import { AppColors } from '../constants/Colors';
-import SearchAddress from './SearchAddress';
+import ConcealTextInput from '../components/ccxTextInput';
+import { AppContext } from '../components/ContextProvider';
 import AppStyles from '../components/Style';
-import React, { useContext } from "react";
+import { AppColors } from '../constants/Colors';
 import {
-  maskAddress,
-  getAspectRatio,
   format4Decimals,
   format6Decimals,
   format8Decimals,
+  getAspectRatio,
+  maskAddress,
   parseLocaleNumber
 } from '../helpers/utils';
-import {
-  Text,
-  View,
-  FlatList,
-  TouchableOpacity
-} from "react-native";
+import SearchAddress from './SearchAddress';
 
-const SendScreen = () => {
+const SendScreen = ({ navigation: { goBack, navigate }, route }) => {
   const { state, actions } = useContext(AppContext);
   const { setAppData } = actions;
   const { appSettings, user, wallets, appData } = state;
@@ -47,9 +41,9 @@ const SendScreen = () => {
     });
   }
 
-  if (state.appData.sendScreen.toPaymendId) {
+  if (state.appData.sendScreen.toPaymentId) {
     sendSummaryList.push({
-      value: maskAddress(state.appData.sendScreen.toPaymendId),
+      value: maskAddress(state.appData.sendScreen.toPaymentId),
       title: 'Payment ID',
       icon: 'md-key'
     });
@@ -57,7 +51,7 @@ const SendScreen = () => {
 
   if (state.appData.sendScreen.toAmount) {
     let totalAmount = parseLocaleNumber(state.appData.sendScreen.toAmount);
-    totalAmount = totalAmount + appSettings.defaultFee;
+    totalAmount += appSettings.defaultFee;
 
     sendSummaryList.push({
       value: `${totalAmount.toLocaleString(undefined, format6Decimals)} CCX`,
@@ -72,14 +66,14 @@ const SendScreen = () => {
     });
   }
 
-  this.onScanSuccess = (data) => {
+  useEffect(() => {
     setAppData({
       sendScreen: {
-        toAddress: data.address,
-        toPaymendId: data.paymentId
+        toAddress: route.params?.address,
+        toPaymentId: route.params?.paymentId
       }
     });
-  }
+  }, [route.params?.address, route.params?.paymentId]);
 
   const onScanAddressQRCode = () => {
     setAppData({
@@ -88,7 +82,7 @@ const SendScreen = () => {
       }
     });
 
-    NavigationService.navigate('Scanner', { onSuccess: this.onScanSuccess });
+    navigate('Scanner', { previousScreen: 'SendPayment' });
   }
 
   // key extractor for the list
@@ -112,7 +106,7 @@ const SendScreen = () => {
 
   const isFormValid = () => {
     if (state.appData.sendScreen.toAddress && state.appData.sendScreen.toAmount) {
-      var amountAsFloat = parseLocaleNumber(state.appData.sendScreen.toAmount);
+      let amountAsFloat = parseLocaleNumber(state.appData.sendScreen.toAmount);
       return ((amountAsFloat > 0) && (amountAsFloat <= (currWallet.balance - appSettings.defaultFee)));
     } else {
       return false;
@@ -124,14 +118,14 @@ const SendScreen = () => {
       sendScreen: {
         toAmount: '',
         toAddress: '',
-        toPaymendId: '',
+        toPaymentId: '',
         toLabel: ''
       }
     });
   }
 
   const getAmountError = () => {
-    var amountAsFloat = parseLocaleNumber(state.appData.sendScreen.toAmount);
+    let amountAsFloat = parseLocaleNumber(state.appData.sendScreen.toAmount);
 
     if ((amountAsFloat <= 0) && (state.appData.sendScreen.toAmount)) {
       return "Amount must be greater then 0"
@@ -146,7 +140,7 @@ const SendScreen = () => {
     setAppData({
       sendScreen: {
         toAddress: address,
-        toPaymendId: paymentID
+        toPaymentId: paymentID
       }
     });
   }
@@ -154,10 +148,10 @@ const SendScreen = () => {
   return (
     <View style={styles.pageWrapper}>
       <Header
-        placement="left"
+        placement='left'
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
-          onPress={() => NavigationService.goBack()}
+          onPress={() => goBack()}
           name='arrow-back-outline'
           type='ionicon'
           color='white'
@@ -245,7 +239,7 @@ const SendScreen = () => {
                       entryId: null
                     }
                   });
-                  NavigationService.navigate('EditAddress', { callback: setAddress });
+                  navigate('EditAddress', { callback: setAddress });
                 }}
                 name='md-add'
                 type='ionicon'
@@ -263,7 +257,7 @@ const SendScreen = () => {
         />
       </View>
       <SearchAddress
-        selectAddress={(item) => setAppData({ searchAddress: { addrListVisible: false }, sendScreen: { toAddress: item.address, toPaymendId: item.paymentID, toLabel: item.label } })}
+        selectAddress={(item) => setAppData({ searchAddress: { addrListVisible: false }, sendScreen: { toAddress: item.address, toPaymentId: item.paymentID, toLabel: item.label } })}
         closeOverlay={() => setAppData({ searchAddress: { addrListVisible: false } })}
         addressData={user.addressBook}
         currWallet={currWallet}
@@ -272,7 +266,7 @@ const SendScreen = () => {
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnLeft]}
           disabled={!isFormValid()}
-          onPress={() => NavigationService.navigate('SendConfirm')}
+          onPress={() => navigate('SendConfirm')}
           text="SEND"
         />
         <ConcealButton

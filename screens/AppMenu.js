@@ -1,15 +1,14 @@
 import React, { useContext } from 'react';
-import { Icon, Header, ListItem } from 'react-native-elements';
-import NavigationService from '../helpers/NavigationService';
+import { FlatList, View } from 'react-native';
+import { Header, Icon, ListItem } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { AppContext } from '../components/ContextProvider';
-import { getAspectRatio } from '../helpers/utils';
-import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
-import { View, FlatList } from 'react-native';
+import { AppColors } from '../constants/Colors';
+import { getAspectRatio } from '../helpers/utils';
 
 
-const AppMenu = () => {
+const AppMenu = ({ navigation: { goBack, navigate } }) => {
   const { actions } = useContext(AppContext);
   const { logoutUser } = actions;
 
@@ -20,7 +19,7 @@ const AppMenu = () => {
       title: 'Settings for your profile...',
       icon: 'md-settings',
       onPress: function () {
-        NavigationService.navigate('Settings');
+        navigate('Settings');
       },
       rightElement: function () {
         return (<Icon
@@ -36,7 +35,7 @@ const AppMenu = () => {
       title: 'This is your default selected wallet screen...',
       icon: 'md-wallet',
       onPress: function () {
-        NavigationService.navigate('Wallet');
+        navigate('Wallet');
       },
       rightElement: function () {
         return (<Icon
@@ -52,7 +51,7 @@ const AppMenu = () => {
       title: 'This is the wallet selection screen...',
       icon: 'md-wallet',
       onPress: function () {
-        NavigationService.navigate('Wallets');
+        navigate('Wallets');
       },
       rightElement: function () {
         return (<Icon
@@ -68,7 +67,7 @@ const AppMenu = () => {
       title: 'Go to sending and receiving messages...',
       icon: 'md-mail',
       onPress: function () {
-        NavigationService.navigate('Messages');
+        navigate('Messages');
       },
       rightElement: function () {
         return (<Icon
@@ -84,7 +83,7 @@ const AppMenu = () => {
       title: 'This is the address book managment screen...',
       icon: 'md-book',
       onPress: function () {
-        NavigationService.navigate('AddressBook');
+        navigate('AddressBook');
       },
       rightElement: function () {
         return (<Icon
@@ -100,7 +99,7 @@ const AppMenu = () => {
       title: 'This is the current market data...',
       icon: 'md-trending-up',
       onPress: function () {
-        NavigationService.navigate('Market');
+        navigate('Market');
       },
       rightElement: function () {
         return (<Icon
@@ -114,11 +113,15 @@ const AppMenu = () => {
     }
   ];
 
-  // key extractor for the list
-  const keyExtractor = (item, index) => index.toString();
-
   const renderItem = ({ item }) => (
-    <ListItem
+    <ListItem key={item.value} onPress={item.onPress} bottomDivider>
+      <ListItem.Content>
+        <ListItem.Title>{item.value}</ListItem.Title>
+        <ListItem.Subtitle>{item.subtitle}</ListItem.Subtitle>
+      </ListItem.Content>
+      <ListItem.Chevron />
+    </ListItem>
+    /*<ListItem
       title={item.value}
       subtitle={item.title}
       rightElement={item.rightElement}
@@ -132,16 +135,16 @@ const AppMenu = () => {
         color='white'
         size={32 * getAspectRatio()}
       />}
-    />
+    />*/
   );
 
   return (
     <View style={AppStyles.pageWrapper}>
       <Header
-        placement="left"
+        placement='left'
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
-          onPress={() => NavigationService.goBack()}
+          onPress={() => goBack()}
           name='arrow-back-outline'
           type='ionicon'
           color='white'
@@ -160,7 +163,7 @@ const AppMenu = () => {
         data={settingsList}
         style={styles.settingsList}
         renderItem={renderItem}
-        keyExtractor={keyExtractor}
+        keyExtractor={item => item.title}
       />
     </View>
   )

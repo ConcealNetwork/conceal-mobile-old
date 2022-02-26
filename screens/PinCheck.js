@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
+import { Text, View } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import ConcealPinView from '../components/ccxPinView';
 import ConcealButton from '../components/ccxButton';
-import localStorage from '../helpers/LocalStorage';
+import ConcealPinView from '../components/ccxPinView';
 import { AppColors } from '../constants/Colors';
-import { View, Text } from 'react-native';
+import localStorage from '../helpers/LocalStorage';
 
 
 const PinCheck = props => {
@@ -12,21 +12,21 @@ const PinCheck = props => {
   const [success, setSuccess] = useState(0);
 
   this.getPinStatusText = () => {
-    if (success == 0) {
+    if (success === 0) {
       return "Please enter your PIN...";
-    } else if (success == 1) {
+    } else if (success === 1) {
       return "Corrent PIN was entered.";
-    } else if (success == 2) {
+    } else if (success === 2) {
       return "Wrong PIN. Please try again.";
     }
   }
 
   this.getPinStyle = () => {
-    if (success == 0) {
+    if (success === 0) {
       return { color: AppColors.concealTextColor };
-    } else if (success == 1) {
+    } else if (success === 1) {
       return { color: AppColors.concealTextColor };
-    } else if (success == 2) {
+    } else if (success === 2) {
       return { color: AppColors.concealErrorColor };
     }
   }

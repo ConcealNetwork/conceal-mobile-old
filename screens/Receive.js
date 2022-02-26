@@ -1,27 +1,16 @@
+import * as Clipboard from 'expo-clipboard';
 import React, { useContext } from 'react';
+import { ScrollView, Text, View } from 'react-native';
 import { Header, Icon } from 'react-native-elements';
-import { AppContext } from '../components/ContextProvider';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import NavigationService from '../helpers/NavigationService';
-import ConcealButton from '../components/ccxButton';
 import QRCode from 'react-native-qrcode-svg';
-import { AppColors } from '../constants/Colors';
+import ConcealButton from '../components/ccxButton';
+import { AppContext } from '../components/ContextProvider';
 import AppStyles from '../components/Style';
-import {
-  shareContent,
-  getAspectRatio,
-  showSuccessMessage
-} from '../helpers/utils';
-import {
-  Text,
-  View,
-  Clipboard,
-  ScrollView,
-  StyleSheet
-} from "react-native";
+import { AppColors } from '../constants/Colors';
+import { getAspectRatio, shareContent, showSuccessMessage } from '../helpers/utils';
 
-
-const Receive = () => {
+const Receive = ({ navigation: { goBack } }) => {
   const { state } = useContext(AppContext);
   const { wallets, appData } = state;
   const currWallet = wallets[appData.common.selectedWallet];
@@ -34,10 +23,10 @@ const Receive = () => {
   return (
     <View style={styles.pageWrapper}>
       <Header
-        placement="left"
+        placement='left'
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
-          onPress={() => NavigationService.goBack()}
+          onPress={() => goBack()}
           name='arrow-back-outline'
           type='ionicon'
           color='white'

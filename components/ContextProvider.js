@@ -1,16 +1,17 @@
-import React, { useEffect } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import Constants from 'expo-constants';
+import React, { useEffect } from 'react';
+import ApiHelper from '../helpers/ApiHelper';
+import AuthHelper from '../helpers/AuthHelper';
+import { logger } from '../helpers/Logger';
+import { showMessageDialog } from '../helpers/utils';
 
 import useAppState from './useAppState';
-import NavigationService from '../helpers/NavigationService';
-import { showMessageDialog } from '../helpers/utils';
-import AuthHelper from '../helpers/AuthHelper';
-import ApiHelper from '../helpers/ApiHelper';
-import { logger } from '../helpers/Logger';
 
 export const AppContext = React.createContext();
 
 const AppContextProvider = props => {
+  const navigation = useNavigation();
   const [state, dispatch, updatedState] = useAppState();
   const Auth = new AuthHelper(state.appSettings.apiURL);
   const Api = new ApiHelper({ Auth, state });
@@ -20,12 +21,13 @@ const AppContextProvider = props => {
     // always set the uuid for the login user
     options.uuid = Constants.installationId;
     let message;
-    
+
     dispatch({ type: 'USER_LOGIN_STARTED', value: true });
     dispatch({ type: 'FORM_SUBMITTED', value: true });
 
-    Auth.setRememberme(options.rememberMe ? "TRUE" : "FALSE");
+    Auth.setRememberme(options.rememberMe ? 'TRUE' : 'FALSE');
     Auth.setUsername(options.email);
+    Auth.setToken('ait');
     Auth.login(options)
       .then(res => {
         if (res.result === 'success') {
@@ -76,7 +78,6 @@ const AppContextProvider = props => {
           msgType = 'info';
           Auth.logout();
           dispatch({ type: 'CLEAR_APP' });
-          NavigationService.navigate('Login');
         } else {
           message = res.message;
         }
@@ -113,7 +114,7 @@ const AppContextProvider = props => {
     logger.log('LOGGING OUT...');
     Auth.logout();
     dispatch({ type: 'CLEAR_APP' });
-    NavigationService.navigate('Login');
+    navigation.navigate('Login');
   };
 
   const getUser = () => {
@@ -151,7 +152,7 @@ const AppContextProvider = props => {
           dispatch({ type: 'MESSAGE_SENT', res });
           getWallets();
           getMessages();
-          NavigationService.goBack(2);
+          navigation.goBack(2);
           message = 'Message was successfully sent to the recipient';
           msgType = 'info';
         } else {
@@ -347,7 +348,7 @@ const AppContextProvider = props => {
     logger.log(`SWITCHING WALLET ${address}...`);
     appData.common.selectedWallet = address;
     dispatch({ type: 'SWITCH_WALLET', address });
-    NavigationService.navigate('Wallet');
+    navigation.navigate('Wallet');
   };
 
   const deleteWallet = address => {
@@ -442,7 +443,7 @@ const AppContextProvider = props => {
         if (res.result === 'success') {
           dispatch({ type: 'PAYMENT_SENT', res });
           getWallets();
-          NavigationService.goBack(2);
+          navigation.goBack(2);
           message = 'Payment was successfully sent to the recipient';
           msgType = 'info';
         } else {
@@ -476,7 +477,7 @@ const AppContextProvider = props => {
       .then(res => {
         if (res.result === 'success') {
           getDeposits();
-          NavigationService.goBack(2);
+          navigation.goBack(2);
           dispatch({ type: 'DEPOSIT_CREATED', res });
           message = 'Your deposit was successfully created. It may take a while for deposit to be shown in the list, since it needs to be confirmed first!';
           msgType = 'info';
@@ -586,7 +587,7 @@ const AppContextProvider = props => {
   useEffect(() => {
     if (state.layout.userLoaded && state.layout.walletsLoaded && state.layout.messagesLoaded && state.layout.depositsLoaded) {
       if (!state.layout.loginFinished) {
-        NavigationService.navigate('Wallet');
+        // navigation.navigate('Wallet');
         state.layout.loginFinished = true;
       }
     }

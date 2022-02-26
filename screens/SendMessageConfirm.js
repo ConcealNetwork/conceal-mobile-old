@@ -1,16 +1,15 @@
-import { Icon, Header, ListItem } from 'react-native-elements';
-import { maskAddress, getAspectRatio } from '../helpers/utils';
-import NavigationService from '../helpers/NavigationService';
+import React, { useContext, useState } from 'react';
+import { FlatList, View } from 'react-native';
+import { Header, Icon, ListItem } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { AppContext } from '../components/ContextProvider';
-import React, { useContext, useState } from "react";
 import ConcealButton from '../components/ccxButton';
-import { AppColors } from '../constants/Colors';
-import { View, FlatList } from "react-native";
+import { AppContext } from '../components/ContextProvider';
 import AppStyles from '../components/Style';
+import { AppColors } from '../constants/Colors';
+import { getAspectRatio, maskAddress } from '../helpers/utils';
 import AuthCheck from './AuthCheck';
 
-const SendMessageConfirm = () => {
+const SendMessageConfirm = ({ navigation: { goBack } }) => {
   const { state, actions } = useContext(AppContext);
   const { wallets, appData, appSettings } = state;
   const currWallet = wallets[appData.common.selectedWallet];
@@ -23,7 +22,6 @@ const SendMessageConfirm = () => {
       value: value,
       title: title,
       icon: icon
-
     });
   }
 
@@ -63,10 +61,10 @@ const SendMessageConfirm = () => {
   return (
     <View style={styles.pageWrapper}>
       <Header
-        placement="left"
+        placement='left'
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
-          onPress={() => NavigationService.goBack()}
+          onPress={() => goBack()}
           name='arrow-back-outline'
           type='ionicon'
           color='white'
@@ -88,7 +86,7 @@ const SendMessageConfirm = () => {
         />
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnRight]}
-          onPress={() => NavigationService.goBack()}
+          onPress={() => goBack()}
           text="CANCEL"
         />
       </View>

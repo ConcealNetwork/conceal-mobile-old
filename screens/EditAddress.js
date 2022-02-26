@@ -1,52 +1,46 @@
-import React, { useContext } from 'react';
-import { Icon, Header } from 'react-native-elements';
-import NavigationService from '../helpers/NavigationService';
-import ConcealTextInput from '../components/ccxTextInput';
-import ConcealButton from '../components/ccxButton';
+import React, { useContext, useEffect } from 'react';
+import { View, } from 'react-native';
+import { Header, Icon } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import ConcealButton from '../components/ccxButton';
+import ConcealTextInput from '../components/ccxTextInput';
 import { AppContext } from '../components/ContextProvider';
-import {
-  Text,
-  View,
-  StyleSheet,
-} from 'react-native';
 
-const EditAddress = (props) => {
-  const params = props.navigation.state.params;
+const EditAddress = ({ navigation: { goBack, navigate }, route }) => {
 
   const { actions, state } = useContext(AppContext);
   const { addContact, setAppData } = actions;
 
-  this.isFormValid = () => {
+  const isFormValid = () => {
     return (state.appData.addressEntry.label && state.appData.addressEntry.address);
   }
 
-  this.onScanSuccess = (data) => {
+  useEffect(() => {
     setAppData({
       addressEntry: {
-        address: data.address,
-        paymentId: data.paymentId
+        address: route.params?.address,
+        paymentId: route.params?.paymentId
       }
     });
-  }
+  }, [route.params?.address, route.params?.paymentId]);
 
-  this.onScanAddressQRCode = () => {
+  const onScanAddressQRCode = () => {
     setAppData({
       scanCode: {
         scanned: false
       }
     });
 
-    NavigationService.navigate('Scanner', { onSuccess: this.onScanSuccess });
+    navigate('Scanner', { previousScreen: 'EditAddress' });
   }
 
   return (
     <View style={styles.pageWrapper}>
       <Header
-        placement="left"
+        placement='left'
         containerStyle={styles.appHeader}
         leftComponent={<Icon
-          onPress={() => NavigationService.goBack()}
+          onPress={() => goBack()}
           name='arrow-back-outline'
           type='ionicon'
           color='white'
@@ -77,7 +71,7 @@ const EditAddress = (props) => {
       <View style={styles.footer}>
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnLeft]}
-          disabled={!this.isFormValid()}
+          disabled={!isFormValid()}
           onPress={() => {
             addContact(
               {
@@ -90,7 +84,7 @@ const EditAddress = (props) => {
               null,
               params.callback
             );
-            NavigationService.goBack();
+            goBack();
           }}
           text="SAVE"
         />

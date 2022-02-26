@@ -1,26 +1,17 @@
-import React, { useContext, useState, useEffect } from "react";
-import { Icon, Header, ListItem } from 'react-native-elements';
-import NavigationService from '../helpers/NavigationService';
+import React, { useContext, useEffect, useState } from 'react';
+import { FlatList, View, } from 'react-native';
+import { Header, Icon, ListItem } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import ConcealButton from '../components/ccxButton';
 import { AppContext } from '../components/ContextProvider';
 import InterestTable from '../components/InterestTable';
-import ConcealButton from '../components/ccxButton';
-import GuideNavigation from '../helpers/GuideNav';
-import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
+import { AppColors } from '../constants/Colors';
+import GuideNavigation from '../helpers/GuideNav';
+import { format6Decimals, getAspectRatio, getDepositInterest, parseLocaleNumber } from '../helpers/utils';
 import AuthCheck from './AuthCheck';
-import {
-  getAspectRatio,
-  format6Decimals,
-  parseLocaleNumber,
-  getDepositInterest
-} from '../helpers/utils';
-import {
-  View,
-  FlatList,
-} from "react-native";
 
-const CreateDepositConfirm = () => {
+const CreateDepositConfirm = ({ navigation: { goBack } }) => {
   const { state, actions } = useContext(AppContext);
   const { wallets, appData, appSettings } = state;
   const currWallet = wallets[appData.common.selectedWallet];
@@ -85,11 +76,11 @@ const CreateDepositConfirm = () => {
   return (
     <View style={styles.pageWrapper}>
       <Header
-        placement="left"
+        placement='left'
         statusBarProps={{ translucent: false, backgroundColor: "#212529" }}
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
-          onPress={() => NavigationService.goBack()}
+          onPress={() => goBack()}
           name='arrow-back-outline'
           type='ionicon'
           color='white'
@@ -115,7 +106,7 @@ const CreateDepositConfirm = () => {
           />
           <ConcealButton
             style={[styles.footerBtn, styles.footerBtnRight]}
-            onPress={() => NavigationService.goBack()}
+            onPress={() => goBack()}
             text="CANCEL"
           />
         </View>

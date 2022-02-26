@@ -1,27 +1,21 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { getAspectRatio, hasBiometricCapabilites } from '../helpers/utils';
-import { Icon, Header, ListItem, Overlay } from 'react-native-elements';
-import NavigationService from '../helpers/NavigationService';
+import React, { useContext, useEffect, useState } from 'react';
+import { FlatList, Text, View, } from 'react-native';
+import { Header, Icon, ListItem, Overlay } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { AppContext } from '../components/ContextProvider';
-import ModalSelector from 'react-native-modal-selector';
-import { showMessageDialog } from '../helpers/utils';
-import localStorage from '../helpers/LocalStorage';
-import GuideNavigation from '../helpers/GuideNav';
-import { AppColors } from '../constants/Colors';
-import AppStyles from '../components/Style';
 import Tips from 'react-native-guide-tips';
+import ModalSelector from 'react-native-modal-selector';
 import AppConf from '../app.json';
-import PinSetup from './PinSetup';
+import { AppContext } from '../components/ContextProvider';
+import AppStyles from '../components/Style';
+import { AppColors } from '../constants/Colors';
+import GuideNavigation from '../helpers/GuideNav';
+import localStorage from '../helpers/LocalStorage';
+import { getAspectRatio, hasBiometricCapabilites, showMessageDialog } from '../helpers/utils';
 import FgpSetup from './FgpSetup';
-import {
-  Text,
-  View,
-  FlatList,
-} from 'react-native';
+import PinSetup from './PinSetup';
 
 
-const Settings = () => {
+const Settings = ({ navigation: { goBack } }) => {
   const { actions, state } = useContext(AppContext);
   const { logoutUser, check2FA } = actions;
   const { network, user, userSettings } = state;
@@ -50,15 +44,15 @@ const Settings = () => {
   if (hasBiometric) {
     loginData = [
       { key: 1, section: true, label: 'Available options' },
-      { key: 2, value: "password", label: 'Password' },
-      { key: 3, value: "biometric", label: 'Biometric' },
-      { key: 4, value: "pin", label: 'PIN' }
+      { key: 2, value: 'password', label: 'Password' },
+      { key: 3, value: 'biometric', label: 'Biometric' },
+      { key: 4, value: 'pin', label: 'PIN' }
     ];
   } else {
     loginData = [
       { key: 1, section: true, label: 'Available options' },
-      { key: 2, value: "password", label: 'Password' },
-      { key: 3, value: "pin", label: 'PIN' }
+      { key: 2, value: 'password', label: 'Password' },
+      { key: 3, value: 'pin', label: 'PIN' }
     ];
   }
 
@@ -87,7 +81,7 @@ const Settings = () => {
         return (
           <Tips
             position={'left'}
-            visible={guideState == 'changeAuth'}
+            visible={guideState === 'changeAuth'}
             textStyle={AppStyles.guideTipText}
             tooltipArrowStyle={AppStyles.guideTipArrowRight}
             style={[AppStyles.guideTipContainer, styles.guideTipChangeAuth]}
@@ -106,9 +100,9 @@ const Settings = () => {
                 localStorage.set('auth_method', option.value);
                 setAuthMode(option.value);
 
-                if (option.value == "pin") {
+                if (option.value === 'pin') {
                   setShowPinModal(true);
-                } else if (option.value == "biometric") {
+                } else if (option.value === 'biometric') {
                   setShowFgpModal(true);
                 }
               }}
@@ -158,11 +152,11 @@ const Settings = () => {
   return (
     <View style={AppStyles.pageWrapper}>
       <Header
-        placement="left"
+        placement='left'
         statusBarProps={{ translucent: false, backgroundColor: "#212529" }}
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
-          onPress={() => NavigationService.goBack()}
+          onPress={() => goBack()}
           name='arrow-back-outline'
           type='ionicon'
           color='white'
@@ -188,7 +182,7 @@ const Settings = () => {
         rightComponent={
           <Tips
             position={'bottom'}
-            visible={guideState == 'logoutUser'}
+            visible={guideState === 'logoutUser'}
             textStyle={AppStyles.guideTipText}
             style={[AppStyles.guideTipContainer, styles.guideTipLogout]}
             tooltipArrowStyle={[AppStyles.guideTipArrowTop, styles.guideTipArrowLogout]}

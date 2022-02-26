@@ -1,21 +1,13 @@
 import React, { useContext } from 'react';
+import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { Icon, Overlay } from 'react-native-elements';
+import EStyleSheet from 'react-native-extended-stylesheet';
 import ConcealButton from '../components/ccxButton';
 import ConcealTextInput from '../components/ccxTextInput';
-import EStyleSheet from 'react-native-extended-stylesheet';
-import { Icon, Overlay } from 'react-native-elements';
 
 import { AppContext } from '../components/ContextProvider';
 import { AppColors } from '../constants/Colors';
-import {
-  maskAddress,
-  getAspectRatio
-} from '../helpers/utils';
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity
-} from 'react-native';
+import { getAspectRatio, maskAddress } from '../helpers/utils';
 
 
 const SearchAddress = props => {
@@ -28,7 +20,7 @@ const SearchAddress = props => {
     let isValidItem = true;
 
     // check if the text filter is set
-    if (state.appData.searchAddress.filterText && (value.label.toLowerCase().search(state.appData.searchAddress.filterText.toLowerCase()) == -1)) {
+    if (state.appData.searchAddress.filterText && (value.label.toLowerCase().search(state.appData.searchAddress.filterText.toLowerCase()) === -1)) {
       isValidItem = false;
     }
 

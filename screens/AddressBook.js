@@ -1,27 +1,20 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { Icon, Header } from 'react-native-elements';
-import NavigationService from '../helpers/NavigationService';
-import ConcealTextInput from '../components/ccxTextInput';
-import ConcealButton from '../components/ccxButton';
-import { AppContext } from '../components/ContextProvider';
+import * as Clipboard from 'expo-clipboard';
+import React, { useContext, useEffect, useState } from 'react';
+import { Alert, FlatList, Text, View } from 'react-native';
+import { Header, Icon } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { getAspectRatio } from '../helpers/utils';
-import GuideNavigation from '../helpers/GuideNav';
-import { maskAddress } from '../helpers/utils';
-import AppStyles from '../components/Style';
 import Tips from 'react-native-guide-tips';
-import {
-  Text,
-  View,
-  Alert,
-  FlatList,
-  Clipboard
-} from 'react-native';
+import ConcealButton from '../components/ccxButton';
+import ConcealTextInput from '../components/ccxTextInput';
+import { AppContext } from '../components/ContextProvider';
+import AppStyles from '../components/Style';
+import GuideNavigation from '../helpers/GuideNav';
+import { getAspectRatio, maskAddress } from '../helpers/utils';
 
 let firstVisibleItem = -1;
 
 let readLabelromClipboard = async () => {
-  const clipboardContent = await Clipboard.getString();
+  const clipboardContent = await Clipboard.getStringAsync();
   setAppData({
     addressEntry: {
       label: clipboardContent
@@ -30,7 +23,7 @@ let readLabelromClipboard = async () => {
 };
 
 let readAddressFromClipboard = async () => {
-  const clipboardContent = await Clipboard.getString();
+  const clipboardContent = await Clipboard.getStringAsync();
   setAppData({
     addressEntry: {
       address: clipboardContent
@@ -39,7 +32,7 @@ let readAddressFromClipboard = async () => {
 };
 
 let readPaymentIdFromClipboard = async () => {
-  const clipboardContent = await Clipboard.getString();
+  const clipboardContent = await Clipboard.getStringAsync();
   setAppData({
     addressEntry: {
       paymentId: clipboardContent
@@ -55,7 +48,7 @@ const handleViewableItemsChanged = (info) => {
   }
 }
 
-const AddressBook = () => {
+const AddressBook = ({ navigation: { goBack, navigate } }) => {
   const { actions, state } = useContext(AppContext);
   const { deleteContact, setAppData } = actions;
   const { layout, user } = state;
@@ -71,10 +64,10 @@ const AddressBook = () => {
   ]));
 
   user.addressBook.forEach(function (value, index, array) {
-    var isValidItem = true;
+    let isValidItem = true;
 
     // check if the text filter is set
-    if (state.appData.addressBook.filterText && (value.label.toLowerCase().search(state.appData.addressBook.filterText.toLowerCase()) == -1)) {
+    if (state.appData.addressBook.filterText && (value.label.toLowerCase().search(state.appData.addressBook.filterText.toLowerCase()) === -1)) {
       isValidItem = false;
     }
 
@@ -93,11 +86,11 @@ const AddressBook = () => {
   return (
     <View style={AppStyles.pageWrapper}>
       <Header
-        placement="left"
+        placement='left'
         statusBarProps={{ translucent: false }}
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
-          onPress={() => NavigationService.goBack()}
+          onPress={() => goBack()}
           name='arrow-back-outline'
           type='ionicon'
           color='white'
@@ -122,7 +115,7 @@ const AddressBook = () => {
         }
         rightComponent={<Tips
           position={'bottom'}
-          visible={guideState == 'addAddress'}
+          visible={guideState === 'addAddress'}
           textStyle={AppStyles.guideTipText}
           style={[AppStyles.guideTipContainer, styles.guideTipAddAddress]}
           tooltipArrowStyle={[AppStyles.guideTipArrowTop, styles.guideTipArrowAddAddress]}
@@ -140,7 +133,7 @@ const AddressBook = () => {
                   entryId: null
                 }
               });
-              NavigationService.navigate('EditAddress', { callback: null });
+              navigate('EditAddress', { callback: null });
             }}
             name='md-add-circle-outline'
             type='ionicon'
@@ -150,7 +143,7 @@ const AddressBook = () => {
       />
       <Tips
         position={'bottom'}
-        visible={guideState == 'addressSearch'}
+        visible={guideState === 'addressSearch'}
         textStyle={AppStyles.guideTipText}
         tooltipArrowStyle={AppStyles.guideTipArrowTop}
         style={AppStyles.guideTipContainer}
@@ -200,7 +193,7 @@ const AddressBook = () => {
                   <View style={styles.btnWrapper}>
                     <Tips
                       position={'bottom'}
-                      visible={(guideState == 'deleteAddress') && (index == firstVisibleItem)}
+                      visible={(guideState === 'deleteAddress') && (index === firstVisibleItem)}
                       textStyle={AppStyles.guideTipText}
                       style={[AppStyles.guideTipContainer, styles.guideTipDeleteAddress]}
                       tooltipArrowStyle={[AppStyles.guideTipArrowTop, styles.guideTipArrowDeleteAddress]}
@@ -228,7 +221,7 @@ const AddressBook = () => {
                   <View style={styles.btnWrapper}>
                     <Tips
                       position={'bottom'}
-                      visible={(guideState == 'editAddress') && (index == firstVisibleItem)}
+                      visible={(guideState === 'editAddress') && (index === firstVisibleItem)}
                       textStyle={AppStyles.guideTipText}
                       style={[AppStyles.guideTipContainer, styles.guideTipEditAddress]}
                       tooltipArrowStyle={[AppStyles.guideTipArrowTop, styles.guideTipArrowEditAddress]}
@@ -248,7 +241,7 @@ const AddressBook = () => {
                               entryId: item.entryID
                             }
                           });
-                          NavigationService.navigate('EditAddress', { callback: null });
+                          navigate('EditAddress', { callback: null });
                         }}
                         text="EDIT"
                       />

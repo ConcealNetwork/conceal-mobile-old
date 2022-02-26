@@ -1,25 +1,16 @@
-import { AnimatedCircularProgress } from 'react-native-circular-progress';
-import React, { useContext, useState, useEffect } from 'react';
-import { Icon, Header } from 'react-native-elements';
-import NavigationService from '../helpers/NavigationService';
-import { AppContext } from '../components/ContextProvider';
-import { appSettings } from '../constants/appSettings';
-import EStyleSheet from 'react-native-extended-stylesheet';
-import GuideNavigation from '../helpers/GuideNav';
-import { AppColors } from '../constants/Colors';
-import AppStyles from '../components/Style';
-import Tips from 'react-native-guide-tips';
 import Moment from 'moment';
-import {
-  Text,
-  View,
-  FlatList
-} from 'react-native';
-import {
-  maskAddress,
-  formatOptions,
-  getAspectRatio,
-} from '../helpers/utils';
+import React, { useContext, useEffect, useState } from 'react';
+import { FlatList, Text, View } from 'react-native';
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import { Header, Icon } from 'react-native-elements';
+import EStyleSheet from 'react-native-extended-stylesheet';
+import Tips from 'react-native-guide-tips';
+import { AppContext } from '../components/ContextProvider';
+import AppStyles from '../components/Style';
+import { appSettings } from '../constants/appSettings';
+import { AppColors } from '../constants/Colors';
+import GuideNavigation from '../helpers/GuideNav';
+import { formatOptions, getAspectRatio, maskAddress, } from '../helpers/utils';
 
 let firstVisibleItem = -1;
 
@@ -31,7 +22,7 @@ const handleViewableItemsChanged = (info) => {
   }
 }
 
-const Deposits = () => {
+const Deposits = ({ navigation: { goBack, navigate } }) => {
   const { actions, state } = useContext(AppContext);
   const { layout, network, deposits } = state;
   const { userLoaded, walletsLoaded, depositsLoaded } = layout;
@@ -76,11 +67,11 @@ const Deposits = () => {
   return (
     <View style={AppStyles.pageWrapper}>
       <Header
-        placement="left"
+        placement='left'
         statusBarProps={{ translucent: false, backgroundColor: "#212529" }}
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
-          onPress={() => NavigationService.goBack()}
+          onPress={() => goBack()}
           name='arrow-back-outline'
           type='ionicon'
           color='white'
@@ -105,7 +96,7 @@ const Deposits = () => {
         }
         rightComponent={<Tips
           position={'bottom'}
-          visible={guideState == 'createDeposit'}
+          visible={guideState === 'createDeposit'}
           textStyle={AppStyles.guideTipText}
           style={[AppStyles.guideTipContainer, styles.guideTipCreateDeposit]}
           tooltipArrowStyle={[AppStyles.guideTipArrowTop, styles.guideTipArrowCreateDeposit]}
@@ -121,7 +112,7 @@ const Deposits = () => {
                   durationText: `Deposit duration: 1 month`,
                 }
               });
-              NavigationService.navigate('CreateDeposit');
+              navigate('CreateDeposit');
             }}
             name='md-add-circle-outline'
             type='ionicon'

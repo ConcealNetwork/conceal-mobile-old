@@ -1,30 +1,23 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { Icon, Header } from 'react-native-elements';
-import { Text, View, FlatList } from 'react-native';
-import EStyleSheet from 'react-native-extended-stylesheet';
-import { AppColors } from '../constants/Colors';
-import NavigationService from '../helpers/NavigationService';
-import { AppContext } from '../components/ContextProvider';
-import ConcealButton from '../components/ccxButton';
-import GuideNavigation from '../helpers/GuideNav';
-import AppStyles from '../components/Style';
-import { sprintf } from 'sprintf-js';
-import Tips from 'react-native-guide-tips';
 import Moment from 'moment';
-import {
-  maskAddress,
-  formatOptions,
-  getAspectRatio,
-  format4Decimals,
-  format8Decimals,
-} from '../helpers/utils';
+import React, { useContext, useEffect, useState } from 'react';
+import { FlatList, Text, View } from 'react-native';
+import { Header, Icon } from 'react-native-elements';
+import EStyleSheet from 'react-native-extended-stylesheet';
+import Tips from 'react-native-guide-tips';
+import { sprintf } from 'sprintf-js';
+import ConcealButton from '../components/ccxButton';
+import { AppContext } from '../components/ContextProvider';
+import AppStyles from '../components/Style';
+import { AppColors } from '../constants/Colors';
+import GuideNavigation from '../helpers/GuideNav';
+import { format4Decimals, format8Decimals, formatOptions, getAspectRatio, maskAddress, } from '../helpers/utils';
 
-const Wallet = () => {
+const Wallet = ({ navigation: { navigate } }) => {
   const { state, actions } = useContext(AppContext);
   const { setAppData, createWallet } = actions;
   const { layout, prices, wallets, appData, appSettings } = state;
   const currWallet = wallets[appData.common.selectedWallet];
-  var transactions = [];
+  let transactions = [];
 
   // guide navigation state values
   const [guideState, setGuideState] = useState(null);
@@ -54,7 +47,7 @@ const Wallet = () => {
   return (
     <View style={styles.pageWrapper}>
       <Header
-        placement="left"
+        placement='left'
         statusBarProps={{ translucent: false, backgroundColor: "#212529" }}
         containerStyle={AppStyles.appHeader}
         centerComponent={
@@ -79,7 +72,7 @@ const Wallet = () => {
         rightComponent={
           <Icon
             onPress={() => {
-              NavigationService.navigate('AppMenu');
+              navigate('AppMenu');
             }}
             name='md-menu'
             type='ionicon'
@@ -95,7 +88,7 @@ const Wallet = () => {
               <View style={[styles.iconWrapper]}>
                 <Tips
                   position={'right'}
-                  visible={guideState == 'messages'}
+                  visible={guideState === 'messages'}
                   textStyle={AppStyles.guideTipText}
                   tooltipArrowStyle={AppStyles.guideTipArrowLeft}
                   style={[AppStyles.guideTipContainer, styles.guideTipMessages]}
@@ -104,7 +97,7 @@ const Wallet = () => {
                 >
                   <Icon
                     containerStyle={styles.iconGeneral}
-                    onPress={() => NavigationService.navigate('Messages')}
+                    onPress={() => navigate('Messages')}
                     name='md-mail'
                     type='ionicon'
                     color='#FFFFFF'
@@ -115,7 +108,7 @@ const Wallet = () => {
               <View style={[styles.iconWrapper]}>
                 <Tips
                   position={'right'}
-                  visible={guideState == 'wallets'}
+                  visible={guideState === 'wallets'}
                   textStyle={AppStyles.guideTipText}
                   tooltipArrowStyle={AppStyles.guideTipArrowLeft}
                   style={[AppStyles.guideTipContainer, styles.guideTipWallets]}
@@ -124,7 +117,7 @@ const Wallet = () => {
                 >
                   <Icon
                     containerStyle={styles.iconGeneral}
-                    onPress={() => NavigationService.navigate('Wallets')}
+                    onPress={() => navigate('Wallets')}
                     name='md-wallet'
                     type='ionicon'
                     color='#FFFFFF'
@@ -136,7 +129,7 @@ const Wallet = () => {
             <View style={styles.walletState}>
               <Tips
                 position={'top'}
-                visible={guideState == 'overall'}
+                visible={guideState === 'overall'}
                 style={AppStyles.guideTipContainer}
                 textStyle={AppStyles.guideTipText}
                 tooltipArrowStyle={AppStyles.guideTipArrowBottom}
@@ -171,7 +164,7 @@ const Wallet = () => {
               <View style={[styles.iconWrapper]}>
                 <Tips
                   position={'left'}
-                  visible={guideState == 'addresses'}
+                  visible={guideState === 'addresses'}
                   textStyle={AppStyles.guideTipText}
                   tooltipArrowStyle={AppStyles.guideTipArrowRight}
                   style={[AppStyles.guideTipContainer, styles.guideTipAddressBook]}
@@ -180,7 +173,7 @@ const Wallet = () => {
                 >
                   <Icon
                     containerStyle={styles.iconGeneral}
-                    onPress={() => NavigationService.navigate('AddressBook')}
+                    onPress={() => navigate('AddressBook')}
                     name='md-book'
                     type='ionicon'
                     color='#FFFFFF'
@@ -191,7 +184,7 @@ const Wallet = () => {
               <View style={[styles.iconWrapper]}>
                 <Tips
                   position={'left'}
-                  visible={guideState == 'market'}
+                  visible={guideState === 'market'}
                   textStyle={AppStyles.guideTipText}
                   tooltipArrowStyle={AppStyles.guideTipArrowRight}
                   style={[AppStyles.guideTipContainer, styles.guideTipMarket]}
@@ -200,7 +193,7 @@ const Wallet = () => {
                 >
                   <Icon
                     containerStyle={styles.iconGeneral}
-                    onPress={() => NavigationService.navigate('Deposits')}
+                    onPress={() => navigate('Deposits')}
                     name='md-cube'
                     type='ionicon'
                     color='#FFFFFF'
@@ -235,7 +228,7 @@ const Wallet = () => {
                         <Text style={styles.dataAddress}>
                           {maskAddress(item.address)}
                         </Text>
-                        {(item.status === "pending") ? (<Text style={styles.dataPending}>PENDING</Text>) : null}
+                        {(item.status === 'pending') ? (<Text style={styles.dataPending}>PENDING</Text>) : null}
                       </View>
                       <Icon
                         name={item.type === 'received' ? 'md-arrow-down' : 'md-arrow-up'}
@@ -254,7 +247,7 @@ const Wallet = () => {
             <View style={[styles.footerBtn, styles.footerBtnLeft]}>
               <Tips
                 position={'top'}
-                visible={guideState == 'send'}
+                visible={guideState === 'send'}
                 textStyle={AppStyles.guideTipText}
                 text="Click here to send funds to other people"
                 style={[AppStyles.guideTipContainer, styles.guideTipSend]}
@@ -268,11 +261,11 @@ const Wallet = () => {
                       sendScreen: {
                         toAmount: '',
                         toAddress: '',
-                        toPaymendId: '',
+                        toPaymentId: '',
                         toLabel: ''
                       }
                     });
-                    NavigationService.navigate('SendPayment')
+                    navigate('SendPayment')
                   }}
                   disabled={currWallet.balance < appSettings}
                   text="SEND"
@@ -282,7 +275,7 @@ const Wallet = () => {
             <View style={[styles.footerBtn, styles.footerBtnRight]}>
               <Tips
                 position={'top'}
-                visible={guideState == 'receive'}
+                visible={guideState === 'receive'}
                 textStyle={AppStyles.guideTipText}
                 text="Click here to receive funds from other people"
                 style={[AppStyles.guideTipContainer, styles.guideTipReceive]}
@@ -290,7 +283,7 @@ const Wallet = () => {
                 onRequestClose={() => setGuideState(guideNavigation.next())}
               >
                 <ConcealButton
-                  onPress={() => NavigationService.navigate('Receive')}
+                  onPress={() => navigate('Receive')}
                   style={styles.footerBtnInner}
                   text="RECEIVE"
                 />

@@ -1,25 +1,14 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { Icon, Header, CheckBox } from 'react-native-elements';
-import NavigationService from '../helpers/NavigationService';
+import React, { useContext, useEffect, useState } from 'react';
+import { Alert, FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { CheckBox, Header, Icon } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { AppContext } from '../components/ContextProvider';
-import ConcealButton from '../components/ccxButton';
-import GuideNavigation from '../helpers/GuideNav';
-import { AppColors } from '../constants/Colors';
-import AppStyles from '../components/Style';
 import Tips from 'react-native-guide-tips';
-import {
-  maskAddress,
-  getAspectRatio,
-  format4Decimals,
-} from '../helpers/utils';
-import {
-  Text,
-  View,
-  Alert,
-  FlatList,
-  TouchableOpacity
-} from 'react-native';
+import ConcealButton from '../components/ccxButton';
+import { AppContext } from '../components/ContextProvider';
+import AppStyles from '../components/Style';
+import { AppColors } from '../constants/Colors';
+import GuideNavigation from '../helpers/GuideNav';
+import { format4Decimals, getAspectRatio, maskAddress, } from '../helpers/utils';
 
 let firstVisibleItem = -1;
 
@@ -31,7 +20,7 @@ const handleViewableItemsChanged = (info) => {
   }
 }
 
-const Wallets = () => {
+const Wallets = ({ navigation: { goBack } }) => {
   const { actions, state } = useContext(AppContext);
   const { createWallet, deleteWallet, switchWallet, setDefaultWallet, getWalletKeys } = actions;
   const { appSettings, layout, wallets, appData } = state;
@@ -67,11 +56,11 @@ const Wallets = () => {
   return (
     <View style={styles.pageWrapper}>
       <Header
-        placement="left"
+        placement='left'
         statusBarProps={{ translucent: false, backgroundColor: "#212529" }}
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
-          onPress={() => NavigationService.goBack()}
+          onPress={() => goBack()}
           name='arrow-back-outline'
           type='ionicon'
           color='white'
@@ -98,7 +87,7 @@ const Wallets = () => {
           (
             <Tips
               position={'bottom'}
-              visible={guideState == 'addWallet'}
+              visible={guideState === 'addWallet'}
               textStyle={AppStyles.guideTipText}
               style={[AppStyles.guideTipContainer, styles.guideTipAddWallet]}
               tooltipArrowStyle={[AppStyles.guideTipArrowTop, styles.guideTipArrowAddWallet]}
@@ -152,7 +141,7 @@ const Wallets = () => {
                   <View style={styles.btnWrapper}>
                     <Tips
                       position={'bottom'}
-                      visible={(guideState == 'deleteWallet') && (index == firstVisibleItem)}
+                      visible={(guideState === 'deleteWallet') && (index === firstVisibleItem)}
                       textStyle={AppStyles.guideTipText}
                       style={[AppStyles.guideTipContainer, styles.guideTipDeleteWallet]}
                       tooltipArrowStyle={[AppStyles.guideTipArrowTop, styles.guideTipArrowDeleteWallet]}
@@ -181,7 +170,7 @@ const Wallets = () => {
                   <View style={styles.btnWrapper}>
                     <Tips
                       position={'bottom'}
-                      visible={(guideState == 'exportWallet') && (index == firstVisibleItem)}
+                      visible={(guideState === 'exportWallet') && (index === firstVisibleItem)}
                       textStyle={AppStyles.guideTipText}
                       style={[AppStyles.guideTipContainer, styles.guideTipExportWallet]}
                       tooltipArrowStyle={[AppStyles.guideTipArrowTop, styles.guideTipArrowExportWallet]}

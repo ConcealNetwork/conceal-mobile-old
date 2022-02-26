@@ -1,8 +1,8 @@
-import { useReducer, useRef } from 'react';
 import mergeJSON from 'merge-json';
-import { shareContent } from '../helpers/utils';
+import { useReducer, useRef } from 'react';
 import { appSettings } from '../constants/appSettings';
 import { logger } from '../helpers/Logger';
+import { shareContent } from '../helpers/utils';
 
 const useAppState = () => {
   const initialState = {

@@ -1,24 +1,15 @@
-import { Icon, Header, ListItem } from 'react-native-elements';
-import React, { useContext, useState } from "react";
-import NavigationService from '../helpers/NavigationService';
+import React, { useContext, useState } from 'react';
+import { FlatList, View, } from 'react-native';
+import { Header, Icon, ListItem } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { AppContext } from '../components/ContextProvider';
 import ConcealButton from '../components/ccxButton';
-import { AppColors } from '../constants/Colors';
+import { AppContext } from '../components/ContextProvider';
 import AppStyles from '../components/Style';
+import { AppColors } from '../constants/Colors';
+import { format6Decimals, getAspectRatio, maskAddress, parseLocaleNumber } from '../helpers/utils';
 import AuthCheck from './AuthCheck';
-import {
-  maskAddress,
-  getAspectRatio,
-  format6Decimals,
-  parseLocaleNumber
-} from '../helpers/utils';
-import {
-  View,
-  FlatList,
-} from "react-native";
 
-const SendConfirm = () => {
+const SendConfirm = ({ navigation: { goBack } }) => {
   const { state, actions } = useContext(AppContext);
   const { wallets, appData, appSettings } = state;
   const currWallet = wallets[appData.common.selectedWallet];
@@ -35,13 +26,13 @@ const SendConfirm = () => {
   }
 
   let totalAmount = parseLocaleNumber(appData.sendScreen.toAmount);
-  totalAmount = totalAmount + appSettings.defaultFee;
+  totalAmount += appSettings.defaultFee;
 
   addSummaryItem(`${totalAmount.toLocaleString(undefined, format6Decimals)} CCX`, 'You are sending', 'md-cash');
   addSummaryItem(maskAddress(currWallet.addr), 'From address', 'md-mail');
   addSummaryItem(maskAddress(appData.sendScreen.toAddress), 'To address', 'md-mail');
-  if (appData.sendScreen.toPaymendId) {
-    addSummaryItem(maskAddress(appData.sendScreen.toPaymendId), 'Payment ID', 'md-key');
+  if (appData.sendScreen.toPaymentId) {
+    addSummaryItem(maskAddress(appData.sendScreen.toPaymentId), 'Payment ID', 'md-key');
   }
   if (appData.sendScreen.toLabel) {
     addSummaryItem(appData.sendScreen.toLabel, 'Label', 'md-eye');
@@ -71,7 +62,7 @@ const SendConfirm = () => {
     actions.sendPayment(
       currWallet.addr,
       appData.sendScreen.toAddress,
-      appData.sendScreen.toPaymendId,
+      appData.sendScreen.toPaymentId,
       parseLocaleNumber(appData.sendScreen.toAmount),
       '', password
     );
@@ -80,10 +71,10 @@ const SendConfirm = () => {
   return (
     <View style={styles.pageWrapper}>
       <Header
-        placement="left"
+        placement='left'
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
-          onPress={() => NavigationService.goBack()}
+          onPress={() => goBack()}
           name='arrow-back-outline'
           type='ionicon'
           color='white'
@@ -105,7 +96,7 @@ const SendConfirm = () => {
         />
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnRight]}
-          onPress={() => NavigationService.goBack()}
+          onPress={() => goBack()}
           text="CANCEL"
         />
       </View>
