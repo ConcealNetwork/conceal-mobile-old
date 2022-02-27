@@ -53,7 +53,7 @@ const Wallet = ({ navigation: { navigate } }) => {
         centerComponent={
           <View style={AppStyles.appHeaderWrapper}>
             <Text style={AppStyles.appHeaderText}>
-              Selected Wallet
+              {maskAddress(currWallet?.addr, '.', 5, 5, 5)}
             </Text>
             <Icon
               onPress={() => {

@@ -20,7 +20,7 @@ const handleViewableItemsChanged = (info) => {
   }
 }
 
-const Wallets = ({ navigation: { goBack } }) => {
+const Wallets = ({ navigation: { goBack, popToTop } }) => {
   const { actions, state } = useContext(AppContext);
   const { createWallet, deleteWallet, switchWallet, setDefaultWallet, getWalletKeys } = actions;
   const { appSettings, layout, wallets, appData } = state;
@@ -132,7 +132,10 @@ const Wallets = ({ navigation: { goBack } }) => {
                         checkedIcon='dot-circle-o'
                         uncheckedIcon='circle-o'
                         checked={item.default}
-                        onPress={() => setDefaultWallet(item.address)}
+                        onPress={() => {
+                          setDefaultWallet(item.address);
+                          popToTop();
+                        }}
                       />
                     </View>
                   </View>
