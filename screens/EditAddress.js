@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { View, } from 'react-native';
 import { Header, Icon } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -8,16 +8,21 @@ import { AppContext } from '../components/ContextProvider';
 import { useFormInput } from '../helpers/hooks';
 
 const EditAddress = ({ navigation: { goBack, navigate }, route }) => {
-  const { actions, state } = useContext(AppContext);
+  const { actions } = useContext(AppContext);
   const { addContact, setAppData } = actions;
   const { params } = route;
   const { entryID } = params;
 
-  const { value: label, bind: bindLabel, setValue: setLabel } = useFormInput(params?.label);
+  const { value: label, bind: bindLabel } = useFormInput(params?.label);
   const { value: address, bind: bindAddress, setValue: setAddress } = useFormInput(params?.address);
   const { value: paymentID, bind: bindPaymentID, setValue: setPaymentID } = useFormInput(params?.paymentID);
 
-  const isFormValid = () => true;
+  const isFormValid = () => label && address;
+
+  useEffect(() => {
+    params?.address && setAddress(params.address);
+    params?.paymentID && setPaymentID(params.paymentID);
+  }, [params?.address, params?.label])
 
   const onScanAddressQRCode = () => {
     setAppData({
@@ -25,7 +30,6 @@ const EditAddress = ({ navigation: { goBack, navigate }, route }) => {
         scanned: false
       }
     });
-
     navigate('Scanner', { previousScreen: 'EditAddress' });
   }
 
