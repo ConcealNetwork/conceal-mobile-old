@@ -3,7 +3,7 @@ import { ScrollView, Text, TextInput, View } from 'react-native';
 import { Image } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import ConcealButton from '../components/ccxButton';
-import { AppContext } from '../components/ContextProvider';
+import { AuthContext } from '../components/ContextProvider';
 import ConcealCaptcha from '../components/hCaptcha';
 import AppStyles from '../components/Style';
 import { AppColors } from '../constants/Colors';
@@ -12,7 +12,7 @@ import { getAspectRatio } from '../helpers/utils';
 
 
 const SignUp = props => {
-  const { actions, state } = useContext(AppContext);
+  const { actions, state } = useContext(AuthContext);
   const { layout, userSettings } = state;
   const { formSubmitted, message } = layout;
   const { signUpUser } = actions;

@@ -1,6 +1,7 @@
 import mergeJSON from 'merge-json';
 import { useReducer, useRef } from 'react';
 import { appSettings } from '../constants/appSettings';
+import localStorage from '../helpers/LocalStorage';
 import { logger } from '../helpers/Logger';
 import { shareContent } from '../helpers/utils';
 
@@ -124,7 +125,7 @@ const useAppState = () => {
         };
         break;
       case 'USER_LOGGED_IN':
-        if (!state.user.loggedIn) logger.log('LOGGING IN USER...');
+        logger.log('LOGGING IN USER...');
         result = {
           ...state,
           user: {

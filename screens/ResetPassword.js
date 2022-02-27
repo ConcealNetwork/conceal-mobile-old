@@ -3,7 +3,7 @@ import { Keyboard, ScrollView, StyleSheet, Text, TextInput, TouchableWithoutFeed
 import { Image } from 'react-native-elements';
 import ConcealButton from '../components/ccxButton';
 
-import { AppContext } from '../components/ContextProvider';
+import { AuthContext } from '../components/ContextProvider';
 import AppStyles from '../components/Style';
 import { AppColors } from '../constants/Colors';
 import { useFormInput, useFormValidation } from '../helpers/hooks';
@@ -11,7 +11,7 @@ import { getAspectRatio } from '../helpers/utils';
 
 
 const ResetPassword = props => {
-  const { actions, state } = useContext(AppContext);
+  const { actions, state } = useContext(AuthContext);
   const { layout } = state;
   const { formSubmitted, message } = layout;
   const { resetPassword } = actions;

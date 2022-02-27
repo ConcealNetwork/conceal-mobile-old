@@ -2,14 +2,14 @@ import React, { useContext } from 'react';
 import { FlatList, View } from 'react-native';
 import { Header, Icon, ListItem } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { AppContext } from '../components/ContextProvider';
+import { AuthContext } from '../components/ContextProvider';
 import AppStyles from '../components/Style';
 import { AppColors } from '../constants/Colors';
 import { getAspectRatio } from '../helpers/utils';
 
 
 const AppMenu = ({ navigation: { goBack, navigate } }) => {
-  const { actions } = useContext(AppContext);
+  const { actions } = useContext(AuthContext);
   const { logoutUser } = actions;
 
   const settingsList = [

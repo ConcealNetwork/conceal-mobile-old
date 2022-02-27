@@ -1,121 +1,19 @@
 import { useNavigation } from '@react-navigation/native';
-import Constants from 'expo-constants';
 import React, { useEffect } from 'react';
 import ApiHelper from '../helpers/ApiHelper';
 import AuthHelper from '../helpers/AuthHelper';
 import { logger } from '../helpers/Logger';
 import { showMessageDialog } from '../helpers/utils';
 
-import useAppState from './useAppState';
-
 export const AppContext = React.createContext();
+export const AuthContext = React.createContext();
 
 const AppContextProvider = props => {
   const navigation = useNavigation();
-  const [state, dispatch, updatedState] = useAppState();
+  const { state, dispatch, updatedState } = props;
   const Auth = new AuthHelper(state.appSettings.apiURL);
   const Api = new ApiHelper({ Auth, state });
   const { appData } = state;
-
-  const loginUser = options => {
-    // always set the uuid for the login user
-    options.uuid = Constants.installationId;
-    let message;
-
-    dispatch({ type: 'USER_LOGIN_STARTED', value: true });
-    dispatch({ type: 'FORM_SUBMITTED', value: true });
-
-    Auth.setRememberme(options.rememberMe ? 'TRUE' : 'FALSE');
-    Auth.setUsername(options.email);
-    Auth.setToken('ait');
-    Auth.login(options)
-      .then(res => {
-        if (res.result === 'success') {
-          logger.log('USER_LOGGED_IN...');
-          dispatch({ type: 'USER_LOGGED_IN', password: options.password });
-        } else {
-          message = res.message;
-          dispatch({ type: 'USER_LOGIN_FAILED', password: options.password });
-          showMessageDialog(message, "error");
-        }
-      })
-      .catch(err => showMessageDialog(`ERROR ${err}`, "error"))
-      .finally(() => dispatch({ type: 'FORM_SUBMITTED', value: false }));
-  };
-
-  const signUpUser = options => {
-    const { userName, email, password } = options;
-    let message;
-    let msgType;
-    dispatch({ type: 'FORM_SUBMITTED', value: true });
-    Api.signUpUser(userName, email, password)
-      .then(res => {
-        message = res.message;
-        if (res.result === 'success') {
-          Auth.setUsername(email);
-          message = 'Please check your email and follow the instructions to activate your account.';
-          msgType = "info";
-        } else {
-          message = res.message;
-        }
-      })
-      .catch(err => { message = `ERROR ${err}`; })
-      .finally(() => {
-        dispatch({ type: 'FORM_SUBMITTED', value: false });
-        showMessageDialog(message, msgType);
-      });
-  };
-
-  const resetPassword = options => {
-    const { email } = options;
-    let message;
-    let msgType;
-    Api.resetPassword(email)
-      .then(res => {
-        message = res.message;
-        if (res.result === 'success') {
-          message = 'Please check your email and follow instructions to reset password.';
-          msgType = 'info';
-          Auth.logout();
-          dispatch({ type: 'CLEAR_APP' });
-        } else {
-          message = res.message;
-        }
-      })
-      .catch(err => { message = `ERROR ${err}`; })
-      .finally(() => {
-        showMessageDialog(message, msgType);
-      });
-  };
-
-  const resetPasswordConfirm = options => {
-    const { password, token } = options;
-    let message;
-    let msgType;
-    dispatch({ type: 'FORM_SUBMITTED', value: true });
-    Api.resetPasswordConfirm(password, token)
-      .then(res => {
-
-        if (res.result === 'success') {
-          message = (<>Password successfully changed.<br />Please log in.</>);
-          msgType = 'info';
-        } else {
-          message = res.message;
-        }
-      })
-      .catch(err => { message = `ERROR ${err}` })
-      .finally(() => {
-        dispatch({ type: 'FORM_SUBMITTED', value: false });
-        showMessageDialog(message, msgType);
-      });
-  };
-
-  const logoutUser = () => {
-    logger.log('LOGGING OUT...');
-    Auth.logout();
-    dispatch({ type: 'CLEAR_APP' });
-    navigation.navigate('Login');
-  };
 
   const getUser = () => {
     logger.log('GETTING USER...');
@@ -521,11 +419,6 @@ const AppContextProvider = props => {
   };
 
   const actions = {
-    loginUser,
-    signUpUser,
-    resetPassword,
-    resetPasswordConfirm,
-    logoutUser,
     getUser,
     addContact,
     deleteContact,
@@ -545,20 +438,9 @@ const AppContextProvider = props => {
     setAppData
   };
 
-  useEffect(() => {
-    if (Auth.loggedIn()) {
-      if (!state.user.loggedIn) {
-        dispatch({ type: 'USER_LOGGED_IN' });
-      }
-
-      let token = Auth.getToken();
-      // dispatch the Aauthentication token
-      dispatch({ type: 'SET_TOKEN', token });
-    }
-  }, [state.user.loggedIn]);
 
   useEffect(() => {
-    if (state.user.loggedIn && state.user.token) {
+    if (state.user.loggedIn) {
       getUser();
       check2FA();
       getWallets();
@@ -568,7 +450,7 @@ const AppContextProvider = props => {
       getMarketPrices();
       getPrices();
     }
-  }, [state.user.token]);
+  }, [state.user.loggedIn]);
 
   useEffect(() => {
     const { appSettings, intervals, user, userSettings } = state;
@@ -583,15 +465,6 @@ const AppContextProvider = props => {
       dispatch({ type: 'SET_INTERVALS', intervals: appIntervals });
     }
   }, [state.user.loggedIn, state.intervals]);
-
-  useEffect(() => {
-    if (state.layout.userLoaded && state.layout.walletsLoaded && state.layout.messagesLoaded && state.layout.depositsLoaded) {
-      if (!state.layout.loginFinished) {
-        // navigation.navigate('Wallet');
-        state.layout.loginFinished = true;
-      }
-    }
-  }, [state.layout]);
 
   return (
     <AppContext.Provider value={{ actions, dispatch, state }}>

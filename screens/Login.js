@@ -6,7 +6,7 @@ import EStyleSheet from 'react-native-extended-stylesheet';
 import ConcealButton from '../components/ccxButton';
 import ConcealPassword from '../components/ccxPassword';
 import ConcealTextInput from '../components/ccxTextInput';
-import { AppContext } from '../components/ContextProvider';
+import { AuthContext } from '../components/ContextProvider';
 import ConcealCaptcha from '../components/hCaptcha';
 import AppStyles from '../components/Style';
 import { AppColors } from '../constants/Colors';
@@ -20,7 +20,7 @@ import SignUp from './SignUp';
 
 
 const Login = () => {
-  const { actions, state } = useContext(AppContext);
+  const { actions, state } = useContext(AuthContext);
   const { loginUser } = actions;
   const { layout, userSettings } = state;
   const { formSubmitted } = layout;
