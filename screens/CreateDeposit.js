@@ -173,7 +173,7 @@ const CreateDepositScreen = ({ navigation: { goBack, navigate } }) => {
               ? (<View style={styles.lockedWrapper}>
                 <Icon
                   containerStyle={styles.lockedIcon}
-                  name='md-lock'
+                  name='md-lock-closed'
                   type='ionicon'
                   color='#FF0000'
                   size={16 * getAspectRatio()}

@@ -13,16 +13,17 @@ const EditAddress = ({ navigation: { goBack, navigate }, route }) => {
   const { params } = route;
   const { entryID } = params;
 
-  const { value: label, bind: bindLabel } = useFormInput(params?.label);
+  const { value: label, bind: bindLabel, setValue: setLabel } = useFormInput(params?.label);
   const { value: address, bind: bindAddress, setValue: setAddress } = useFormInput(params?.address);
   const { value: paymentID, bind: bindPaymentID, setValue: setPaymentID } = useFormInput(params?.paymentID);
 
   const isFormValid = () => label && address;
 
   useEffect(() => {
-    params?.address && setAddress(params.address);
-    params?.paymentID && setPaymentID(params.paymentID);
-  }, [params?.address, params?.label])
+    setAddress(params.address || '');
+    setPaymentID(params.paymentId || '');
+    setLabel(params.label || '');
+  }, [params])
 
   const onScanAddressQRCode = () => {
     setAppData({

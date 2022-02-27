@@ -145,7 +145,7 @@ const Wallet = ({ navigation: { navigate } }) => {
                       <View style={styles.btcPriceWrapper}>
                         <Icon
                           containerStyle={styles.btcIcon}
-                          name={currWallet.locked ? 'md-lock' : 'logo-bitcoin'}
+                          name={currWallet.locked ? 'md-lock-closed' : 'logo-bitcoin'}
                           type='ionicon'
                           color={currWallet.locked ? '#FF0000' : '#FFFFFF'}
                           size={16 * getAspectRatio()}

@@ -7,6 +7,7 @@ import ConcealTextInput from '../components/ccxTextInput';
 import { AppContext } from '../components/ContextProvider';
 import AppStyles from '../components/Style';
 import { AppColors } from '../constants/Colors';
+import { useFormInput } from '../helpers/hooks';
 import {
   format4Decimals,
   format6Decimals,
@@ -22,36 +23,41 @@ const SendScreen = ({ navigation: { goBack, navigate }, route }) => {
   const { setAppData } = actions;
   const { appSettings, user, wallets, appData } = state;
   const currWallet = wallets[appData.common.selectedWallet];
+  const { params } = route;
+
+  const { value: amount, bind: bindAmount, setValue: setAmount } = useFormInput(null);
+  const { value: address, bind: bindAddress, setValue: setAddress } = useFormInput(params?.address);
+  const { value: label, bind: bindLabel, setValue: setLabel } = useFormInput(params?.label);
+  const { value: paymentID, bind: bindPaymentID, setValue: setPaymentID } = useFormInput(params?.paymentID);
 
   const sendSummaryList = [];
 
-  if (state.appData.sendScreen.toLabel) {
+  if (label) {
     sendSummaryList.push({
-      value: state.appData.sendScreen.toLabel,
+      value: label,
       title: 'Label',
       icon: 'md-eye'
     });
   }
 
-  if (state.appData.sendScreen.toAddress) {
+  if (address) {
     sendSummaryList.push({
-      value: maskAddress(state.appData.sendScreen.toAddress),
+      value: maskAddress(address),
       title: 'Address',
       icon: 'md-mail'
     });
   }
 
-  if (state.appData.sendScreen.toPaymentId) {
+  if (paymentID) {
     sendSummaryList.push({
-      value: maskAddress(state.appData.sendScreen.toPaymentId),
+      value: maskAddress(paymentID),
       title: 'Payment ID',
       icon: 'md-key'
     });
   }
 
-  if (state.appData.sendScreen.toAmount) {
-    let totalAmount = parseLocaleNumber(state.appData.sendScreen.toAmount);
-    totalAmount += appSettings.defaultFee;
+  if (amount && parseLocaleNumber(amount) > 0) {
+    const totalAmount = parseLocaleNumber(amount) + appSettings.defaultFee;
 
     sendSummaryList.push({
       value: `${totalAmount.toLocaleString(undefined, format6Decimals)} CCX`,
@@ -67,13 +73,11 @@ const SendScreen = ({ navigation: { goBack, navigate }, route }) => {
   }
 
   useEffect(() => {
-    setAppData({
-      sendScreen: {
-        toAddress: route.params?.address,
-        toPaymentId: route.params?.paymentId
-      }
-    });
-  }, [route.params?.address, route.params?.paymentId]);
+    setAddress(params?.address || '');
+    setAmount(params?.amount || '');
+    setLabel(params?.label || '');
+    setPaymentID(params?.paymentId || '');
+  }, [params])
 
   const onScanAddressQRCode = () => {
     setAppData({
@@ -94,45 +98,15 @@ const SendScreen = ({ navigation: { goBack, navigate }, route }) => {
       </ListItem.Content>
     </ListItem>
 
-  const isFormValid = () => {
-    if (state.appData.sendScreen.toAddress && state.appData.sendScreen.toAmount) {
-      let amountAsFloat = parseLocaleNumber(state.appData.sendScreen.toAmount);
-      return ((amountAsFloat > 0) && (amountAsFloat <= (currWallet.balance - appSettings.defaultFee)));
-    } else {
-      return false;
-    }
-  }
+  const isFormValid = () =>
+    address &&
+    amount &&
+    parseLocaleNumber(amount) > 0 &&
+    parseLocaleNumber(amount) < currWallet.balance - appSettings.defaultFee;
 
-  const clearSend = () => {
-    setAppData({
-      sendScreen: {
-        toAmount: '',
-        toAddress: '',
-        toPaymentId: '',
-        toLabel: ''
-      }
-    });
-  }
-
-  const getAmountError = () => {
-    let amountAsFloat = parseLocaleNumber(state.appData.sendScreen.toAmount);
-
-    if ((amountAsFloat <= 0) && (state.appData.sendScreen.toAmount)) {
-      return "Amount must be greater then 0"
-    } else if (amountAsFloat > (parseFloat(currWallet.balance) - appSettings.defaultFee)) {
-      return "The amount exceeds wallet balance"
-    } else {
-      return "";
-    }
-  }
-
-  const setAddress = (label, address, paymentID, entryID) => {
-    setAppData({
-      sendScreen: {
-        toAddress: address,
-        toPaymentId: paymentID
-      }
-    });
+  const checkAmount = () => {
+    if (amount && parseLocaleNumber(amount) <= 0) return 'Amount must be greater then 0';
+    if (parseLocaleNumber(amount) > currWallet.balance - appSettings.defaultFee) return 'The amount exceeds wallet balance';
   }
 
   return (
@@ -149,7 +123,12 @@ const SendScreen = ({ navigation: { goBack, navigate }, route }) => {
         />}
         centerComponent={{ text: 'Send CCX', style: AppStyles.appHeaderText }}
         rightComponent={<Icon
-          onPress={() => clearSend()}
+          onPress={() => {
+            setAddress('');
+            setAmount('');
+            setPaymentID('');
+            setLabel('');
+          }}
           name='md-trash'
           type='ionicon'
           color='white'
@@ -161,30 +140,28 @@ const SendScreen = ({ navigation: { goBack, navigate }, route }) => {
           <Text style={styles.fromAddress}>{maskAddress(currWallet.addr)}</Text>
           <Text style={styles.fromBalance}>{currWallet.balance.toLocaleString(undefined, format4Decimals)} CCX</Text>
           {currWallet.locked
-            ? (<View style={styles.lockedWrapper}>
-              <Icon
-                containerStyle={styles.lockedIcon}
-                name='md-lock'
-                type='ionicon'
-                color='#FF0000'
-                size={16 * getAspectRatio()}
-              />
-              <Text style={currWallet.locked ? [styles.worthBTC, styles.lockedText] : styles.worthBTC}>
-                {`${currWallet.locked.toLocaleString(undefined, format4Decimals)} CCX`}
-              </Text>
-            </View>)
-            : null}
+            ? <View style={styles.lockedWrapper}>
+                <Icon
+                  containerStyle={styles.lockedIcon}
+                  name='md-lock-closed'
+                  type='ionicon'
+                  color='#FF0000'
+                  size={16 * getAspectRatio()}
+                />
+                <Text style={currWallet.locked ? [styles.worthBTC, styles.lockedText] : styles.worthBTC}>
+                  {`${currWallet.locked.toLocaleString(undefined, format4Decimals)} CCX`}
+                </Text>
+              </View>
+            : null
+          }
         </View>
 
         <ConcealTextInput
-          label={getAmountError()}
+          {...bindAmount}
+          label={checkAmount()}
           keyboardType='numeric'
           placeholder='Type in amount to send...'
           containerStyle={styles.sendInput}
-          value={state.appData.sendScreen.toAmount}
-          onChangeText={(text) => {
-            setAppData({ sendScreen: { toAmount: text } });
-          }}
           rightIcon={
             <Text style={styles.ccxUnit}>CCX</Text>
           }
@@ -192,45 +169,34 @@ const SendScreen = ({ navigation: { goBack, navigate }, route }) => {
         <View style={styles.amountPercentWrapper}>
           <ConcealButton
             style={styles.btnSendPercent}
-            onPress={() => setAppData({ sendScreen: { toAmount: ((currWallet.balance - appSettings.defaultFee) * 0.25).toLocaleString(undefined, format8Decimals) } })}
+            onPress={() => setAmount(((currWallet.balance - appSettings.defaultFee) * 0.25).toLocaleString(undefined, format8Decimals))}
             text="25%"
           />
           <ConcealButton
             style={styles.btnSendPercent}
-            onPress={() => setAppData({ sendScreen: { toAmount: ((currWallet.balance - appSettings.defaultFee) * 0.50).toLocaleString(undefined, format8Decimals) } })}
+            onPress={() => setAmount(((currWallet.balance - appSettings.defaultFee) * 0.5).toLocaleString(undefined, format8Decimals))}
             text="50%"
           />
           <ConcealButton
             style={styles.btnSendPercent}
-            onPress={() => setAppData({ sendScreen: { toAmount: ((currWallet.balance - appSettings.defaultFee) * 0.75).toLocaleString(undefined, format8Decimals) } })}
+            onPress={() => setAmount(((currWallet.balance - appSettings.defaultFee) * 0.75).toLocaleString(undefined, format8Decimals))}
             text="75%"
           />
           <ConcealButton
             style={styles.btnSendPercent}
-            onPress={() => setAppData({ sendScreen: { toAmount: (currWallet.balance - appSettings.defaultFee - appSettings.minValue).toLocaleString(undefined, format8Decimals) } })}
+            onPress={() => setAmount((currWallet.balance - appSettings.defaultFee - appSettings.minValue).toLocaleString(undefined, format8Decimals))}
             text="100%"
           />
         </View>
         <TouchableOpacity onPress={() => setAppData({ searchAddress: { addrListVisible: true } })}>
           <ConcealTextInput
+            {...bindAddress}
             editable={false}
             placeholder='Select recipient address...'
             containerStyle={[styles.sendInput, styles.addressInput]}
-            value={state.appData.sendScreen.toLabel ? state.appData.sendScreen.toLabel : maskAddress(state.appData.sendScreen.toAddress)}
             rightIcon={
               <Icon
-                onPress={() => {
-                  setAppData({
-                    addressEntry: {
-                      headerText: "Create Address",
-                      label: '',
-                      address: '',
-                      paymentId: '',
-                      entryId: null
-                    }
-                  });
-                  navigate('EditAddress', { callback: setAddress });
-                }}
+                onPress={() => navigate('EditAddress', { headerText: 'Create Address' })}
                 name='md-add'
                 type='ionicon'
                 color='white'
@@ -256,7 +222,7 @@ const SendScreen = ({ navigation: { goBack, navigate }, route }) => {
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnLeft]}
           disabled={!isFormValid()}
-          onPress={() => navigate('SendConfirm')}
+          onPress={() => navigate('SendConfirm', { address, amount, paymentID, label })}
           text="SEND"
         />
         <ConcealButton

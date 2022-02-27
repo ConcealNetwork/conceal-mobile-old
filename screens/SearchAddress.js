@@ -7,27 +7,18 @@ import ConcealTextInput from '../components/ccxTextInput';
 
 import { AppContext } from '../components/ContextProvider';
 import { AppColors } from '../constants/Colors';
+import { useFormInput } from '../helpers/hooks';
 import { getAspectRatio, maskAddress } from '../helpers/utils';
 
 
 const SearchAddress = props => {
-  const { closeOverlay, selectAddress, addressData, currWallet } = props;
-  const { actions, state } = useContext(AppContext);
-  const { setAppData } = actions;
-  let addressList = [];
+  const { closeOverlay, selectAddress, currWallet } = props;
+  const { state } = useContext(AppContext);
+  const { user } = state;
 
-  addressData.forEach(function (value) {
-    let isValidItem = true;
+  const { value: filterText, bind: bindFilterText, setValue: setFilterText } = useFormInput();
 
-    // check if the text filter is set
-    if (state.appData.searchAddress.filterText && (value.label.toLowerCase().search(state.appData.searchAddress.filterText.toLowerCase()) === -1)) {
-      isValidItem = false;
-    }
-
-    if (isValidItem) {
-      addressList.push(value);
-    }
-  });
+  const addressList = user.addressBook.filter(i => i.label.match(filterText));
 
   return (
     <Overlay
@@ -37,15 +28,12 @@ const SearchAddress = props => {
     >
       <View style={styles.overlayWrapper}>
         <ConcealTextInput
+          {...bindFilterText}
           placeholder='Enter text to search...'
-          value={state.appData.searchAddress.filterText}
           containerStyle={styles.searchInput}
-          onChangeText={(text) => {
-            setAppData({ searchAddress: { filterText: text } });
-          }}
           rightIcon={
             <Icon
-              onPress={() => setAppData({ searchAddress: { filterText: null } })}
+              onPress={() => setFilterText('')}
               name='md-trash'
               type='ionicon'
               color='white'

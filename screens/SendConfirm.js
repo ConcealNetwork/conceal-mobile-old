@@ -9,15 +9,16 @@ import { AppColors } from '../constants/Colors';
 import { format6Decimals, getAspectRatio, maskAddress, parseLocaleNumber } from '../helpers/utils';
 import AuthCheck from './AuthCheck';
 
-const SendConfirm = ({ navigation: { goBack } }) => {
+const SendConfirm = ({ navigation: { goBack }, route }) => {
   const { state, actions } = useContext(AppContext);
   const { wallets, appData, appSettings } = state;
-  const currWallet = wallets[appData.common.selectedWallet];
+  const { params } = route;
+  const currWallet = wallets[Object.keys(wallets).find(i => wallets[i].default)];
 
   const [showAuthCheck, setShowAuthCheck] = useState(false);
   const sendSummaryList = [];
 
-  function addSummaryItem(value, title, icon) {
+  const addSummaryItem = (value, title, icon) => {
     sendSummaryList.push({
       value: value,
       title: title,
@@ -25,18 +26,13 @@ const SendConfirm = ({ navigation: { goBack } }) => {
     });
   }
 
-  let totalAmount = parseLocaleNumber(appData.sendScreen.toAmount);
-  totalAmount += appSettings.defaultFee;
+  const totalAmount = parseLocaleNumber(params?.amount) + appSettings.defaultFee;
 
   addSummaryItem(`${totalAmount.toLocaleString(undefined, format6Decimals)} CCX`, 'You are sending', 'md-cash');
   addSummaryItem(maskAddress(currWallet.addr), 'From address', 'md-mail');
-  addSummaryItem(maskAddress(appData.sendScreen.toAddress), 'To address', 'md-mail');
-  if (appData.sendScreen.toPaymentId) {
-    addSummaryItem(maskAddress(appData.sendScreen.toPaymentId), 'Payment ID', 'md-key');
-  }
-  if (appData.sendScreen.toLabel) {
-    addSummaryItem(appData.sendScreen.toLabel, 'Label', 'md-eye');
-  }
+  addSummaryItem(maskAddress(params.address), 'To address', 'md-mail');
+  if (params?.paymentID) addSummaryItem(maskAddress(params.paymentID), 'Payment ID', 'md-key');
+  if (params?.label) addSummaryItem(params.label, 'Label', 'md-eye');
   addSummaryItem(`${appSettings.defaultFee} CCX`, 'Transaction Fee', 'md-cash');
 
   const renderItem = ({ item }) =>
@@ -51,9 +47,9 @@ const SendConfirm = ({ navigation: { goBack } }) => {
   const sendPayment = (password) => {
     actions.sendPayment(
       currWallet.addr,
-      appData.sendScreen.toAddress,
-      appData.sendScreen.toPaymentId,
-      parseLocaleNumber(appData.sendScreen.toAmount),
+      params.address,
+      params.paymentID,
+      parseLocaleNumber(params.amount),
       '', password
     );
   }

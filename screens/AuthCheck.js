@@ -52,8 +52,7 @@ const AuthCheck = props => {
       <Overlay
         isVisible={showCheck && getAuthMethod() === 'password'}
         overlayBackgroundColor={AppColors.concealBackground}
-        width="100%"
-        height="100%"
+        fullScreen={true}
       >
         <View style={styles.overlayWrapper}>
           <PassCheck
@@ -68,6 +67,7 @@ const AuthCheck = props => {
 
 const styles = EStyleSheet.create({
   overlayWrapper: {
+    backgroundColor: AppColors.concealBackground,
     top: 0,
     left: 0,
     right: 0,

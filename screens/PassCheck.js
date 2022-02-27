@@ -38,7 +38,7 @@ const PassCheck = props => {
         </View>
         <View style={styles.passIconWrapper}>
           <Icon
-            name='md-lock'
+            name='md-lock-closed'
             type='ionicon'
             color={'white'}
             style={styles.lockIcon}
