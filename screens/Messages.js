@@ -173,29 +173,29 @@ const Messages = ({ navigation: { goBack, navigate } }) => {
           />
         </Tips>
         {layout.userLoaded && messageList.length === 0
-          ? (<View style={styles.emptyMessagesWrapper}>
-            <Text style={styles.emptyMessagesText}>
-              You have no messages currently. When someone will send you a message it will be visible here.
-            </Text>
-          </View>)
-          : (<FlatList
-            data={messageList}
-            style={styles.flatList}
-            showsVerticalScrollIndicator={false}
-            keyExtractor={item => item.id}
-            renderItem={({ item, index }) =>
-              <View style={(item.addr === appData.common.selectedWallet) ? [styles.flatview, styles.walletSelected] : styles.flatview}>
-                <TouchableOpacity>
-                  <View>
-                    <Text style={styles.address}>{maskAddress(item.address)}</Text>
-                    <Text style={styles.message}>{item.message}</Text>
-                    <Text style={styles.timestamp}>{Moment(item.timestamp).format('LLLL')}</Text>
-                    <Text style={item.type === 'in' ? [styles.type, styles.typein] : [styles.type, styles.typeout]}>{item.type === 'in' ? "Inbound" : "Outbound"}</Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-            }
-          />)
+          ? <View style={styles.emptyMessagesWrapper}>
+              <Text style={styles.emptyMessagesText}>
+                You have no messages currently. When someone will send you a message it will be visible here.
+              </Text>
+            </View>
+          : <FlatList
+              data={messageList}
+              style={styles.flatList}
+              showsVerticalScrollIndicator={false}
+              keyExtractor={item => item.id}
+              renderItem={({ item, index }) =>
+                <View style={(item.addr === appData.common.selectedWallet) ? [styles.flatview, styles.walletSelected] : styles.flatview}>
+                  <TouchableOpacity>
+                    <View>
+                      <Text style={styles.address}>{maskAddress(item.address)}</Text>
+                      <Text style={styles.message}>{item.message}</Text>
+                      <Text style={styles.timestamp}>{Moment(item.timestamp).format('LLLL')}</Text>
+                      <Text style={item.type === 'in' ? [styles.type, styles.typein] : [styles.type, styles.typeout]}>{item.type === 'in' ? "Inbound" : "Outbound"}</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              }
+            />
         }
       </View>
     </View>

@@ -61,89 +61,80 @@ const Settings = ({ navigation: { goBack } }) => {
       value: user.name,
       title: 'User Name',
       icon: 'md-person'
-    }, {
+    },
+    {
       value: user.email,
       title: 'Email',
       icon: 'md-mail'
-    }, {
+    },
+    {
       value: network.blockchainHeight.toLocaleString(),
       title: 'Height',
       icon: 'md-pulse'
-    }, {
+    },
+    {
       value: userSettings.twoFAEnabled ? 'Two Factor Authentication is ON' : 'Two Factor Authentication is OFF',
       title: 'Visit: "https://conceal.cloud" to change',
-      icon: 'md-lock'
-    }, {
+      icon: 'md-lock-closed'
+    },
+    {
       value: 'password',
       title: `Authentication method: "${localStorage.get('auth_method', 'password')}"`,
-      icon: 'md-lock',
-      rightElement: function () {
-        return (
-          <Tips
-            position={'left'}
-            visible={guideState === 'changeAuth'}
-            textStyle={AppStyles.guideTipText}
-            tooltipArrowStyle={AppStyles.guideTipArrowRight}
-            style={[AppStyles.guideTipContainer, styles.guideTipChangeAuth]}
-            text="You can change authentication type to a more friendly one"
-            onRequestClose={() => setGuideState(guideNavigation.next())}
-          >
-            <ModalSelector
-              data={loginData}
-              ref={selector => { pickerRef = selector; }}
-              cancelStyle={styles.pickerCancelButton}
-              cancelTextStyle={styles.pickerCancelButtonText}
-              optionContainerStyle={styles.pickerContainer}
-              sectionTextStyle={styles.pickerSectionText}
-              optionTextStyle={styles.pickerOptionText}
-              onChange={(option) => {
-                localStorage.set('auth_method', option.value);
-                setAuthMode(option.value);
+      icon: 'md-lock-closed',
+      rightElement: <Tips
+        position={'left'}
+        visible={guideState === 'changeAuth'}
+        textStyle={AppStyles.guideTipText}
+        tooltipArrowStyle={AppStyles.guideTipArrowRight}
+        style={[AppStyles.guideTipContainer, styles.guideTipChangeAuth]}
+        text="You can change authentication type to a more friendly one"
+        onRequestClose={() => setGuideState(guideNavigation.next())}
+      >
+        <ModalSelector
+          data={loginData}
+          ref={selector => { pickerRef = selector; }}
+          cancelStyle={styles.pickerCancelButton}
+          cancelTextStyle={styles.pickerCancelButtonText}
+          optionContainerStyle={styles.pickerContainer}
+          sectionTextStyle={styles.pickerSectionText}
+          optionTextStyle={styles.pickerOptionText}
+          onChange={(option) => {
+            localStorage.set('auth_method', option.value);
+            setAuthMode(option.value);
 
-                if (option.value === 'pin') {
-                  setShowPinModal(true);
-                } else if (option.value === 'biometric') {
-                  setShowFgpModal(true);
-                }
-              }}
-              customSelector={
-                < Icon
-                  name='md-menu'
-                  type='ionicon'
-                  color='white'
-                  size={32 * getAspectRatio()}
-                  onPress={() => pickerRef.open()}
-                />}
-            />
-          </Tips>);
-      }
-    }, {
+            if (option.value === 'pin') {
+              setShowPinModal(true);
+            } else if (option.value === 'biometric') {
+              setShowFgpModal(true);
+            }
+          }}
+          customSelector={
+            < Icon
+              name='md-menu'
+              type='ionicon'
+              color='white'
+              size={32 * getAspectRatio()}
+              onPress={() => pickerRef.open()}
+            />}
+        />
+      </Tips>
+    },
+    {
       value: AppConf.expo.version,
       title: 'Conceal Mobile version',
       icon: 'md-information'
     }
   ];
 
-  // key extractor for the list
-  const keyExtractor = (item, index) => index.toString();
-
-  const renderItem = ({ item }) => (
-    <ListItem
-      title={item.value}
-      subtitle={item.title}
-      rightElement={item.rightElement}
-      titleStyle={styles.settingsText}
-      subtitleStyle={styles.settingsLabel}
-      containerStyle={styles.settingsItem}
-      onPress={item.onPress}
-      leftIcon={<Icon
-        name={item.icon}
-        type='ionicon'
-        color='white'
-        size={32 * getAspectRatio()}
-      />}
-    />
-  );
+  const renderItem = ({ item }) =>
+    <ListItem containerStyle={styles.settingsItem} key={item.value} onPress={item.onPress}>
+      <Icon name={item.icon} type='ionicon' color='white' size={32 * getAspectRatio()} />
+      <ListItem.Content>
+        <ListItem.Title style={styles.settingsText}>{item.value}</ListItem.Title>
+        <ListItem.Subtitle style={styles.settingsLabel}>{item.title}</ListItem.Subtitle>
+      </ListItem.Content>
+      {item.rightElement}
+    </ListItem>
 
   if (userSettings.twoFAEnabled === null) {
     check2FA();
@@ -202,7 +193,7 @@ const Settings = ({ navigation: { goBack } }) => {
         data={settingsList}
         style={styles.settingsList}
         renderItem={renderItem}
-        keyExtractor={keyExtractor}
+        keyExtractor={item => item.title}
       />
       <Overlay
         isVisible={showPinModal}

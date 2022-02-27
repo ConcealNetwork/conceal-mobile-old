@@ -13,130 +13,47 @@ const AppMenu = ({ navigation: { goBack, navigate } }) => {
   const { logoutUser } = actions;
 
   const settingsList = [
-
     {
       value: 'Setting',
       title: 'Settings for your profile...',
       icon: 'md-settings',
-      onPress: function () {
-        navigate('Settings');
-      },
-      rightElement: function () {
-        return (<Icon
-          name='md-play'
-          type='ionicon'
-          color='white'
-          size={32 * getAspectRatio()}
-        />
-        );
-      }
-    }, {
-      value: 'Default Wallet',
-      title: 'This is your default selected wallet screen...',
-      icon: 'md-wallet',
-      onPress: function () {
-        navigate('Wallet');
-      },
-      rightElement: function () {
-        return (<Icon
-          name='md-play'
-          type='ionicon'
-          color='white'
-          size={32 * getAspectRatio()}
-        />
-        );
-      }
-    }, {
+      onPress: () => navigate('Settings'),
+    },
+    {
       value: 'Wallets',
       title: 'This is the wallet selection screen...',
       icon: 'md-wallet',
-      onPress: function () {
-        navigate('Wallets');
-      },
-      rightElement: function () {
-        return (<Icon
-          name='md-play'
-          type='ionicon'
-          color='white'
-          size={32 * getAspectRatio()}
-        />
-        );
-      }
-    }, {
+      onPress: () => navigate('Wallets'),
+    },
+    {
       value: 'Messages',
       title: 'Go to sending and receiving messages...',
       icon: 'md-mail',
-      onPress: function () {
-        navigate('Messages');
-      },
-      rightElement: function () {
-        return (<Icon
-          name='md-play'
-          type='ionicon'
-          color='white'
-          size={32 * getAspectRatio()}
-        />
-        );
-      }
-    }, {
+      onPress: () => navigate('Messages'),
+    },
+    {
       value: 'Address Book',
-      title: 'This is the address book managment screen...',
+      title: 'This is the address book management screen...',
       icon: 'md-book',
-      onPress: function () {
-        navigate('AddressBook');
-      },
-      rightElement: function () {
-        return (<Icon
-          name='md-play'
-          type='ionicon'
-          color='white'
-          size={32 * getAspectRatio()}
-        />
-        );
-      }
-    }, {
+      onPress: () => navigate('AddressBook'),
+    },
+    {
       value: 'Market Data',
       title: 'This is the current market data...',
       icon: 'md-trending-up',
-      onPress: function () {
-        navigate('Market');
-      },
-      rightElement: function () {
-        return (<Icon
-          name='md-play'
-          type='ionicon'
-          color='white'
-          size={32 * getAspectRatio()}
-        />
-        );
-      }
+      onPress: () => navigate('Market'),
     }
   ];
 
-  const renderItem = ({ item }) => (
-    <ListItem key={item.value} onPress={item.onPress} bottomDivider>
+  const renderItem = ({ item }) =>
+    <ListItem containerStyle={styles.settingsItem} key={item.value} onPress={item.onPress}>
+      <Icon name={item.icon} type='ionicon' color='white' size={32 * getAspectRatio()} />
       <ListItem.Content>
-        <ListItem.Title>{item.value}</ListItem.Title>
-        <ListItem.Subtitle>{item.subtitle}</ListItem.Subtitle>
+        <ListItem.Title style={styles.settingsText}>{item.value}</ListItem.Title>
+        <ListItem.Subtitle style={styles.settingsLabel}>{item.title}</ListItem.Subtitle>
       </ListItem.Content>
       <ListItem.Chevron />
     </ListItem>
-    /*<ListItem
-      title={item.value}
-      subtitle={item.title}
-      rightElement={item.rightElement}
-      titleStyle={styles.settingsText}
-      subtitleStyle={styles.settingsLabel}
-      containerStyle={styles.settingsItem}
-      onPress={item.onPress}
-      leftIcon={< Icon
-        name={item.icon}
-        type='ionicon'
-        color='white'
-        size={32 * getAspectRatio()}
-      />}
-    />*/
-  );
 
   return (
     <View style={AppStyles.pageWrapper}>

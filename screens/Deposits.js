@@ -122,70 +122,70 @@ const Deposits = ({ navigation: { goBack, navigate } }) => {
       />
       <View style={styles.depositListWrapper}>
         {userLoaded && walletsLoaded && depositsLoaded && sortedDeposits.length === 0
-          ? (<View style={styles.emptyDepositsWrapper}>
-            <Text style={styles.emptyDepositsText}>
-              You have no deposits at this time or they are not loaded yet. To create a new deposit, click on the + button.
-            </Text>
-          </View>)
-          : (<FlatList
-            data={sortedDeposits}
-            showsVerticalScrollIndicator={false}
-            keyExtractor={item => item.depositId.toString()}
-            onViewableItemsChanged={handleViewableItemsChanged}
-            viewabilityConfig={{ viewAreaCoveragePercentThreshold: 50 }}
-            renderItem={({ item, index }) =>
-              <View style={styles.flatViewItemWrapper}>
-                <View style={styles.depositItemHeader}>
-                  <View style={styles.depositItemWrapper}>
-                    <Text style={styles.depositItemLabel}>Unlocks:</Text>
-                    <Text style={styles.depositItemValue}>{getUnlockTimestamp(item.unlockHeight)}</Text>
+          ? <View style={styles.emptyDepositsWrapper}>
+              <Text style={styles.emptyDepositsText}>
+                You have no deposits at this time or they are not loaded yet. To create a new deposit, click on the + button.
+              </Text>
+            </View>
+          : <FlatList
+              data={sortedDeposits}
+              showsVerticalScrollIndicator={false}
+              keyExtractor={item => item.depositId.toString()}
+              onViewableItemsChanged={handleViewableItemsChanged}
+              viewabilityConfig={{ viewAreaCoveragePercentThreshold: 50 }}
+              renderItem={({ item, index }) =>
+                <View style={styles.flatViewItemWrapper}>
+                  <View style={styles.depositItemHeader}>
+                    <View style={styles.depositItemWrapper}>
+                      <Text style={styles.depositItemLabel}>Unlocks:</Text>
+                      <Text style={styles.depositItemValue}>{getUnlockTimestamp(item.unlockHeight)}</Text>
+                    </View>
+                  </View>
+                  <View style={styles.depositItemData}>
+                    <View style={styles.depositData}>
+                      <View style={styles.depositItemWrapper}>
+                        <Text style={styles.depositItemLabel}>Locked:</Text>
+                        <Text style={styles.depositItemValue}>{Moment(item.timestamp).format('"MMM Do YYYY"')}</Text>
+                      </View>
+                      <View style={styles.depositItemWrapper}>
+                        <Text style={styles.depositItemLabel}>Amount:</Text>
+                        <Text style={styles.depositItemValue}>{(item.amount / appSettings.coinMetrics).toLocaleString(undefined, formatOptions)} CCX</Text>
+                      </View>
+                      <View style={styles.depositItemWrapper}>
+                        <Text style={styles.depositItemLabel}>Interest:</Text>
+                        <Text style={styles.depositItemValue}>{(item.interest / appSettings.coinMetrics).toLocaleString(undefined, formatOptions)} CCX</Text>
+                      </View>
+                      <Text style={styles.depositItemAddress}>
+                        {maskAddress(item.address)}
+                      </Text>
+                    </View>
+                    <View style={styles.depositIcon}>
+                      {item.locked ?
+                        (
+                          <AnimatedCircularProgress
+                            size={64 * getAspectRatio()}
+                            width={8 * getAspectRatio()}
+                            backgroundWidth={12 * getAspectRatio()}
+                            backgroundColor={AppColors.concealBackground}
+                            tintColor={AppColors.concealOrange}
+                            fill={getUnlockPercent(item.height, item.unlockHeight)}
+                          >
+                            {fill => <Text style={styles.depositPercentText}>{getUnlockPercent(item.height, item.unlockHeight)}</Text>}
+                          </AnimatedCircularProgress>
+                        ) : (
+                          <Icon
+                            onPress={() => { unlockDeposit(item.depositId) }}
+                            name='lock-open-outline'
+                            type='ionicon'
+                            color='white'
+                            size={64 * getAspectRatio()}
+                          />
+                        )}
+                    </View>
                   </View>
                 </View>
-                <View style={styles.depositItemData}>
-                  <View style={styles.depositData}>
-                    <View style={styles.depositItemWrapper}>
-                      <Text style={styles.depositItemLabel}>Locked:</Text>
-                      <Text style={styles.depositItemValue}>{Moment(item.timestamp).format('"MMM Do YYYY"')}</Text>
-                    </View>
-                    <View style={styles.depositItemWrapper}>
-                      <Text style={styles.depositItemLabel}>Amount:</Text>
-                      <Text style={styles.depositItemValue}>{(item.amount / appSettings.coinMetrics).toLocaleString(undefined, formatOptions)} CCX</Text>
-                    </View>
-                    <View style={styles.depositItemWrapper}>
-                      <Text style={styles.depositItemLabel}>Interest:</Text>
-                      <Text style={styles.depositItemValue}>{(item.interest / appSettings.coinMetrics).toLocaleString(undefined, formatOptions)} CCX</Text>
-                    </View>
-                    <Text style={styles.depositItemAddress}>
-                      {maskAddress(item.address)}
-                    </Text>
-                  </View>
-                  <View style={styles.depositIcon}>
-                    {item.locked ?
-                      (
-                        <AnimatedCircularProgress
-                          size={64 * getAspectRatio()}
-                          width={8 * getAspectRatio()}
-                          backgroundWidth={12 * getAspectRatio()}
-                          backgroundColor={AppColors.concealBackground}
-                          tintColor={AppColors.concealOrange}
-                          fill={getUnlockPercent(item.height, item.unlockHeight)}
-                        >
-                          {fill => <Text style={styles.depositPercentText}>{getUnlockPercent(item.height, item.unlockHeight)}</Text>}
-                        </AnimatedCircularProgress>
-                      ) : (
-                        <Icon
-                          onPress={() => { unlockDeposit(item.depositId) }}
-                          name='lock-open-outline'
-                          type='ionicon'
-                          color='white'
-                          size={64 * getAspectRatio()}
-                        />
-                      )}
-                  </View>
-                </View>
-              </View>
-            }
-          />)
+              }
+            />
         }
       </View>
     </View>

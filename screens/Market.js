@@ -45,24 +45,14 @@ const Market = ({ navigation: { goBack } }) => {
     }
   ];
 
-  // key extractor for the list
-  this.keyExtractor = (item, index) => index.toString();
-
-  this.renderItem = ({ item }) => (
-    <ListItem
-      title={item.value}
-      subtitle={item.title}
-      titleStyle={styles.settingsText}
-      subtitleStyle={styles.settingsLabel}
-      containerStyle={styles.settingsItem}
-      leftIcon={<Icon
-        name={item.icon}
-        type='ionicon'
-        color='white'
-        size={32 * getAspectRatio()}
-      />}
-    />
-  );
+  const renderItem = ({ item }) =>
+    <ListItem containerStyle={styles.settingsItem} key={item.value} onPress={item.onPress}>
+      <Icon name={item.icon} type='ionicon' color='white' size={32 * getAspectRatio()} />
+      <ListItem.Content>
+        <ListItem.Title style={styles.settingsText}>{item.value}</ListItem.Title>
+        <ListItem.Subtitle style={styles.settingsLabel}>{item.title}</ListItem.Subtitle>
+      </ListItem.Content>
+    </ListItem>
 
   return (
     <View style={styles.pageWrapper}>
@@ -81,8 +71,8 @@ const Market = ({ navigation: { goBack } }) => {
       <FlatList
         data={list}
         style={styles.settingsList}
-        renderItem={this.renderItem}
-        keyExtractor={this.keyExtractor}
+        renderItem={renderItem}
+        keyExtractor={item => item.title}
       />
     </View>
   )

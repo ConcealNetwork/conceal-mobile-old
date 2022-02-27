@@ -27,27 +27,18 @@ const SendMessageConfirm = ({ navigation: { goBack } }) => {
 
   addSummaryItem(maskAddress(currWallet.addr), 'From address', 'md-mail');
   addSummaryItem(maskAddress(state.appData.sendMessage.toAddress), 'To address', 'md-mail');
-  addSummaryItem(`${appSettings.defaultFee} CCX`, 'Transaction Fee', 'md-cash');
   addSummaryItem(state.appData.sendMessage.message, 'Message', 'md-mail');
+  addSummaryItem(`${appSettings.defaultFee} CCX`, 'Transaction Fee', 'md-cash');
 
-  // key extractor for the list
-  const keyExtractor = (item, index) => index.toString();
-
-  const renderItem = ({ item }) => (
-    <ListItem
-      title={item.value}
-      subtitle={item.title}
-      titleStyle={styles.summaryText}
-      subtitleStyle={styles.summaryLabel}
-      containerStyle={styles.summaryItem}
-      leftIcon={<Icon
-        name={item.icon}
-        type='ionicon'
-        color='white'
-        size={32 * getAspectRatio()}
-      />}
-    />
-  );
+  const renderItem = ({ item }) =>
+    <ListItem containerStyle={styles.summaryItem} key={item.value} onPress={item.onPress}>
+      <Icon name={item.icon} type='ionicon' color='white' size={32 * getAspectRatio()} />
+      <ListItem.Content>
+        <ListItem.Title style={styles.summaryText}>{item.value}</ListItem.Title>
+        <ListItem.Subtitle style={styles.summaryLabel}>{item.title}</ListItem.Subtitle>
+      </ListItem.Content>
+      {item.rightElement}
+    </ListItem>
 
   const sendMessage = (password) => {
     actions.sendMessage(
@@ -76,7 +67,7 @@ const SendMessageConfirm = ({ navigation: { goBack } }) => {
         data={sendSummaryList}
         style={styles.summaryList}
         renderItem={renderItem}
-        keyExtractor={keyExtractor}
+        keyExtractor={item => item.title}
       />
       <View style={styles.footer}>
         <ConcealButton

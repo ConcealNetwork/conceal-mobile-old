@@ -59,15 +59,15 @@ const SearchAddress = props => {
             showsVerticalScrollIndicator={false}
             renderItem={({ item }) =>
               (currWallet.addr !== item.address)
-                ? (<TouchableOpacity onPress={() => selectAddress(item)}>
-                  <View style={styles.flatview}>
-                    <View>
-                      <Text style={styles.addressLabel}>{item.label}</Text>
-                      <Text style={styles.address}>Address: {maskAddress(item.address)}</Text>
-                      {item.paymentID ? (<Text style={styles.data}>Payment ID: {item.paymentID}</Text>) : null}
+                ? <TouchableOpacity onPress={() => selectAddress(item)}>
+                    <View style={styles.flatview}>
+                      <View>
+                        <Text style={styles.addressLabel}>{item.label}</Text>
+                        <Text style={styles.address}>Address: {maskAddress(item.address)}</Text>
+                        {item.paymentID ? (<Text style={styles.data}>Payment ID: {item.paymentID}</Text>) : null}
+                      </View>
                     </View>
-                  </View>
-                </TouchableOpacity>)
+                  </TouchableOpacity>
                 : null
             }
             keyExtractor={item => item.entryID.toString()}

@@ -19,39 +19,31 @@ const CreateDepositConfirm = ({ navigation: { goBack } }) => {
   const [showAuthCheck, setShowAuthCheck] = useState(false);
   const sendSummaryList = [];
 
-  function addSummaryItem(value, title, icon) {
+  const addSummaryItem = (value, title, icon) => {
     sendSummaryList.push({
       value: value,
       title: title,
       icon: icon
     });
-  }
+  };
 
   // calculate the interest class from the data
-  let interestClass = ((appData.createDeposit.duration - 1) * 3) + Math.min(Math.floor(parseLocaleNumber(appData.createDeposit.amount, true) / 10000) + 1, 3)
+  const interestClass = ((appData.createDeposit.duration - 1) * 3) + Math.min(Math.floor(parseLocaleNumber(appData.createDeposit.amount, true) / 10000) + 1, 3)
 
   addSummaryItem(`${parseLocaleNumber(state.appData.createDeposit.amount, true).toLocaleString(undefined, format6Decimals)} CCX`, 'You are depositing', 'md-cash');
   addSummaryItem(`${getDepositInterest(parseLocaleNumber(appData.createDeposit.amount, true), appData.createDeposit.duration).toLocaleString(undefined, format6Decimals)} CCX`, 'Interest you will earn', 'md-cash');
   addSummaryItem(`${appData.createDeposit.duration} month${state.appData.createDeposit.duration > 1 ? 's' : ''}`, 'For a duration of', 'md-clock');
   addSummaryItem(`${appSettings.defaultFee} CCX`, 'Transaction Fee', 'md-cash');
 
-  // key extractor for the list
-  const keyExtractor = (item, index) => index.toString();
-
   const renderListItem = ({ item }) => (
-    <ListItem
-      title={item.value}
-      subtitle={item.title}
-      titleStyle={styles.summaryText}
-      subtitleStyle={styles.summaryLabel}
-      containerStyle={styles.summaryItem}
-      leftIcon={<Icon
-        name={item.icon}
-        type='ionicon'
-        color='white'
-        size={32 * getAspectRatio()}
-      />}
-    />
+    <ListItem containerStyle={styles.settingsItem} key={item.value} onPress={item.onPress}>
+      <Icon name={item.icon} type='ionicon' color='white' size={32 * getAspectRatio()} />
+      <ListItem.Content>
+        <ListItem.Title style={styles.settingsText}>{item.value}</ListItem.Title>
+        <ListItem.Subtitle style={styles.settingsLabel}>{item.title}</ListItem.Subtitle>
+      </ListItem.Content>
+      {item.rightElement}
+    </ListItem>
   );
 
   // guide navigation state values
@@ -93,7 +85,7 @@ const CreateDepositConfirm = ({ navigation: { goBack } }) => {
           data={sendSummaryList}
           style={styles.summaryList}
           renderItem={renderListItem}
-          keyExtractor={keyExtractor}
+          keyExtractor={item => item.title}
         />
         <InterestTable
           interestClass={interestClass}

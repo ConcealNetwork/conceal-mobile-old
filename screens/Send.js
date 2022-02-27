@@ -85,24 +85,14 @@ const SendScreen = ({ navigation: { goBack, navigate }, route }) => {
     navigate('Scanner', { previousScreen: 'SendPayment' });
   }
 
-  // key extractor for the list
-  const keyExtractor = (item, index) => index.toString();
-
-  const renderItem = ({ item }) => (
-    <ListItem
-      title={item.value}
-      subtitle={item.title}
-      titleStyle={styles.summaryText}
-      subtitleStyle={styles.summaryLabel}
-      containerStyle={styles.summaryItem}
-      leftIcon={<Icon
-        name={item.icon}
-        type='ionicon'
-        color='white'
-        size={32 * getAspectRatio()}
-      />}
-    />
-  );
+  const renderItem = ({ item }) =>
+    <ListItem containerStyle={styles.summaryItem} key={item.value} onPress={item.onPress}>
+      <Icon name={item.icon} type='ionicon' color='white' size={32 * getAspectRatio()} />
+      <ListItem.Content>
+        <ListItem.Title style={styles.summaryText}>{item.value}</ListItem.Title>
+        <ListItem.Subtitle style={styles.summaryLabel}>{item.title}</ListItem.Subtitle>
+      </ListItem.Content>
+    </ListItem>
 
   const isFormValid = () => {
     if (state.appData.sendScreen.toAddress && state.appData.sendScreen.toAmount) {
@@ -253,7 +243,7 @@ const SendScreen = ({ navigation: { goBack, navigate }, route }) => {
           data={sendSummaryList}
           style={styles.summaryList}
           renderItem={renderItem}
-          keyExtractor={keyExtractor}
+          keyExtractor={item => item.title}
         />
       </View>
       <SearchAddress

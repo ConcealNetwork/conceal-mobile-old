@@ -170,87 +170,92 @@ const AddressBook = ({ navigation: { goBack, navigate } }) => {
       </Tips>
       <View style={styles.addressListWrapper}>
         {layout.userLoaded && addressList.length === 0
-          ? (<View style={styles.emptyAddressBookWrapper}>
-            <Text style={styles.emptyAddressBookText}>
-              You have no contacts saved in your address book, or search did not find any.
-              Add one by clicking on the + button or when you are sending funds.
-            </Text>
-          </View>)
-          : (<FlatList
-            data={addressList}
-            showsVerticalScrollIndicator={false}
-            keyExtractor={item => item.entryID.toString()}
-            onViewableItemsChanged={handleViewableItemsChanged}
-            viewabilityConfig={{ viewAreaCoveragePercentThreshold: 50 }}
-            renderItem={({ item, index }) =>
-              <View style={styles.flatview}>
-                <View>
-                  <Text style={styles.addressLabel}>{item.label}</Text>
-                  <Text style={styles.address}>Address: {maskAddress(item.address)}</Text>
-                  {item.paymentID ? (<Text style={styles.data}>Payment ID: {item.paymentID}</Text>) : null}
-                </View>
-                <View style={styles.addressListFooter}>
-                  <View style={styles.btnWrapper}>
-                    <Tips
-                      position={'bottom'}
-                      visible={(guideState === 'deleteAddress') && (index === firstVisibleItem)}
-                      textStyle={AppStyles.guideTipText}
-                      style={[AppStyles.guideTipContainer, styles.guideTipDeleteAddress]}
-                      tooltipArrowStyle={[AppStyles.guideTipArrowTop, styles.guideTipArrowDeleteAddress]}
-                      text="Click on this button to delete the address..."
-                      onRequestClose={() => setGuideState(guideNavigation.next())}
-                    >
-                      <ConcealButton
-                        style={[styles.footerBtn, styles.footerBtnLeft]}
-                        buttonStyle={styles.btnStyle}
-                        onPress={() => {
-                          Alert.alert(
-                            'Delete Contact',
-                            'You are about to delete this contact! Do you really wish to proceed?',
-                            [
-                              { text: 'OK', onPress: () => deleteContact(item) },
-                              { text: 'Cancel', style: 'cancel' },
-                            ],
-                            { cancelable: false },
-                          );
-                        }}
-                        text="DELETE"
-                      />
-                    </Tips>
+          ? <View style={styles.emptyAddressBookWrapper}>
+              <Text style={styles.emptyAddressBookText}>
+                You have no contacts saved in your address book, or search did not find any.
+                Add one by clicking on the + button or when you are sending funds.
+              </Text>
+            </View>
+          : <FlatList
+              data={addressList}
+              showsVerticalScrollIndicator={false}
+              keyExtractor={item => item.entryID.toString()}
+              onViewableItemsChanged={handleViewableItemsChanged}
+              viewabilityConfig={{ viewAreaCoveragePercentThreshold: 50 }}
+              renderItem={({ item, index }) =>
+                <View style={styles.flatview}>
+                  <View>
+                    <Text style={styles.addressLabel}>{item.label}</Text>
+                    <Text style={styles.address}>Address: {maskAddress(item.address)}</Text>
+                    {item.paymentID
+                      ? <Text style={styles.data}>
+                          Payment ID: {maskAddress(item.paymentID, '.', 3, 20, 0)}
+                        </Text>
+                      : null
+                    }
                   </View>
-                  <View style={styles.btnWrapper}>
-                    <Tips
-                      position={'bottom'}
-                      visible={(guideState === 'editAddress') && (index === firstVisibleItem)}
-                      textStyle={AppStyles.guideTipText}
-                      style={[AppStyles.guideTipContainer, styles.guideTipEditAddress]}
-                      tooltipArrowStyle={[AppStyles.guideTipArrowTop, styles.guideTipArrowEditAddress]}
-                      text="Click on this button to edit the address..."
-                      onRequestClose={() => setGuideState(guideNavigation.next())}
-                    >
-                      <ConcealButton
-                        style={[styles.footerBtn, styles.footerBtnRight]}
-                        buttonStyle={styles.btnStyle}
-                        onPress={() => {
-                          setAppData({
-                            addressEntry: {
-                              headerText: "Edit Address",
-                              label: item.label,
-                              address: item.address,
-                              paymentId: item.paymentID,
-                              entryId: item.entryID
-                            }
-                          });
-                          navigate('EditAddress', { callback: null });
-                        }}
-                        text="EDIT"
-                      />
-                    </Tips>
+                  <View style={styles.addressListFooter}>
+                    <View style={styles.btnWrapper}>
+                      <Tips
+                        position={'bottom'}
+                        visible={(guideState === 'deleteAddress') && (index === firstVisibleItem)}
+                        textStyle={AppStyles.guideTipText}
+                        style={[AppStyles.guideTipContainer, styles.guideTipDeleteAddress]}
+                        tooltipArrowStyle={[AppStyles.guideTipArrowTop, styles.guideTipArrowDeleteAddress]}
+                        text="Click on this button to delete the address..."
+                        onRequestClose={() => setGuideState(guideNavigation.next())}
+                      >
+                        <ConcealButton
+                          style={[styles.footerBtn, styles.footerBtnLeft]}
+                          buttonStyle={styles.btnStyle}
+                          onPress={() => {
+                            Alert.alert(
+                              'Delete Contact',
+                              'You are about to delete this contact! Do you really wish to proceed?',
+                              [
+                                { text: 'OK', onPress: () => deleteContact(item) },
+                                { text: 'Cancel', style: 'cancel' },
+                              ],
+                              { cancelable: false },
+                            );
+                          }}
+                          text="DELETE"
+                        />
+                      </Tips>
+                    </View>
+                    <View style={styles.btnWrapper}>
+                      <Tips
+                        position={'bottom'}
+                        visible={(guideState === 'editAddress') && (index === firstVisibleItem)}
+                        textStyle={AppStyles.guideTipText}
+                        style={[AppStyles.guideTipContainer, styles.guideTipEditAddress]}
+                        tooltipArrowStyle={[AppStyles.guideTipArrowTop, styles.guideTipArrowEditAddress]}
+                        text="Click on this button to edit the address..."
+                        onRequestClose={() => setGuideState(guideNavigation.next())}
+                      >
+                        <ConcealButton
+                          style={[styles.footerBtn, styles.footerBtnRight]}
+                          buttonStyle={styles.btnStyle}
+                          onPress={() => {
+                            setAppData({
+                              addressEntry: {
+                                headerText: "Edit Address",
+                                label: item.label,
+                                address: item.address,
+                                paymentId: item.paymentID,
+                                entryId: item.entryID
+                              }
+                            });
+                            navigate('EditAddress', { callback: null });
+                          }}
+                          text="EDIT"
+                        />
+                      </Tips>
+                    </View>
                   </View>
                 </View>
-              </View>
-            }
-          />)
+              }
+            />
         }
       </View>
     </View>
