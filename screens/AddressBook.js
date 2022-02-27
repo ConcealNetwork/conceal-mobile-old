@@ -1,4 +1,3 @@
-import * as Clipboard from 'expo-clipboard';
 import React, { useContext, useEffect, useState } from 'react';
 import { Alert, FlatList, Text, View } from 'react-native';
 import { Header, Icon } from 'react-native-elements';
@@ -9,36 +8,10 @@ import ConcealTextInput from '../components/ccxTextInput';
 import { AppContext } from '../components/ContextProvider';
 import AppStyles from '../components/Style';
 import GuideNavigation from '../helpers/GuideNav';
+import { useFormInput } from '../helpers/hooks';
 import { getAspectRatio, maskAddress } from '../helpers/utils';
 
 let firstVisibleItem = -1;
-
-let readLabelromClipboard = async () => {
-  const clipboardContent = await Clipboard.getStringAsync();
-  setAppData({
-    addressEntry: {
-      label: clipboardContent
-    }
-  });
-};
-
-let readAddressFromClipboard = async () => {
-  const clipboardContent = await Clipboard.getStringAsync();
-  setAppData({
-    addressEntry: {
-      address: clipboardContent
-    }
-  });
-};
-
-let readPaymentIdFromClipboard = async () => {
-  const clipboardContent = await Clipboard.getStringAsync();
-  setAppData({
-    addressEntry: {
-      paymentId: clipboardContent
-    }
-  });
-};
 
 const handleViewableItemsChanged = (info) => {
   if ((info.viewableItems) && (info.viewableItems.length > 0)) {
@@ -50,10 +23,10 @@ const handleViewableItemsChanged = (info) => {
 
 const AddressBook = ({ navigation: { goBack, navigate } }) => {
   const { actions, state } = useContext(AppContext);
-  const { deleteContact, setAppData } = actions;
+  const { deleteContact } = actions;
   const { layout, user } = state;
-  let addressList = [];
 
+  const { value: filterText, bind: bindFilterText, setValue: setFilterText } = useFormInput();
   // guide navigation state values
   const [guideState, setGuideState] = useState(null);
   const [guideNavigation] = useState(new GuideNavigation('addressBook', [
@@ -63,18 +36,7 @@ const AddressBook = ({ navigation: { goBack, navigate } }) => {
     'editAddress'
   ]));
 
-  user.addressBook.forEach(function (value, index, array) {
-    let isValidItem = true;
-
-    // check if the text filter is set
-    if (state.appData.addressBook.filterText && (value.label.toLowerCase().search(state.appData.addressBook.filterText.toLowerCase()) === -1)) {
-      isValidItem = false;
-    }
-
-    if (isValidItem) {
-      addressList.push(value);
-    }
-  });
+  const addressList = user.addressBook.filter(i => i.label.match(filterText));
 
   // fire on mount
   useEffect(() => {
@@ -123,18 +85,7 @@ const AddressBook = ({ navigation: { goBack, navigate } }) => {
           onRequestClose={() => setGuideState(guideNavigation.next())}
         >
           <Icon
-            onPress={() => {
-              setAppData({
-                addressEntry: {
-                  headerText: "Create Address",
-                  label: '',
-                  address: '',
-                  paymentId: '',
-                  entryId: null
-                }
-              });
-              navigate('EditAddress', { callback: null });
-            }}
+            onPress={() => navigate('EditAddress', { headerText: 'Create Address' })}
             name='md-add-circle-outline'
             type='ionicon'
             color='white'
@@ -151,15 +102,12 @@ const AddressBook = ({ navigation: { goBack, navigate } }) => {
         onRequestClose={() => setGuideState(guideNavigation.next())}
       >
         <ConcealTextInput
+          {...bindFilterText}
           placeholder='Enter text to search...'
-          value={state.appData.addressBook.filterText}
           containerStyle={styles.searchInput}
-          onChangeText={(text) => {
-            setAppData({ addressBook: { filterText: text } });
-          }}
           rightIcon={
             <Icon
-              onPress={() => setAppData({ addressBook: { filterText: null } })}
+              onPress={() => setFilterText('')}
               name='md-trash'
               type='ionicon'
               color='white'
@@ -236,18 +184,15 @@ const AddressBook = ({ navigation: { goBack, navigate } }) => {
                         <ConcealButton
                           style={[styles.footerBtn, styles.footerBtnRight]}
                           buttonStyle={styles.btnStyle}
-                          onPress={() => {
-                            setAppData({
-                              addressEntry: {
-                                headerText: "Edit Address",
-                                label: item.label,
-                                address: item.address,
-                                paymentId: item.paymentID,
-                                entryId: item.entryID
-                              }
-                            });
-                            navigate('EditAddress', { callback: null });
-                          }}
+                          onPress={() =>
+                            navigate('EditAddress', {
+                              headerText: 'Edit Address',
+                              label: item.label,
+                              address: item.address,
+                              paymentID: item.paymentID,
+                              entryID: item.entryID
+                            })
+                          }
                           text="EDIT"
                         />
                       </Tips>

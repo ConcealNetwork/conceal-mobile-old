@@ -1,28 +1,23 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { View, } from 'react-native';
 import { Header, Icon } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import ConcealButton from '../components/ccxButton';
 import ConcealTextInput from '../components/ccxTextInput';
 import { AppContext } from '../components/ContextProvider';
+import { useFormInput } from '../helpers/hooks';
 
 const EditAddress = ({ navigation: { goBack, navigate }, route }) => {
-
   const { actions, state } = useContext(AppContext);
   const { addContact, setAppData } = actions;
+  const { params } = route;
+  const { entryID } = params;
 
-  const isFormValid = () => {
-    return (state.appData.addressEntry.label && state.appData.addressEntry.address);
-  }
+  const { value: label, bind: bindLabel, setValue: setLabel } = useFormInput(params?.label);
+  const { value: address, bind: bindAddress, setValue: setAddress } = useFormInput(params?.address);
+  const { value: paymentID, bind: bindPaymentID, setValue: setPaymentID } = useFormInput(params?.paymentID);
 
-  useEffect(() => {
-    setAppData({
-      addressEntry: {
-        address: route.params?.address,
-        paymentId: route.params?.paymentId
-      }
-    });
-  }, [route.params?.address, route.params?.paymentId]);
+  const isFormValid = () => true;
 
   const onScanAddressQRCode = () => {
     setAppData({
@@ -46,46 +41,30 @@ const EditAddress = ({ navigation: { goBack, navigate }, route }) => {
           color='white'
           size={32}
         />}
-        centerComponent={{ text: state.appData.addressEntry.headerText, style: { color: '#fff', fontSize: 20 } }}
+        centerComponent={{ text: params?.headerText, style: { color: '#fff', fontSize: 20 } }}
       />
       <View style={styles.addressWrapper}>
         <ConcealTextInput
+          {...bindLabel}
           placeholder='Enter Label for the address...'
           containerStyle={styles.addrInput}
-          value={state.appData.addressEntry.label}
-          onChangeText={(text) => setAppData({ addressEntry: { label: text } })}
         />
         <ConcealTextInput
+          {...bindAddress}
           placeholder='Enter the address...'
           containerStyle={styles.addrInput}
-          value={state.appData.addressEntry.address}
-          onChangeText={(text) => setAppData({ addressEntry: { address: text } })}
         />
         <ConcealTextInput
+          {...bindPaymentID}
           placeholder='Enter the Payment id...'
           containerStyle={styles.addrInput}
-          value={state.appData.addressEntry.paymentId}
-          onChangeText={(text) => setAppData({ addressEntry: { paymentId: text } })}
         />
       </View>
       <View style={styles.footer}>
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnLeft]}
           disabled={!isFormValid()}
-          onPress={() => {
-            addContact(
-              {
-                label: state.appData.addressEntry.label,
-                address: state.appData.addressEntry.address,
-                paymentID: state.appData.addressEntry.paymentId,
-                entryID: state.appData.addressEntry.entryId,
-                edit: state.appData.addressEntry.entryId !== null,
-              },
-              null,
-              params.callback
-            );
-            goBack();
-          }}
+          onPress={() => addContact({ label, address, paymentID, entryID }, [goBack])}
           text="SAVE"
         />
         <ConcealButton

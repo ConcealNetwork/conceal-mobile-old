@@ -1,7 +1,5 @@
-import mergeJSON from 'merge-json';
 import { useReducer, useRef } from 'react';
 import { appSettings } from '../constants/appSettings';
-import localStorage from '../helpers/LocalStorage';
 import { logger } from '../helpers/Logger';
 import { shareContent } from '../helpers/utils';
 
@@ -372,7 +370,10 @@ const useAppState = () => {
       case 'SET_APP_DATA':
         result = {
           ...state,
-          appData: mergeJSON.merge(state.appData, action.appData)
+          appData: {
+            ...state.appData,
+            ...action.appData,
+          },
         };
         break;
       case 'BARCODE_SCANNED':

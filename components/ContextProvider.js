@@ -63,18 +63,17 @@ const AppContextProvider = props => {
       });
   };
 
-  const addContact = (contact, extras, callback) => {
-    const { label, address, paymentID, entryID, edit } = contact;
+  const addContact = (contact, extras) => {
+    const { label, address, paymentID, entryID } = contact;
     let message;
     let msgType;
     dispatch({ type: 'FORM_SUBMITTED', value: true });
-    Api.addContact(label, address, paymentID, entryID, edit)
+    Api.addContact(label, address, paymentID, entryID)
       .then(res => {
         if (res.result === 'success') {
           getUser();
           if (extras) extras.forEach(fn => fn());
-          if (callback) callback(label, address, paymentID, entryID);
-          message = 'Contact was added / edited successfully';
+          message = `Contact ${entryID ? 'edited' : 'added'} successfully`;
           msgType = 'info';
         } else {
           message = res.message;
