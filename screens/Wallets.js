@@ -60,6 +60,7 @@ const Wallets = ({ navigation: { goBack, popToTop } }) => {
         statusBarProps={{ translucent: false, backgroundColor: "#212529" }}
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
+          containerStyle={AppStyles.leftHeaderIcon}
           onPress={() => goBack()}
           name='arrow-back-outline'
           type='ionicon'

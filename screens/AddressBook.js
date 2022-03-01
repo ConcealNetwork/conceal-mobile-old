@@ -49,16 +49,17 @@ const AddressBook = ({ navigation: { goBack, navigate } }) => {
     <View style={AppStyles.pageWrapper}>
       <Header
         placement='left'
-        statusBarProps={{ translucent: false }}
+        statusBarProps={{ translucent: false, backgroundColor: "#212529" }}
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
+          containerStyle={AppStyles.leftHeaderIcon}
           onPress={() => goBack()}
           name='arrow-back-outline'
           type='ionicon'
           color='white'
           size={32 * getAspectRatio()}
         />}
-        centerComponent={
+        centerComponent={          
           <View style={AppStyles.appHeaderWrapper}>
             <Text style={AppStyles.appHeaderText}>
               Address Book

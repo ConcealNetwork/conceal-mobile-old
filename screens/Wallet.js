@@ -71,6 +71,7 @@ const Wallet = ({ navigation: { navigate } }) => {
         }
         rightComponent={
           <Icon
+            containerStyle={styles.menuIcon}
             onPress={() => {
               navigate('AppMenu');
             }}
@@ -477,6 +478,9 @@ const styles = EStyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
+  menuIcon: {
+    paddingTop: '5rem',
+  },  
   txsList: {
     height: '0rem'
   },

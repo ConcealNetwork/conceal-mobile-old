@@ -113,15 +113,23 @@ const SendScreen = ({ navigation: { goBack, navigate }, route }) => {
     <View style={styles.pageWrapper}>
       <Header
         placement='left'
+        statusBarProps={{ translucent: false, backgroundColor: "#212529" }}
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
+          containerStyle={AppStyles.leftHeaderIcon}
           onPress={() => goBack()}
           name='arrow-back-outline'
           type='ionicon'
           color='white'
           size={32 * getAspectRatio()}
         />}
-        centerComponent={{ text: 'Send CCX', style: AppStyles.appHeaderText }}
+        centerComponent={          
+          <View style={AppStyles.appHeaderWrapper}>
+            <Text style={AppStyles.appHeaderText}>
+            Send CCX
+            </Text>
+          </View>
+        }        
         rightComponent={<Icon
           onPress={() => {
             setAddress('');
