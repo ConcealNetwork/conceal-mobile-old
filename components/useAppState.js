@@ -1,8 +1,7 @@
 import { useReducer, useRef } from 'react';
-import mergeJSON from 'merge-json';
-import { shareContent } from '../helpers/utils';
 import { appSettings } from '../constants/appSettings';
 import { logger } from '../helpers/Logger';
+import { shareContent } from '../helpers/utils';
 
 const useAppState = () => {
   const initialState = {
@@ -124,7 +123,7 @@ const useAppState = () => {
         };
         break;
       case 'USER_LOGGED_IN':
-        if (!state.user.loggedIn) logger.log('LOGGING IN USER...');
+        logger.log('LOGGING IN USER...');
         result = {
           ...state,
           user: {
@@ -371,7 +370,10 @@ const useAppState = () => {
       case 'SET_APP_DATA':
         result = {
           ...state,
-          appData: mergeJSON.merge(state.appData, action.appData)
+          appData: {
+            ...state.appData,
+            ...action.appData,
+          },
         };
         break;
       case 'BARCODE_SCANNED':

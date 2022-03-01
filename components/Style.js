@@ -1,5 +1,5 @@
-import { AppColors } from '../constants/Colors';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { AppColors } from '../constants/Colors';
 
 export default EStyleSheet.create({
   appContainer: {
@@ -17,7 +17,7 @@ export default EStyleSheet.create({
   },
   '@media (max-width: 499)': {
     appHeader: {
-      height: '60rem',
+      height: '80rem',
       paddingTop: '0rem',
       borderBottomWidth: 1,
       backgroundColor: '#212529',

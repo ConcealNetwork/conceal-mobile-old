@@ -1,9 +1,9 @@
 import React from 'react';
-import { AppColors } from '../constants/Colors';
-import { Col, Row, Grid } from "react-native-easy-grid";
+import { Text } from 'react-native';
+import { Col, Grid, Row } from 'react-native-easy-grid';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { AppColors } from '../constants/Colors';
 import { InterestRates } from '../helpers/utils';
-import { Text } from "react-native";
 
 export default function InterestTable({ interestClass }) {
 
@@ -34,7 +34,7 @@ export default function InterestTable({ interestClass }) {
         </Col>
         {interest.map((value, index) => {
           return (
-            <Col style={(interestClass != (month - 1) * 3 + (index + 1)) ? styles.colData : styles.colSelected}>
+            <Col style={(interestClass !== (month - 1) * 3 + (index + 1)) ? styles.colData : styles.colSelected}>
               <Text style={styles.dataText}>{interest[index].toFixed(2)}</Text>
             </Col>
           )

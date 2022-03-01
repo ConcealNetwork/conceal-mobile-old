@@ -1,41 +1,24 @@
 import React, { useContext } from 'react';
+import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { Icon, Overlay } from 'react-native-elements';
+import EStyleSheet from 'react-native-extended-stylesheet';
 import ConcealButton from '../components/ccxButton';
 import ConcealTextInput from '../components/ccxTextInput';
-import EStyleSheet from 'react-native-extended-stylesheet';
-import { Icon, Overlay } from 'react-native-elements';
 
 import { AppContext } from '../components/ContextProvider';
 import { AppColors } from '../constants/Colors';
-import {
-  maskAddress,
-  getAspectRatio
-} from '../helpers/utils';
-import {
-  View,
-  Text,
-  FlatList,
-  TouchableOpacity
-} from 'react-native';
+import { useFormInput } from '../helpers/hooks';
+import { getAspectRatio, maskAddress } from '../helpers/utils';
 
 
 const SearchAddress = props => {
-  const { closeOverlay, selectAddress, addressData, currWallet } = props;
-  const { actions, state } = useContext(AppContext);
-  const { setAppData } = actions;
-  let addressList = [];
+  const { closeOverlay, selectAddress, currWallet } = props;
+  const { state } = useContext(AppContext);
+  const { user } = state;
 
-  addressData.forEach(function (value) {
-    let isValidItem = true;
+  const { value: filterText, bind: bindFilterText, setValue: setFilterText } = useFormInput();
 
-    // check if the text filter is set
-    if (state.appData.searchAddress.filterText && (value.label.toLowerCase().search(state.appData.searchAddress.filterText.toLowerCase()) == -1)) {
-      isValidItem = false;
-    }
-
-    if (isValidItem) {
-      addressList.push(value);
-    }
-  });
+  const addressList = user.addressBook.filter(i => i.label.match(filterText));
 
   return (
     <Overlay
@@ -45,15 +28,12 @@ const SearchAddress = props => {
     >
       <View style={styles.overlayWrapper}>
         <ConcealTextInput
+          {...bindFilterText}
           placeholder='Enter text to search...'
-          value={state.appData.searchAddress.filterText}
           containerStyle={styles.searchInput}
-          onChangeText={(text) => {
-            setAppData({ searchAddress: { filterText: text } });
-          }}
           rightIcon={
             <Icon
-              onPress={() => setAppData({ searchAddress: { filterText: null } })}
+              onPress={() => setFilterText('')}
               name='md-trash'
               type='ionicon'
               color='white'
@@ -67,15 +47,15 @@ const SearchAddress = props => {
             showsVerticalScrollIndicator={false}
             renderItem={({ item }) =>
               (currWallet.addr !== item.address)
-                ? (<TouchableOpacity onPress={() => selectAddress(item)}>
-                  <View style={styles.flatview}>
-                    <View>
-                      <Text style={styles.addressLabel}>{item.label}</Text>
-                      <Text style={styles.address}>Address: {maskAddress(item.address)}</Text>
-                      {item.paymentID ? (<Text style={styles.data}>Payment ID: {item.paymentID}</Text>) : null}
+                ? <TouchableOpacity onPress={() => selectAddress(item)}>
+                    <View style={styles.flatview}>
+                      <View>
+                        <Text style={styles.addressLabel}>{item.label}</Text>
+                        <Text style={styles.address}>Address: {maskAddress(item.address)}</Text>
+                        {item.paymentID ? (<Text style={styles.data}>Payment ID: {item.paymentID}</Text>) : null}
+                      </View>
                     </View>
-                  </View>
-                </TouchableOpacity>)
+                  </TouchableOpacity>
                 : null
             }
             keyExtractor={item => item.entryID.toString()}

@@ -1,97 +1,75 @@
-import React, { useContext } from 'react';
-import { Icon, Header } from 'react-native-elements';
-import NavigationService from '../helpers/NavigationService';
-import ConcealTextInput from '../components/ccxTextInput';
-import ConcealButton from '../components/ccxButton';
+import React, { useContext, useEffect } from 'react';
+import { View, } from 'react-native';
+import { Header, Icon } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import ConcealButton from '../components/ccxButton';
+import ConcealTextInput from '../components/ccxTextInput';
 import { AppContext } from '../components/ContextProvider';
-import {
-  Text,
-  View,
-  StyleSheet,
-} from 'react-native';
+import { useFormInput } from '../helpers/hooks';
 
-const EditAddress = (props) => {
-  const params = props.navigation.state.params;
-
-  const { actions, state } = useContext(AppContext);
+const EditAddress = ({ navigation: { goBack, navigate }, route }) => {
+  const { actions } = useContext(AppContext);
   const { addContact, setAppData } = actions;
+  const { params } = route;
+  const { entryID } = params;
 
-  this.isFormValid = () => {
-    return (state.appData.addressEntry.label && state.appData.addressEntry.address);
-  }
+  const { value: label, bind: bindLabel, setValue: setLabel } = useFormInput(params?.label);
+  const { value: address, bind: bindAddress, setValue: setAddress } = useFormInput(params?.address);
+  const { value: paymentID, bind: bindPaymentID, setValue: setPaymentID } = useFormInput(params?.paymentID);
 
-  this.onScanSuccess = (data) => {
-    setAppData({
-      addressEntry: {
-        address: data.address,
-        paymentId: data.paymentId
-      }
-    });
-  }
+  const isFormValid = () => label && address;
 
-  this.onScanAddressQRCode = () => {
+  useEffect(() => {
+    setAddress(params.address || '');
+    setPaymentID(params.paymentId || '');
+    setLabel(params.label || '');
+  }, [params])
+
+  const onScanAddressQRCode = () => {
     setAppData({
       scanCode: {
         scanned: false
       }
     });
-
-    NavigationService.navigate('Scanner', { onSuccess: this.onScanSuccess });
+    navigate('Scanner', { previousScreen: 'EditAddress' });
   }
 
   return (
     <View style={styles.pageWrapper}>
       <Header
-        placement="left"
+        placement='left'
         containerStyle={styles.appHeader}
         leftComponent={<Icon
-          onPress={() => NavigationService.goBack()}
+          onPress={() => goBack()}
           name='arrow-back-outline'
           type='ionicon'
           color='white'
           size={32}
         />}
-        centerComponent={{ text: state.appData.addressEntry.headerText, style: { color: '#fff', fontSize: 20 } }}
+        centerComponent={{ text: params?.headerText, style: { color: '#fff', fontSize: 20 } }}
       />
       <View style={styles.addressWrapper}>
         <ConcealTextInput
+          {...bindLabel}
           placeholder='Enter Label for the address...'
           containerStyle={styles.addrInput}
-          value={state.appData.addressEntry.label}
-          onChangeText={(text) => setAppData({ addressEntry: { label: text } })}
         />
         <ConcealTextInput
+          {...bindAddress}
           placeholder='Enter the address...'
           containerStyle={styles.addrInput}
-          value={state.appData.addressEntry.address}
-          onChangeText={(text) => setAppData({ addressEntry: { address: text } })}
         />
         <ConcealTextInput
+          {...bindPaymentID}
           placeholder='Enter the Payment id...'
           containerStyle={styles.addrInput}
-          value={state.appData.addressEntry.paymentId}
-          onChangeText={(text) => setAppData({ addressEntry: { paymentId: text } })}
         />
       </View>
       <View style={styles.footer}>
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnLeft]}
-          disabled={!this.isFormValid()}
-          onPress={() => {
-            addContact(
-              {
-                label: state.appData.addressEntry.label,
-                address: state.appData.addressEntry.address,
-                paymentID: state.appData.addressEntry.paymentId,
-                entryID: state.appData.addressEntry.entryId,
-                edit: state.appData.addressEntry.entryId !== null,
-              },
-              null,
-              params.callback
-            );
-            NavigationService.goBack();
-          }}
+          disabled={!isFormValid()}
+          onPress={() => addContact({ label, address, paymentID, entryID }, [goBack])}
           text="SAVE"
         />
         <ConcealButton

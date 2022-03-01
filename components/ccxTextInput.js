@@ -1,7 +1,7 @@
 import React from 'react';
 import { Input } from 'react-native-elements';
-import { AppColors } from '../constants/Colors';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { AppColors } from '../constants/Colors';
 
 export default function ConcealTextInput({
   onChangeText,
@@ -18,10 +18,10 @@ export default function ConcealTextInput({
   textContentType,
   inputContainerStyle
 }) {
-  var inputContainerStyles = [styles.InputContainer];
-  var containerStyles = [styles.Container];
-  var labelStyles = [styles.label];
-  var inputStyles = [styles.Input];
+  let inputContainerStyles = [styles.InputContainer];
+  let containerStyles = [styles.Container];
+  let labelStyles = [styles.label];
+  let inputStyles = [styles.Input];
 
   if (inputStyle) {
     if (Array.isArray(inputStyle)) {
@@ -55,7 +55,7 @@ export default function ConcealTextInput({
     }
   }
 
-  if (editable == undefined) {
+  if (editable === undefined) {
     editable = true;
   }
 

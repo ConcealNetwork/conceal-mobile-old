@@ -1,13 +1,13 @@
-import { Icon } from 'react-native-elements';
-import React, { useState, useEffect } from 'react';
 import * as LocalAuthentication from 'expo-local-authentication';
-import { useFormInput, useFormValidation } from '../helpers/hooks';
+import React, { useEffect, useState } from 'react';
+import { Text, View } from 'react-native';
+import { Icon } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import ConcealPassword from '../components/ccxPassword';
 import ConcealButton from '../components/ccxButton';
-import { getAspectRatio } from '../helpers/utils';
+import ConcealPassword from '../components/ccxPassword';
 import { AppColors } from '../constants/Colors';
-import { View, Text } from 'react-native';
+import { useFormInput, useFormValidation } from '../helpers/hooks';
+import { getAspectRatio } from '../helpers/utils';
 
 
 const FgpSetup = props => {
@@ -19,12 +19,12 @@ const FgpSetup = props => {
   const [fgpValue, setfgpValue] = useState(false);
 
   const formValidation = (
-    (password != '') && (fgpValue)
+    (password !== '') && (fgpValue)
   );
   const formValid = useFormValidation(formValidation);
 
   const startBiometricAuth = () => {
-    if (isScanning == 0) {
+    if (isScanning === 0) {
       setIsScanning(1);
 
       LocalAuthentication.authenticateAsync().then(result => {
@@ -46,7 +46,7 @@ const FgpSetup = props => {
   }
 
   this.getFgpStatusText = () => {
-    if (isScanning == 1) {
+    if (isScanning === 1) {
       return "Please use the fingerprint...";
     } else {
       if (fgpValue) {
@@ -58,7 +58,7 @@ const FgpSetup = props => {
   }
 
   this.getFgpStyle = () => {
-    if (isScanning == 1) {
+    if (isScanning === 1) {
       return { color: AppColors.concealTextColor };
     } else {
       if (fgpValue) {

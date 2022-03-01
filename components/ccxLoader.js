@@ -1,24 +1,24 @@
-import React, { Component, useContext } from 'react';
-import { AppContext } from '../components/ContextProvider';
-import {
-  View,
-  Modal,
-  StyleSheet,
-  ActivityIndicator,
-} from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { ActivityIndicator, Modal, StyleSheet, View, } from 'react-native';
+import { AppContext } from './ContextProvider';
 
-const ConcealLoader = props => {
+const ConcealLoader = () => {
   const { state } = useContext(AppContext);
-  const { layout } = state;
-  const { formSubmitted } = layout;
+  const { layout, user } = state;
+  const { formSubmitted, userLoaded, walletsLoaded } = layout;
+
+  const [isLoading, setIsLoading] = useState(true);
 
   // set the flag if the content is loading or if we are waiting for form submission
-  const isLoading = formSubmitted || (state.user.loggedIn && (!state.layout.userLoaded || !state.layout.walletsLoaded));
+  useEffect(() => {
+    console.log(`setting to ${formSubmitted || !userLoaded || !walletsLoaded}`)
+    setIsLoading(formSubmitted || !userLoaded || !walletsLoaded);
+  }, [formSubmitted, user.loggedIn, userLoaded, walletsLoaded]);
 
   return (
     <Modal
       transparent={true}
-      animationType={'none'}
+      animationType="none"
       visible={isLoading}
       onRequestClose={() => { }}>
       <View style={styles.modalBackground}>

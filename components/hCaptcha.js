@@ -1,13 +1,12 @@
-import React, { useState, useRef } from 'react';
-import { Button } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
-import { AppColors } from '../constants/Colors';
-import EStyleSheet from 'react-native-extended-stylesheet';
 import ConfirmHcaptcha from '@hcaptcha/react-native-hcaptcha';
-import { getAspectRatio } from '../helpers/utils';
-import { Image, Icon } from 'react-native-elements';
-import { View, Text, TouchableOpacity } from 'react-native';
+import React, { useRef } from 'react';
+import { Text, TouchableOpacity, View } from 'react-native';
+import { Image } from 'react-native-elements';
+import EStyleSheet from 'react-native-extended-stylesheet';
 import Config from '../config.json';
+import { AppColors } from '../constants/Colors';
+import { getAspectRatio } from '../helpers/utils';
 
 export default function ConcealCaptcha({ onCaptchaChange }) {
   // captcha related fields and hooks
@@ -24,7 +23,7 @@ export default function ConcealCaptcha({ onCaptchaChange }) {
           setTimeout(() => {
             setCaptchaVisible(false);
             hCaptcha.current.hide();
-          }, 500);  
+          }, 500);
         }
         return;
       } else if (['error', 'expired'].includes(event.nativeEvent.data)) {
@@ -43,7 +42,7 @@ export default function ConcealCaptcha({ onCaptchaChange }) {
       }
     }
   };
-  
+
   return (
     <View style={styles.captchaRoot}>
       <ConfirmHcaptcha
@@ -53,14 +52,14 @@ export default function ConcealCaptcha({ onCaptchaChange }) {
         languageCode="en"
         showLoading={true}
         onMessage={onMessage}
-      />      
-      <TouchableOpacity 
+      />
+      <TouchableOpacity
         style={styles.captchaWrapper}
         onPress={() => {
           setCaptchaVisible(true);
           onCaptchaChange("");
 
-          // show the captcha 
+          // show the captcha
           hCaptcha.current.show();
         }}>
         <View style={styles.hCodeCheckmark}>
@@ -71,7 +70,7 @@ export default function ConcealCaptcha({ onCaptchaChange }) {
           source={require('../assets/images/hcaptcha.png')}
           style={{ width: 40 * getAspectRatio(), height: 40 * getAspectRatio() }}
         />
-      </TouchableOpacity> 
+      </TouchableOpacity>
     </View>
   );
 }
