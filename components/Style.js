@@ -1,5 +1,5 @@
-import { AppColors } from '../constants/Colors';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { AppColors } from '../constants/Colors';
 
 export default EStyleSheet.create({
   appContainer: {
@@ -17,7 +17,7 @@ export default EStyleSheet.create({
   },
   '@media (max-width: 499)': {
     appHeader: {
-      height: '60rem',
+      height: '80rem',
       paddingTop: '0rem',
       borderBottomWidth: 1,
       backgroundColor: '#212529',
@@ -47,8 +47,10 @@ export default EStyleSheet.create({
     padding: '10rem',
   },
   loginView: {
+    flex: 1,
     paddingTop: '40rem',
     alignItems: 'center',
+    backgroundColor: AppColors.concealBlack,
   },
   contentContainer: {
     paddingTop: '30rem',

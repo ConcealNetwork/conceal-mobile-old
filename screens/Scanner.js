@@ -1,47 +1,45 @@
-import React, { useState } from "react";
-import NavigationService from '../helpers/NavigationService';
-import { View, StyleSheet } from 'react-native';
-import * as Permissions from 'expo-permissions';
 import { BarCodeScanner } from 'expo-barcode-scanner';
+import React, { useContext, useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { AppContext } from '../components/ContextProvider';
 import { showSuccessMessage } from '../helpers/utils';
 
-const BarcodeScanner = (props) => {
-  const onSuccess = props.navigation.state.params.onSuccess;
-
+const BarcodeScanner = ({ navigation: { navigate }, route }) => {
+  const { state } = useContext(AppContext);
+  const { appSettings } = state;
   const [hasPermission, setHasPermission] = useState(false);
   const [hasScanned, setHasScanned] = useState(false);
 
-  this.handleBarCodeScanned = ({ type, data }) => {
-    var scannedCode = null;
-    var paymentId = null;
-    var address = null;
-
-    if (data.search("conceal:") === 0) {
-      scannedCode = data.substring(8);
-    } else {
-      scannedCode = data;
+  const handleBarCodeScanned = ({ type, data }) => {
+    if (data) {
+      let amount, address, paymentId, label, message;
+      const [prefix, ...rest] = data.split(':');
+      if (prefix === appSettings.qrCodePrefix) {
+        const addressParams = rest.join(':').split('?');
+        address = addressParams[0];
+        if (addressParams.length > 1) {
+          const params = addressParams[1].split('&');
+          params.forEach(p => {
+            const param = p.split('=');
+            if (param[0] === 'tx_amount') amount = param[1];
+            if (param[0] === 'tx_payment_id') paymentId = param[1];
+            if (param[0] === 'tx_message') message = param[1];
+            if (param[0] === 'tx_label') label = param[1];
+          });
+        }
+      }
+      showSuccessMessage('Successfully scanned the address');
+      navigate({
+        name: route.params.previousScreen,
+        params: { address, amount, label, message, paymentId },
+        merge: true,
+      });
     }
-
-    if (scannedCode.search(":") > 0) {
-      address = scannedCode.substr(0, scannedCode.indexOf(':'));
-      paymentId = scannedCode.substring(scannedCode.indexOf(':') + 1);
-    } else {
-      address = scannedCode;
-      paymentId = '';
-    }
-
     setHasScanned(true);
-    onSuccess({
-      address: address,
-      paymentId: paymentId
-    });
-
-    showSuccessMessage("Successfully scanned the address");
-    NavigationService.goBack();
   };
 
-  this.getPermissionsAsync = async () => {
-    const { status } = await Permissions.askAsync(Permissions.CAMERA);
+  const getPermissionsAsync = async () => {
+    const { status } = await BarCodeScanner.requestPermissionsAsync();
     setHasPermission(status === 'granted');
   };
 
@@ -57,7 +55,7 @@ const BarcodeScanner = (props) => {
           justifyContent: 'flex-end',
         }}>
         <BarCodeScanner
-          onBarCodeScanned={hasScanned ? undefined : this.handleBarCodeScanned}
+          onBarCodeScanned={hasScanned ? undefined : handleBarCodeScanned}
           style={StyleSheet.absoluteFillObject}
         />
       </View>

@@ -1,51 +1,17 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { Icon, Header } from 'react-native-elements';
-import NavigationService from '../helpers/NavigationService';
-import ConcealTextInput from '../components/ccxTextInput';
-import ConcealButton from '../components/ccxButton';
-import { AppContext } from '../components/ContextProvider';
+import React, { useContext, useEffect, useState } from 'react';
+import { Alert, FlatList, Text, View } from 'react-native';
+import { Header, Icon } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { getAspectRatio } from '../helpers/utils';
-import GuideNavigation from '../helpers/GuideNav';
-import { maskAddress } from '../helpers/utils';
-import AppStyles from '../components/Style';
 import Tips from 'react-native-guide-tips';
-import {
-  Text,
-  View,
-  Alert,
-  FlatList,
-  Clipboard
-} from 'react-native';
+import ConcealButton from '../components/ccxButton';
+import ConcealTextInput from '../components/ccxTextInput';
+import { AppContext } from '../components/ContextProvider';
+import AppStyles from '../components/Style';
+import GuideNavigation from '../helpers/GuideNav';
+import { useFormInput } from '../helpers/hooks';
+import { getAspectRatio, maskAddress } from '../helpers/utils';
 
 let firstVisibleItem = -1;
-
-let readLabelromClipboard = async () => {
-  const clipboardContent = await Clipboard.getString();
-  setAppData({
-    addressEntry: {
-      label: clipboardContent
-    }
-  });
-};
-
-let readAddressFromClipboard = async () => {
-  const clipboardContent = await Clipboard.getString();
-  setAppData({
-    addressEntry: {
-      address: clipboardContent
-    }
-  });
-};
-
-let readPaymentIdFromClipboard = async () => {
-  const clipboardContent = await Clipboard.getString();
-  setAppData({
-    addressEntry: {
-      paymentId: clipboardContent
-    }
-  });
-};
 
 const handleViewableItemsChanged = (info) => {
   if ((info.viewableItems) && (info.viewableItems.length > 0)) {
@@ -55,12 +21,12 @@ const handleViewableItemsChanged = (info) => {
   }
 }
 
-const AddressBook = () => {
+const AddressBook = ({ navigation: { goBack, navigate } }) => {
   const { actions, state } = useContext(AppContext);
-  const { deleteContact, setAppData } = actions;
+  const { deleteContact } = actions;
   const { layout, user } = state;
-  let addressList = [];
 
+  const { value: filterText, bind: bindFilterText, setValue: setFilterText } = useFormInput();
   // guide navigation state values
   const [guideState, setGuideState] = useState(null);
   const [guideNavigation] = useState(new GuideNavigation('addressBook', [
@@ -70,18 +36,7 @@ const AddressBook = () => {
     'editAddress'
   ]));
 
-  user.addressBook.forEach(function (value, index, array) {
-    var isValidItem = true;
-
-    // check if the text filter is set
-    if (state.appData.addressBook.filterText && (value.label.toLowerCase().search(state.appData.addressBook.filterText.toLowerCase()) == -1)) {
-      isValidItem = false;
-    }
-
-    if (isValidItem) {
-      addressList.push(value);
-    }
-  });
+  const addressList = user.addressBook.filter(i => i.label.match(filterText));
 
   // fire on mount
   useEffect(() => {
@@ -93,11 +48,11 @@ const AddressBook = () => {
   return (
     <View style={AppStyles.pageWrapper}>
       <Header
-        placement="left"
+        placement='left'
         statusBarProps={{ translucent: false }}
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
-          onPress={() => NavigationService.goBack()}
+          onPress={() => goBack()}
           name='arrow-back-outline'
           type='ionicon'
           color='white'
@@ -122,7 +77,7 @@ const AddressBook = () => {
         }
         rightComponent={<Tips
           position={'bottom'}
-          visible={guideState == 'addAddress'}
+          visible={guideState === 'addAddress'}
           textStyle={AppStyles.guideTipText}
           style={[AppStyles.guideTipContainer, styles.guideTipAddAddress]}
           tooltipArrowStyle={[AppStyles.guideTipArrowTop, styles.guideTipArrowAddAddress]}
@@ -130,18 +85,7 @@ const AddressBook = () => {
           onRequestClose={() => setGuideState(guideNavigation.next())}
         >
           <Icon
-            onPress={() => {
-              setAppData({
-                addressEntry: {
-                  headerText: "Create Address",
-                  label: '',
-                  address: '',
-                  paymentId: '',
-                  entryId: null
-                }
-              });
-              NavigationService.navigate('EditAddress', { callback: null });
-            }}
+            onPress={() => navigate('EditAddress', { headerText: 'Create Address' })}
             name='md-add-circle-outline'
             type='ionicon'
             color='white'
@@ -150,7 +94,7 @@ const AddressBook = () => {
       />
       <Tips
         position={'bottom'}
-        visible={guideState == 'addressSearch'}
+        visible={guideState === 'addressSearch'}
         textStyle={AppStyles.guideTipText}
         tooltipArrowStyle={AppStyles.guideTipArrowTop}
         style={AppStyles.guideTipContainer}
@@ -158,15 +102,12 @@ const AddressBook = () => {
         onRequestClose={() => setGuideState(guideNavigation.next())}
       >
         <ConcealTextInput
+          {...bindFilterText}
           placeholder='Enter text to search...'
-          value={state.appData.addressBook.filterText}
           containerStyle={styles.searchInput}
-          onChangeText={(text) => {
-            setAppData({ addressBook: { filterText: text } });
-          }}
           rightIcon={
             <Icon
-              onPress={() => setAppData({ addressBook: { filterText: null } })}
+              onPress={() => setFilterText('')}
               name='md-trash'
               type='ionicon'
               color='white'
@@ -177,87 +118,89 @@ const AddressBook = () => {
       </Tips>
       <View style={styles.addressListWrapper}>
         {layout.userLoaded && addressList.length === 0
-          ? (<View style={styles.emptyAddressBookWrapper}>
-            <Text style={styles.emptyAddressBookText}>
-              You have no contacts saved in your address book, or search did not find any.
-              Add one by clicking on the + button or when you are sending funds.
-            </Text>
-          </View>)
-          : (<FlatList
-            data={addressList}
-            showsVerticalScrollIndicator={false}
-            keyExtractor={item => item.entryID.toString()}
-            onViewableItemsChanged={handleViewableItemsChanged}
-            viewabilityConfig={{ viewAreaCoveragePercentThreshold: 50 }}
-            renderItem={({ item, index }) =>
-              <View style={styles.flatview}>
-                <View>
-                  <Text style={styles.addressLabel}>{item.label}</Text>
-                  <Text style={styles.address}>Address: {maskAddress(item.address)}</Text>
-                  {item.paymentID ? (<Text style={styles.data}>Payment ID: {item.paymentID}</Text>) : null}
-                </View>
-                <View style={styles.addressListFooter}>
-                  <View style={styles.btnWrapper}>
-                    <Tips
-                      position={'bottom'}
-                      visible={(guideState == 'deleteAddress') && (index == firstVisibleItem)}
-                      textStyle={AppStyles.guideTipText}
-                      style={[AppStyles.guideTipContainer, styles.guideTipDeleteAddress]}
-                      tooltipArrowStyle={[AppStyles.guideTipArrowTop, styles.guideTipArrowDeleteAddress]}
-                      text="Click on this button to delete the address..."
-                      onRequestClose={() => setGuideState(guideNavigation.next())}
-                    >
-                      <ConcealButton
-                        style={[styles.footerBtn, styles.footerBtnLeft]}
-                        buttonStyle={styles.btnStyle}
-                        onPress={() => {
-                          Alert.alert(
-                            'Delete Contact',
-                            'You are about to delete this contact! Do you really wish to proceed?',
-                            [
-                              { text: 'OK', onPress: () => deleteContact(item) },
-                              { text: 'Cancel', style: 'cancel' },
-                            ],
-                            { cancelable: false },
-                          );
-                        }}
-                        text="DELETE"
-                      />
-                    </Tips>
+          ? <View style={styles.emptyAddressBookWrapper}>
+              <Text style={styles.emptyAddressBookText}>
+                You have no contacts saved in your address book, or search did not find any.
+                Add one by clicking on the + button or when you are sending funds.
+              </Text>
+            </View>
+          : <FlatList
+              data={addressList}
+              showsVerticalScrollIndicator={false}
+              keyExtractor={item => item.entryID.toString()}
+              onViewableItemsChanged={handleViewableItemsChanged}
+              viewabilityConfig={{ viewAreaCoveragePercentThreshold: 50 }}
+              renderItem={({ item, index }) =>
+                <View style={styles.flatview}>
+                  <View>
+                    <Text style={styles.addressLabel}>{item.label}</Text>
+                    <Text style={styles.address}>Address: {maskAddress(item.address)}</Text>
+                    {item.paymentID
+                      ? <Text style={styles.data}>
+                          Payment ID: {maskAddress(item.paymentID, '.', 3, 20, 0)}
+                        </Text>
+                      : null
+                    }
                   </View>
-                  <View style={styles.btnWrapper}>
-                    <Tips
-                      position={'bottom'}
-                      visible={(guideState == 'editAddress') && (index == firstVisibleItem)}
-                      textStyle={AppStyles.guideTipText}
-                      style={[AppStyles.guideTipContainer, styles.guideTipEditAddress]}
-                      tooltipArrowStyle={[AppStyles.guideTipArrowTop, styles.guideTipArrowEditAddress]}
-                      text="Click on this button to edit the address..."
-                      onRequestClose={() => setGuideState(guideNavigation.next())}
-                    >
-                      <ConcealButton
-                        style={[styles.footerBtn, styles.footerBtnRight]}
-                        buttonStyle={styles.btnStyle}
-                        onPress={() => {
-                          setAppData({
-                            addressEntry: {
-                              headerText: "Edit Address",
+                  <View style={styles.addressListFooter}>
+                    <View style={styles.btnWrapper}>
+                      <Tips
+                        position={'bottom'}
+                        visible={(guideState === 'deleteAddress') && (index === firstVisibleItem)}
+                        textStyle={AppStyles.guideTipText}
+                        style={[AppStyles.guideTipContainer, styles.guideTipDeleteAddress]}
+                        tooltipArrowStyle={[AppStyles.guideTipArrowTop, styles.guideTipArrowDeleteAddress]}
+                        text="Click on this button to delete the address..."
+                        onRequestClose={() => setGuideState(guideNavigation.next())}
+                      >
+                        <ConcealButton
+                          style={[styles.footerBtn, styles.footerBtnLeft]}
+                          buttonStyle={styles.btnStyle}
+                          onPress={() => {
+                            Alert.alert(
+                              'Delete Contact',
+                              'You are about to delete this contact! Do you really wish to proceed?',
+                              [
+                                { text: 'OK', onPress: () => deleteContact(item) },
+                                { text: 'Cancel', style: 'cancel' },
+                              ],
+                              { cancelable: false },
+                            );
+                          }}
+                          text="DELETE"
+                        />
+                      </Tips>
+                    </View>
+                    <View style={styles.btnWrapper}>
+                      <Tips
+                        position={'bottom'}
+                        visible={(guideState === 'editAddress') && (index === firstVisibleItem)}
+                        textStyle={AppStyles.guideTipText}
+                        style={[AppStyles.guideTipContainer, styles.guideTipEditAddress]}
+                        tooltipArrowStyle={[AppStyles.guideTipArrowTop, styles.guideTipArrowEditAddress]}
+                        text="Click on this button to edit the address..."
+                        onRequestClose={() => setGuideState(guideNavigation.next())}
+                      >
+                        <ConcealButton
+                          style={[styles.footerBtn, styles.footerBtnRight]}
+                          buttonStyle={styles.btnStyle}
+                          onPress={() =>
+                            navigate('EditAddress', {
+                              headerText: 'Edit Address',
                               label: item.label,
                               address: item.address,
-                              paymentId: item.paymentID,
-                              entryId: item.entryID
-                            }
-                          });
-                          NavigationService.navigate('EditAddress', { callback: null });
-                        }}
-                        text="EDIT"
-                      />
-                    </Tips>
+                              paymentID: item.paymentID,
+                              entryID: item.entryID
+                            })
+                          }
+                          text="EDIT"
+                        />
+                      </Tips>
+                    </View>
                   </View>
                 </View>
-              </View>
-            }
-          />)
+              }
+            />
         }
       </View>
     </View>

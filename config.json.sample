@@ -1,0 +1,6 @@
+{
+  "hCaptcha": {
+    "url": "<Your URL goes here>",
+    "key": "<Your KEY goes here>"
+  }
+}

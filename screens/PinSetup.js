@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { useFormInput, useFormValidation } from '../helpers/hooks';
+import { View } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import ConcealButton from '../components/ccxButton';
 import ConcealPassword from '../components/ccxPassword';
 import ConcealPinView from '../components/ccxPinView';
-import ConcealButton from '../components/ccxButton';
 import { AppColors } from '../constants/Colors';
-import { View } from 'react-native';
+import { useFormInput, useFormValidation } from '../helpers/hooks';
 
 
 const PinSetup = props => {
@@ -16,7 +16,7 @@ const PinSetup = props => {
   const [pinValue, setPinValue] = useState('');
 
   const formValidation = (
-    (password != '') && (pinValue != '')
+    (password !== '') && (pinValue !== '')
   );
   const formValid = useFormValidation(formValidation);
 

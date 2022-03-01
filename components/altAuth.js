@@ -1,13 +1,13 @@
-import { AppColors } from '../constants/Colors';
-import EStyleSheet from 'react-native-extended-stylesheet';
-import localStorage from '../helpers/LocalStorage';
-import ConcealPinView from '../components/ccxPinView';
-import ConcealButton from '../components/ccxButton';
-import { Icon, Overlay } from 'react-native-elements';
-import React, { useState } from "react";
 import * as LocalAuthentication from 'expo-local-authentication';
+import React, { useState } from 'react';
+import { Text, View, } from 'react-native';
+import { Icon, Overlay } from 'react-native-elements';
+import EStyleSheet from 'react-native-extended-stylesheet';
+import ConcealButton from '../components/ccxButton';
+import ConcealPinView from '../components/ccxPinView';
+import { AppColors } from '../constants/Colors';
+import localStorage from '../helpers/LocalStorage';
 import { getAspectRatio, showMessageDialog } from '../helpers/utils';
-import { Text, View, } from "react-native";
 
 
 export default function ConcealTextInput({ onAuthenticate }) {
@@ -16,7 +16,7 @@ export default function ConcealTextInput({ onAuthenticate }) {
   const [showFgpModal, setShowFgpModal] = useState(false);
   const [isScanning, setIsScanning] = useState(0);
 
-  if (showFgpModal && (isScanning == 0)) {
+  if (showFgpModal && (isScanning === 0)) {
     setIsScanning(1);
 
     LocalAuthentication.authenticateAsync().then(result => {
@@ -36,14 +36,13 @@ export default function ConcealTextInput({ onAuthenticate }) {
       <Overlay
         isVisible={showPinModal}
         overlayBackgroundColor={AppColors.concealBackground}
-        width="100%"
-        height="100%"
+        fullScreen={true}
       >
         <View style={styles.overlayWrapper}>
           <ConcealPinView
             onComplete={(pin) => {
               setShowPinModal(false);
-              if (localStorage.get('lock_pin') == pin) {
+              if (localStorage.get('lock_pin') === pin) {
                 setValue(localStorage.get('lock_password'));
               } else {
                 showMessageDialog('Wrong PIN, please try again', 'error');

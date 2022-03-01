@@ -1,55 +1,46 @@
-import { Icon, Header } from 'react-native-elements';
-import NavigationService from '../helpers/NavigationService';
-import { AppContext } from '../components/ContextProvider';
+import * as Clipboard from 'expo-clipboard';
+import React, { useContext, useEffect } from 'react';
+import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Header, Icon } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import ConcealTextInput from '../components/ccxTextInput';
 import ConcealButton from '../components/ccxButton';
-import { AppColors } from '../constants/Colors';
-import SearchAddress from './SearchAddress';
+import ConcealTextInput from '../components/ccxTextInput';
+import { AppContext } from '../components/ContextProvider';
 import AppStyles from '../components/Style';
-import React, { useContext } from "react";
-import {
-  maskAddress,
-  getAspectRatio
-} from '../helpers/utils';
-import {
-  Text,
-  View,
-  TextInput,
-  Clipboard,
-  ScrollView,
-  TouchableOpacity
-} from "react-native";
+import { AppColors } from '../constants/Colors';
+import { getAspectRatio, maskAddress } from '../helpers/utils';
+import SearchAddress from './SearchAddress';
 
-const SendMessage = () => {
+const SendMessage = ({ navigation: { goBack, navigate }, route }) => {
   const { state, actions } = useContext(AppContext);
   const { setAppData } = actions;
   const { user, wallets, appData } = state;
   const currWallet = wallets[appData.common.selectedWallet];
 
-  this.onScanSuccess = (data) => {
+  useEffect(() => {
     setAppData({
       sendMessage: {
-        toAddress: data.address
+        toAddress: route.params?.address,
+        toPaymentId: route.params?.paymentId
       }
     });
-  }
+  }, [route.params?.address, route.params?.paymentId]);
 
-  this.onScanAddressQRCode = () => {
+  const onScanAddressQRCode = () => {
     setAppData({
       scanCode: {
         scanned: false
       }
     });
 
-    NavigationService.navigate('Scanner', { onSuccess: this.onScanSuccess });
+    navigate('Scanner', { previousScreen: 'SendMessage' });
   }
 
-  this.isFormValid = () => {
+  const isFormValid = () => {
     return (state.appData.sendMessage.toAddress && state.appData.sendMessage.message);
   }
 
-  this.clearSend = () => {
+  const clearSend = () => {
     setAppData({
       sendMessage: {
         toAddress: '',
@@ -58,8 +49,8 @@ const SendMessage = () => {
     });
   }
 
-  this.readFromClipboard = async () => {
-    const clipboardContent = await Clipboard.getString();
+  const readFromClipboard = async () => {
+    const clipboardContent = await Clipboard.getStringAsync();
     setAppData({
       sendMessage: {
         toAddress: clipboardContent
@@ -67,7 +58,7 @@ const SendMessage = () => {
     });
   };
 
-  this.setAddress = (label, address, paymentID, entryID) => {
+  const setAddress = (label, address, paymentID, entryID) => {
     setAppData({
       sendMessage: {
         toAddress: address
@@ -78,11 +69,11 @@ const SendMessage = () => {
   return (
     <View style={styles.pageWrapper}>
       <Header
-        placement="left"
+        placement='left'
         statusBarProps={{ translucent: false, backgroundColor: "#212529" }}
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
-          onPress={() => NavigationService.goBack()}
+          onPress={() => goBack()}
           name='arrow-back-outline'
           type='ionicon'
           color='white'
@@ -90,7 +81,7 @@ const SendMessage = () => {
         />}
         centerComponent={{ text: 'Send Message', style: AppStyles.appHeaderText }}
         rightComponent={<Icon
-          onPress={() => this.clearSend()}
+          onPress={() => clearSend()}
           name='md-trash'
           type='ionicon'
           color='white'
@@ -116,7 +107,7 @@ const SendMessage = () => {
                       entryId: null
                     }
                   });
-                  NavigationService.navigate('EditAddress', { callback: this.setAddress });
+                  navigate('EditAddress', { callback: setAddress });
                 }}
                 name='md-add'
                 type='ionicon'
@@ -155,8 +146,8 @@ const SendMessage = () => {
       <View style={styles.footer}>
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnLeft]}
-          disabled={!this.isFormValid()}
-          onPress={() => NavigationService.navigate('SendMessageConfirm')}
+          disabled={!isFormValid()}
+          onPress={() => navigate('SendMessageConfirm')}
           text="SEND"
         />
         <ConcealButton

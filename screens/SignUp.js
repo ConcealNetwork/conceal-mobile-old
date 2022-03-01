@@ -1,39 +1,41 @@
 import React, { useContext } from 'react';
+import { ScrollView, Text, TextInput, View } from 'react-native';
 import { Image } from 'react-native-elements';
+import EStyleSheet from 'react-native-extended-stylesheet';
 import ConcealButton from '../components/ccxButton';
-
-import { AppContext } from '../components/ContextProvider';
+import { AuthContext } from '../components/ContextProvider';
+import ConcealCaptcha from '../components/hCaptcha';
+import AppStyles from '../components/Style';
+import { AppColors } from '../constants/Colors';
 import { useFormInput, useFormValidation } from '../helpers/hooks';
 import { getAspectRatio } from '../helpers/utils';
-import { AppColors } from '../constants/Colors';
-import AppStyles from '../components/Style';
-import {
-  Text,
-  View,
-  TextInput,
-  StyleSheet,
-  ScrollView
-} from 'react-native';
 
 
 const SignUp = props => {
-  const { actions, state } = useContext(AppContext);
+  const { actions, state } = useContext(AuthContext);
   const { layout, userSettings } = state;
   const { formSubmitted, message } = layout;
   const { signUpUser } = actions;
   const { hidePanel } = props;
 
+  // captcha related fields and hooks
+  const [hCode, setHCode] = React.useState("");
 
   const { value: userName, bind: bindUserName } = useFormInput('');
   const { value: email, bind: bindEmail } = useFormInput('');
   const { value: password, bind: bindPassword } = useFormInput('');
 
   const formValidation = (
+    hCode !== '' &&
     userName !== '' && userName.length >= 3 &&
     email !== '' && /\S+@\S+\.\S+/.test(email) &&
     password !== '' && password.length >= userSettings.minimumPasswordLength
   );
   const formValid = useFormValidation(formValidation);
+
+  const onCaptchaChange = (code) => {
+    setHCode(code);
+  };
 
   return (
     <ScrollView contentContainerStyle={AppStyles.loginView}>
@@ -71,6 +73,7 @@ const SignUp = props => {
         placeholderTextColor={AppColors.placeholderTextColor}
         textContentType="newPassword"
       />
+      <ConcealCaptcha onCaptchaChange={onCaptchaChange} />
 
       <View style={styles.footer}>
         <ConcealButton
@@ -98,7 +101,7 @@ const SignUp = props => {
   )
 };
 
-const styles = StyleSheet.create({
+const styles = EStyleSheet.create({
   footer: {
     flex: 1,
     marginTop: 15,

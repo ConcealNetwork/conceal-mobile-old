@@ -31,3 +31,5 @@ yarn-error.*
 /.scannerwork
 /.expo-shared
 /web-build
+/config.json
+/assets/images/hcaptcha.svg

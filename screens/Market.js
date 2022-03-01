@@ -1,16 +1,14 @@
 import React, { useContext } from 'react';
-import { Icon, Header, ListItem } from 'react-native-elements';
-import { Text, View, StyleSheet, FlatList } from 'react-native';
-import { format0Decimals, format2Decimals, format4Decimals, format8Decimals } from '../helpers/utils';
-import NavigationService from '../helpers/NavigationService';
+import { FlatList, View } from 'react-native';
+import { Header, Icon, ListItem } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { AppContext } from '../components/ContextProvider';
-import { getAspectRatio } from '../helpers/utils';
-import { AppColors } from '../constants/Colors';
-import AppStyles from '../components/Style';
 import { sprintf } from 'sprintf-js';
+import { AppContext } from '../components/ContextProvider';
+import AppStyles from '../components/Style';
+import { AppColors } from '../constants/Colors';
+import { format0Decimals, format2Decimals, format4Decimals, format8Decimals, getAspectRatio } from '../helpers/utils';
 
-const Market = () => {
+const Market = ({ navigation: { goBack } }) => {
   const { state } = useContext(AppContext);
   const { prices } = state;
 
@@ -47,32 +45,22 @@ const Market = () => {
     }
   ];
 
-  // key extractor for the list
-  this.keyExtractor = (item, index) => index.toString();
-
-  this.renderItem = ({ item }) => (
-    <ListItem
-      title={item.value}
-      subtitle={item.title}
-      titleStyle={styles.settingsText}
-      subtitleStyle={styles.settingsLabel}
-      containerStyle={styles.settingsItem}
-      leftIcon={<Icon
-        name={item.icon}
-        type='ionicon'
-        color='white'
-        size={32 * getAspectRatio()}
-      />}
-    />
-  );
+  const renderItem = ({ item }) =>
+    <ListItem containerStyle={styles.settingsItem} key={item.value} onPress={item.onPress}>
+      <Icon name={item.icon} type='ionicon' color='white' size={32 * getAspectRatio()} />
+      <ListItem.Content>
+        <ListItem.Title style={styles.settingsText}>{item.value}</ListItem.Title>
+        <ListItem.Subtitle style={styles.settingsLabel}>{item.title}</ListItem.Subtitle>
+      </ListItem.Content>
+    </ListItem>
 
   return (
     <View style={styles.pageWrapper}>
       <Header
-        placement="left"
+        placement='left'
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
-          onPress={() => NavigationService.goBack()}
+          onPress={() => goBack()}
           name='arrow-back-outline'
           type='ionicon'
           color='white'
@@ -83,8 +71,8 @@ const Market = () => {
       <FlatList
         data={list}
         style={styles.settingsList}
-        renderItem={this.renderItem}
-        keyExtractor={this.keyExtractor}
+        renderItem={renderItem}
+        keyExtractor={item => item.title}
       />
     </View>
   )

@@ -1,44 +1,39 @@
-import React, { useContext, useState, useEffect } from 'react';
-import ConcealTextInput from '../components/ccxTextInput';
-import ConcealButton from '../components/ccxButton';
+import * as Clipboard from 'expo-clipboard';
+import React, { useContext, useEffect, useState } from 'react';
+import { Keyboard, ScrollView, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import { CheckBox, Icon, Image, Overlay } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import localStorage from '../helpers/LocalStorage';
-
-import { Image, CheckBox, Overlay, Icon } from 'react-native-elements';
+import ConcealButton from '../components/ccxButton';
 import ConcealPassword from '../components/ccxPassword';
-
-import { AppContext } from '../components/ContextProvider';
-import { useFormInput, useFormValidation, useCheckbox } from '../helpers/hooks';
-import SignUp from './SignUp';
+import ConcealTextInput from '../components/ccxTextInput';
+import { AuthContext } from '../components/ContextProvider';
+import ConcealCaptcha from '../components/hCaptcha';
+import AppStyles from '../components/Style';
+import { AppColors } from '../constants/Colors';
+import AuthHelper from '../helpers/AuthHelper';
+import { useCheckbox, useFormInput, useFormValidation } from '../helpers/hooks';
+import localStorage from '../helpers/LocalStorage';
+import { getAspectRatio } from '../helpers/utils';
 import AuthCheck from './AuthCheck';
 import ResetPassword from './ResetPassword';
-import AuthHelper from '../helpers/AuthHelper';
-import { AppColors } from '../constants/Colors';
-import AppStyles from '../components/Style';
-import { getAspectRatio } from '../helpers/utils';
-import {
-  View,
-  Text,
-  Keyboard,
-  Clipboard,
-  ScrollView,
-  TouchableOpacity,
-  TouchableWithoutFeedback
-} from 'react-native';
+import SignUp from './SignUp';
 
 
 const Login = () => {
-  const { actions, state } = useContext(AppContext);
+  const { actions, state } = useContext(AuthContext);
   const { loginUser } = actions;
   const { layout, userSettings } = state;
   const { formSubmitted } = layout;
   const { setAppData } = actions;
   const Auth = new AuthHelper(state.appSettings.apiURL);
 
-  const { value: email, bind: bindEmail, setValue: setEmailValue } = useFormInput((localStorage.get('id_rememberme') == "TRUE") ? localStorage.get('id_username') : '');
+  // captcha related fields and hooks
+  const [hCode, setHCode] = React.useState("");
+
+  const { value: email, bind: bindEmail, setValue: setEmailValue } = useFormInput((localStorage.get('id_rememberme') === 'TRUE') ? localStorage.get('id_username') : '');
   const { value: password, bind: bindPassword, setValue: setPassword } = useFormInput('');
   const { value: twoFACode, bind: bindTwoFACode, setValue: setTwoFACode } = useFormInput('');
-  const { checked: rememberMe, bind: bindRememberMe } = useCheckbox(localStorage.get('id_rememberme') == "TRUE");
+  const { checked: rememberMe, bind: bindRememberMe } = useCheckbox(localStorage.get('id_rememberme') === 'TRUE');
 
   // alternative auth check state
   const [showLoginForm, setShowLoginForm] = useState(!Auth.getIsAltAuth());
@@ -46,7 +41,8 @@ const Login = () => {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const formValidation = (
-    email !== '' && /\S+@\S+\.\S+/.test(email) &&
+    hCode !== '' &&
+    email !== '' &&
     password !== '' && password.length >= userSettings.minimumPasswordLength &&
     (twoFACode !== '' ? (twoFACode.length === 6 && parseInt(twoFACode)) : true)
   );
@@ -62,6 +58,10 @@ const Login = () => {
       }
     }
   }, [state.layout.loginFinished]);
+
+  const onCaptchaChange = (code) => {
+    setHCode(code);
+  };
 
   return (
     <View style={AppStyles.viewContainer}>
@@ -82,15 +82,15 @@ const Login = () => {
             <Text style={AppStyles.title}>SIGN IN</Text>
             <ConcealTextInput
               {...bindEmail}
-              placeholder="E-mail"
-              keyboardType="email-address"
+              placeholder="please enter your username"
+              keyboardType="default"
               textContentType="emailAddress"
               inputStyle={AppStyles.textLarge}
               rightIcon={
                 <Icon
                   onPress={() => {
                     (async () => {
-                      setEmailValue(await Clipboard.getString());
+                      setEmailValue(await Clipboard.getStringAsync());
                     })().catch(e => console.log(e));
                   }}
                   name='md-copy'
@@ -116,7 +116,7 @@ const Login = () => {
                 <Icon
                   onPress={() => {
                     (async () => {
-                      setTwoFACode(await Clipboard.getString());
+                      setTwoFACode(await Clipboard.getStringAsync());
                     })().catch(e => console.log(e));
                   }}
                   name='md-copy'
@@ -126,6 +126,7 @@ const Login = () => {
                 />
               }
             />
+            <ConcealCaptcha onCaptchaChange={onCaptchaChange} />
             <CheckBox
               {...bindRememberMe}
               title='Remember username'
@@ -138,7 +139,7 @@ const Login = () => {
 
             <View style={styles.footer}>
               <ConcealButton
-                onPress={() => loginUser({ email, password, twoFACode, rememberMe, id: 'loginForm' })}
+                onPress={() => loginUser({ email, password, twoFACode, rememberMe, captcha: hCode, id: 'loginForm' })}
                 text='Sign In'
                 accessibilityLabel="Log In Button"
                 disabled={formSubmitted || !formValid}
@@ -163,9 +164,9 @@ const Login = () => {
       }
       <Overlay
         isVisible={state.appData.login.signUpVisible}
-        overlayBackgroundColor={AppColors.concealBlack}
-        width="100%"
-        height="100%"
+        overlayBackgroundColor={AppColors.concealBackground}
+        overlayStyle={styles.overlayStyle}
+        fullScreen={true}
       >
         <SignUp
           hidePanel={() => setAppData({ login: { signUpVisible: false } })}
@@ -175,8 +176,8 @@ const Login = () => {
       <Overlay
         isVisible={state.appData.login.resetPasswordVisible}
         overlayBackgroundColor={AppColors.concealBlack}
-        width="100%"
-        height="100%"
+        overlayStyle={styles.overlayStyle}
+        fullScreen={true}
       >
         <ResetPassword
           hidePanel={() => setAppData({ login: { resetPasswordVisible: false } })}
@@ -212,6 +213,10 @@ const styles = EStyleSheet.create({
     right: '10rem',
     left: '10rem',
     top: '15%'
+  },
+  overlayStyle: {
+    flex: 1,
+    backgroundColor: AppColors.concealBlack,
   },
   loggingH1: {
     fontSize: '26rem',

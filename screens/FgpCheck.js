@@ -1,12 +1,12 @@
-import { Icon } from 'react-native-elements';
-import React, { useState, useRef, useEffect } from 'react';
 import * as LocalAuthentication from 'expo-local-authentication';
+import React, { useEffect, useRef, useState } from 'react';
+import { Text, View } from 'react-native';
+import { Icon } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import ConcealButton from '../components/ccxButton';
+import { AppColors } from '../constants/Colors';
 import localStorage from '../helpers/LocalStorage';
 import { getAspectRatio } from '../helpers/utils';
-import { AppColors } from '../constants/Colors';
-import { View, Text } from 'react-native';
 
 const FgpCheck = props => {
   const { onComplete, onCancel } = props;
@@ -17,7 +17,7 @@ const FgpCheck = props => {
   const isMountedRef = useRef(null);
 
   const startBiometricAuth = (mounted) => {
-    if ((isScanning == 0) && (isMountedRef.current)) {
+    if ((isScanning === 0) && (isMountedRef.current)) {
       setIsScanning(1);
 
       LocalAuthentication.authenticateAsync().then(result => {
@@ -43,7 +43,7 @@ const FgpCheck = props => {
   }
 
   this.getFgpStatusText = () => {
-    if (isScanning == 1) {
+    if (isScanning === 1) {
       return "Please use the fingerprint...";
     } else {
       if (fgpValue) {
@@ -55,7 +55,7 @@ const FgpCheck = props => {
   }
 
   this.getFgpStyle = () => {
-    if (isScanning == 1) {
+    if (isScanning === 1) {
       return { color: AppColors.concealTextColor };
     } else {
       if (fgpValue) {

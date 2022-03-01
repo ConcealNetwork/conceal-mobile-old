@@ -1,9 +1,9 @@
-import { AppColors } from '../constants/Colors';
+import React, { useState } from 'react';
+import { View, } from 'react-native';
+import { Icon, Input } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { Input, Icon } from 'react-native-elements';
-import React, { useState } from "react";
+import { AppColors } from '../constants/Colors';
 import { getAspectRatio } from '../helpers/utils';
-import { View, } from "react-native";
 
 
 export default function ConcealTextInput({
@@ -16,9 +16,9 @@ export default function ConcealTextInput({
 }) {
   const [isSecure, setIsSecure] = useState(true);
 
-  var inputContainerStyles = [styles.PassInputContainer];
-  var cointainerStyles = [styles.PassContainer];
-  var inputStyles = [styles.PassInput];
+  let inputContainerStyles = [styles.PassInputContainer];
+  let cointainerStyles = [styles.PassContainer];
+  let inputStyles = [styles.PassInput];
 
   if (inputContainerStyle) {
     if (Array.isArray(inputContainerStyle)) {

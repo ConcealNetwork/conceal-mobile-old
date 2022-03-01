@@ -1,26 +1,17 @@
-import React, { useContext, useState } from 'react';
-import { Icon, Header, ButtonGroup } from 'react-native-elements';
-import NavigationService from '../helpers/NavigationService';
-import EStyleSheet from 'react-native-extended-stylesheet';
-import { AppContext } from '../components/ContextProvider';
-import ConcealTextInput from '../components/ccxTextInput';
-import GuideNavigation from '../helpers/GuideNav';
-import { AppColors } from '../constants/Colors';
-import AppStyles from '../components/Style';
-import Tips from 'react-native-guide-tips';
 import Moment from 'moment';
-import {
-  maskAddress,
-  getAspectRatio,
-} from '../helpers/utils';
-import {
-  Text,
-  View,
-  FlatList,
-  TouchableOpacity
-} from 'react-native';
+import React, { useContext, useState } from 'react';
+import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { ButtonGroup, Header, Icon } from 'react-native-elements';
+import EStyleSheet from 'react-native-extended-stylesheet';
+import Tips from 'react-native-guide-tips';
+import ConcealTextInput from '../components/ccxTextInput';
+import { AppContext } from '../components/ContextProvider';
+import AppStyles from '../components/Style';
+import { AppColors } from '../constants/Colors';
+import GuideNavigation from '../helpers/GuideNav';
+import { getAspectRatio, maskAddress, } from '../helpers/utils';
 
-const Messages = () => {
+const Messages = ({ navigation: { goBack, navigate } }) => {
   const { actions, state } = useContext(AppContext);
   const { setAppData } = actions;
   const { layout, messages, appData } = state;
@@ -45,12 +36,12 @@ const Messages = () => {
         counter++;
 
         // check if direction filter is set and the type of the message is appropriate
-        if (((element.type == 'in') && (state.appData.messages.filterState == 2)) || ((element.type == 'out') && (state.appData.messages.filterState == 1))) {
+        if (((element.type === 'in') && (state.appData.messages.filterState === 2)) || ((element.type === 'out') && (state.appData.messages.filterState === 1))) {
           isValidItem = false;
         }
 
         // check if the text filter is set
-        if (state.appData.messages.filterText && (element.message.toLowerCase().search(state.appData.messages.filterText.toLowerCase()) == -1)) {
+        if (state.appData.messages.filterText && (element.message.toLowerCase().search(state.appData.messages.filterText.toLowerCase()) === -1)) {
           isValidItem = false;
         }
 
@@ -87,11 +78,11 @@ const Messages = () => {
   return (
     <View style={styles.pageWrapper}>
       <Header
-        placement="left"
+        placement='left'
         statusBarProps={{ translucent: false, backgroundColor: "#212529" }}
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
-          onPress={() => NavigationService.goBack()}
+          onPress={() => goBack()}
           name='arrow-back-outline'
           type='ionicon'
           color='white'
@@ -118,7 +109,7 @@ const Messages = () => {
           (
             <Tips
               position={'bottom'}
-              visible={guideState == 'sendMessage'}
+              visible={guideState === 'sendMessage'}
               textStyle={AppStyles.guideTipText}
               style={[AppStyles.guideTipContainer, styles.guideTipSendMessage]}
               tooltipArrowStyle={[AppStyles.guideTipArrowTop, styles.guideTipArrowSendMessage]}
@@ -126,7 +117,7 @@ const Messages = () => {
               onRequestClose={() => setGuideState(guideNavigation.next())}
             >
               < Icon
-                onPress={() => NavigationService.navigate('SendMessage')}
+                onPress={() => navigate('SendMessage')}
                 name='md-add-circle-outline'
                 type='ionicon'
                 color='white'
@@ -137,7 +128,7 @@ const Messages = () => {
         <View>
           <Tips
             position={'bottom'}
-            visible={guideState == 'messageTypes'}
+            visible={guideState === 'messageTypes'}
             textStyle={AppStyles.guideTipText}
             tooltipArrowStyle={AppStyles.guideTipArrowTop}
             style={AppStyles.guideTipContainer}
@@ -157,7 +148,7 @@ const Messages = () => {
         </View>
         <Tips
           position={'bottom'}
-          visible={guideState == 'messageSearch'}
+          visible={guideState === 'messageSearch'}
           textStyle={AppStyles.guideTipText}
           tooltipArrowStyle={AppStyles.guideTipArrowTop}
           style={AppStyles.guideTipContainer}
@@ -182,29 +173,29 @@ const Messages = () => {
           />
         </Tips>
         {layout.userLoaded && messageList.length === 0
-          ? (<View style={styles.emptyMessagesWrapper}>
-            <Text style={styles.emptyMessagesText}>
-              You have no messages currently. When someone will send you a message it will be visible here.
-            </Text>
-          </View>)
-          : (<FlatList
-            data={messageList}
-            style={styles.flatList}
-            showsVerticalScrollIndicator={false}
-            keyExtractor={item => item.id}
-            renderItem={({ item, index }) =>
-              <View style={(item.addr === appData.common.selectedWallet) ? [styles.flatview, styles.walletSelected] : styles.flatview}>
-                <TouchableOpacity>
-                  <View>
-                    <Text style={styles.address}>{maskAddress(item.address)}</Text>
-                    <Text style={styles.message}>{item.message}</Text>
-                    <Text style={styles.timestamp}>{Moment(item.timestamp).format('LLLL')}</Text>
-                    <Text style={item.type == 'in' ? [styles.type, styles.typein] : [styles.type, styles.typeout]}>{item.type == 'in' ? "Inbound" : "Outbound"}</Text>
-                  </View>
-                </TouchableOpacity>
-              </View>
-            }
-          />)
+          ? <View style={styles.emptyMessagesWrapper}>
+              <Text style={styles.emptyMessagesText}>
+                You have no messages currently. When someone will send you a message it will be visible here.
+              </Text>
+            </View>
+          : <FlatList
+              data={messageList}
+              style={styles.flatList}
+              showsVerticalScrollIndicator={false}
+              keyExtractor={item => item.id}
+              renderItem={({ item, index }) =>
+                <View style={(item.addr === appData.common.selectedWallet) ? [styles.flatview, styles.walletSelected] : styles.flatview}>
+                  <TouchableOpacity>
+                    <View>
+                      <Text style={styles.address}>{maskAddress(item.address)}</Text>
+                      <Text style={styles.message}>{item.message}</Text>
+                      <Text style={styles.timestamp}>{Moment(item.timestamp).format('LLLL')}</Text>
+                      <Text style={item.type === 'in' ? [styles.type, styles.typein] : [styles.type, styles.typeout]}>{item.type === 'in' ? "Inbound" : "Outbound"}</Text>
+                    </View>
+                  </TouchableOpacity>
+                </View>
+              }
+            />
         }
       </View>
     </View>
