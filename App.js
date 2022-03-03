@@ -75,7 +75,7 @@ const App = props => {
     bootstrapAsync();
   }, []);
 
-  const actions = useMemo(() => ({
+  const authActions = useMemo(() => ({
     loginUser: async options => {
       options.uuid = Constants.installationId;
       let message;
@@ -188,7 +188,7 @@ const App = props => {
           onError={handleLoadingError}
           onFinish={handleFinishLoading}
         />
-      : <AuthContext.Provider value={{ actions, state }}>
+      : <AuthContext.Provider value={{ authActions, state }}>
           <NavigationContainer>
             <WalkthroughProvider>
               <AppContextProvider state={state} dispatch={dispatch} updatedState={updatedState}>

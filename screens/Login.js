@@ -22,7 +22,8 @@ import SignUp from './SignUp';
 
 const Login = () => {
   const { actions, state } = useContext(AppContext);
-  const { loginUser } = actions;
+  const { authActions } = useContext(AuthContext);
+  const { loginUser } = authActions;
   const { layout, userSettings } = state;
   const { formSubmitted } = layout;
   const { setAppData } = actions;

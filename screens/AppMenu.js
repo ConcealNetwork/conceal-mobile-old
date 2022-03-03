@@ -9,8 +9,8 @@ import { getAspectRatio } from '../helpers/utils';
 
 
 const AppMenu = ({ navigation: { goBack, navigate } }) => {
-  const { actions } = useContext(AuthContext);
-  const { logoutUser } = actions;
+  const { authActions } = useContext(AuthContext);
+  const { logoutUser } = authActions;
 
   const settingsList = [
     {

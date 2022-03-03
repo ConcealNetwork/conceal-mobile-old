@@ -12,10 +12,10 @@ import { getAspectRatio } from '../helpers/utils';
 
 
 const SignUp = props => {
-  const { actions, state } = useContext(AuthContext);
+  const { authActions, state } = useContext(AuthContext);
   const { layout, userSettings } = state;
   const { formSubmitted, message } = layout;
-  const { signUpUser } = actions;
+  const { signUpUser } = authActions;
   const { hidePanel } = props;
 
   // captcha related fields and hooks
