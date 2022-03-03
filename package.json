@@ -34,7 +34,7 @@
     "react-native-flash-message": "^0.2.1",
     "react-native-gesture-handler": "~2.3.0",
     "react-native-guide-tips": "0.0.15",
-    "react-native-modal": "^13.0.0",
+    "react-native-modal": "^13.0.1",
     "react-native-modal-selector": "^2.1.0",
     "react-native-pin-view": "^3.0.0",
     "react-native-qrcode-svg": "^6.0.6",
