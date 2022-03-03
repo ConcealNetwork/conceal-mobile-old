@@ -21,7 +21,7 @@ const Receive = ({ navigation: { goBack } }) => {
   }
 
   return (
-    <View style={styles.pageWrapper}>
+    <View style={AppStyles.pageWrapper}>
       <Header
         placement='left'
         statusBarProps={{ translucent: false, backgroundColor: "#212529" }}

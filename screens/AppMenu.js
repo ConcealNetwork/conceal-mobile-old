@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { FlatList, View } from 'react-native';
+import { FlatList, View, Text } from 'react-native';
 import { Header, Icon, ListItem } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
 import { AuthContext } from '../components/ContextProvider';
@@ -59,15 +59,23 @@ const AppMenu = ({ navigation: { goBack, navigate } }) => {
     <View style={AppStyles.pageWrapper}>
       <Header
         placement='left'
+        statusBarProps={{ translucent: false, backgroundColor: "#212529" }}
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
+          containerStyle={AppStyles.leftHeaderIcon}
           onPress={() => goBack()}
           name='arrow-back-outline'
           type='ionicon'
           color='white'
           size={32 * getAspectRatio()}
         />}
-        centerComponent={{ text: 'Navigation', style: AppStyles.appHeaderText }}
+        centerComponent={          
+          <View style={AppStyles.appHeaderWrapper}>
+            <Text style={AppStyles.appHeaderText}>
+            Navigation
+            </Text>
+          </View>
+        }        
         rightComponent={< Icon
           onPress={logoutUser}
           name='md-log-out'
