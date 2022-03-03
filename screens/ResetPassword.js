@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { Keyboard, ScrollView, StyleSheet, Text, TextInput, TouchableWithoutFeedback, View } from 'react-native';
 import { Image } from 'react-native-elements';
 import ConcealButton from '../components/ccxButton';
+import ConcealCaptcha from '../components/hCaptcha';
 
 import { AuthContext } from '../components/ContextProvider';
 import AppStyles from '../components/Style';
@@ -17,12 +18,19 @@ const ResetPassword = props => {
   const { resetPassword } = actions;
   const { hidePanel } = props;
 
+  // captcha related fields and hooks
+  const [hCode, setHCode] = React.useState("");
+
   const { value: email, bind: bindEmail } = useFormInput(global.username);
 
   const formValidation = (
-    email !== '' && /\S+@\S+\.\S+/.test(email)
+    hCode !== '' && email !== '' && /\S+@\S+\.\S+/.test(email)
   );
   const formValid = useFormValidation(formValidation);
+
+  const onCaptchaChange = (code) => {
+    setHCode(code);
+  };
 
   return (
     <View style={[AppStyles.viewContainer]}>
@@ -47,6 +55,7 @@ const ResetPassword = props => {
             textContentType="none"
             secureTextEntry={false}
           />
+          <ConcealCaptcha onCaptchaChange={onCaptchaChange} />
 
           <View style={styles.footer}>
             <ConcealButton

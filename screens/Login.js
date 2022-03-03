@@ -7,6 +7,7 @@ import ConcealButton from '../components/ccxButton';
 import ConcealPassword from '../components/ccxPassword';
 import ConcealTextInput from '../components/ccxTextInput';
 import { AuthContext } from '../components/ContextProvider';
+import { AppContext } from '../components/ContextProvider';
 import ConcealCaptcha from '../components/hCaptcha';
 import AppStyles from '../components/Style';
 import { AppColors } from '../constants/Colors';
@@ -20,7 +21,7 @@ import SignUp from './SignUp';
 
 
 const Login = () => {
-  const { actions, state } = useContext(AuthContext);
+  const { actions, state } = useContext(AppContext);
   const { loginUser } = actions;
   const { layout, userSettings } = state;
   const { formSubmitted } = layout;
@@ -163,7 +164,7 @@ const Login = () => {
         </TouchableWithoutFeedback>
       }
       <Overlay
-        isVisible={state.appData.login.signUpVisible}
+        isVisible={state.appData.login.signUpVisible ? state.appData.login.signUpVisible : false}
         overlayBackgroundColor={AppColors.concealBackground}
         overlayStyle={styles.overlayStyle}
         fullScreen={true}
@@ -174,7 +175,7 @@ const Login = () => {
       </Overlay>
 
       <Overlay
-        isVisible={state.appData.login.resetPasswordVisible}
+        isVisible={state.appData.login.resetPasswordVisible ? state.appData.login.resetPasswordVisible : false}
         overlayBackgroundColor={AppColors.concealBlack}
         overlayStyle={styles.overlayStyle}
         fullScreen={true}
