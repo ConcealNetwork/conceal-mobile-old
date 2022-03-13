@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { FlatList, Text, TouchableOpacity, View } from 'react-native';
 import { Header, Icon, ListItem } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -18,13 +18,14 @@ import {
 } from '../helpers/utils';
 import SearchAddress from './SearchAddress';
 
+
 const SendScreen = ({ navigation: { goBack, navigate }, route }) => {
-  const { state, actions } = useContext(AppContext);
-  const { setAppData } = actions;
-  const { appSettings, user, wallets, appData } = state;
-  const currWallet = wallets[appData.common.selectedWallet];
+  const { state } = useContext(AppContext);
+  const { appSettings, user, wallets } = state;
+  const currWallet = wallets[Object.keys(wallets).find(i => wallets[i].default)];
   const { params } = route;
 
+  const [addrListVisible, setAddrListVisible] = useState(false);
   const { value: amount, bind: bindAmount, setValue: setAmount } = useFormInput(null);
   const { value: address, bind: bindAddress, setValue: setAddress } = useFormInput(params?.address);
   const { value: label, bind: bindLabel, setValue: setLabel } = useFormInput(params?.label);
@@ -79,15 +80,7 @@ const SendScreen = ({ navigation: { goBack, navigate }, route }) => {
     setPaymentID(params?.paymentId || '');
   }, [params])
 
-  const onScanAddressQRCode = () => {
-    setAppData({
-      scanCode: {
-        scanned: false
-      }
-    });
-
-    navigate('Scanner', { previousScreen: 'SendPayment' });
-  }
+  const onScanAddressQRCode = () => navigate('Scanner', { previousScreen: 'SendPayment' });
 
   const renderItem = ({ item }) =>
     <ListItem containerStyle={styles.summaryItem} key={item.value} onPress={item.onPress}>
@@ -123,13 +116,13 @@ const SendScreen = ({ navigation: { goBack, navigate }, route }) => {
           color='white'
           size={32 * getAspectRatio()}
         />}
-        centerComponent={          
+        centerComponent={
           <View style={AppStyles.appHeaderWrapper}>
             <Text style={AppStyles.appHeaderText}>
             Send CCX
             </Text>
           </View>
-        }        
+        }
         rightComponent={<Icon
           onPress={() => {
             setAddress('');
@@ -196,7 +189,7 @@ const SendScreen = ({ navigation: { goBack, navigate }, route }) => {
             text="100%"
           />
         </View>
-        <TouchableOpacity onPress={() => setAppData({ searchAddress: { addrListVisible: true } })}>
+        <TouchableOpacity onPress={() => setAddrListVisible(true)}>
           <ConcealTextInput
             {...bindAddress}
             editable={false}
@@ -221,8 +214,14 @@ const SendScreen = ({ navigation: { goBack, navigate }, route }) => {
         />
       </View>
       <SearchAddress
-        selectAddress={(item) => setAppData({ searchAddress: { addrListVisible: false }, sendScreen: { toAddress: item.address, toPaymentId: item.paymentID, toLabel: item.label } })}
-        closeOverlay={() => setAppData({ searchAddress: { addrListVisible: false } })}
+        addrListVisible={addrListVisible}
+        selectAddress={i => {
+          setAddrListVisible(false);
+          setAddress(i.address);
+          setPaymentID(i.paymentID);
+          setLabel(i.label);
+        }}
+        closeOverlay={() => setAddrListVisible(false)}
         addressData={user.addressBook}
         currWallet={currWallet}
       />
@@ -398,6 +397,5 @@ const styles = EStyleSheet.create({
     color: AppColors.concealTextColor
   }
 });
-
 
 export default SendScreen;

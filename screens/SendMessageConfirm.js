@@ -9,10 +9,11 @@ import { AppColors } from '../constants/Colors';
 import { getAspectRatio, maskAddress } from '../helpers/utils';
 import AuthCheck from './AuthCheck';
 
-const SendMessageConfirm = ({ navigation: { goBack } }) => {
+
+const SendMessageConfirm = ({ navigation: { goBack }, route }) => {
   const { state, actions } = useContext(AppContext);
-  const { wallets, appData, appSettings } = state;
-  const currWallet = wallets[appData.common.selectedWallet];
+  const { wallets, appSettings } = state;
+  const currWallet = wallets[Object.keys(wallets).find(i => wallets[i].default)];
 
   const [showAuthCheck, setShowAuthCheck] = useState(false);
   const sendSummaryList = [];
@@ -26,8 +27,8 @@ const SendMessageConfirm = ({ navigation: { goBack } }) => {
   }
 
   addSummaryItem(maskAddress(currWallet.addr), 'From address', 'md-mail');
-  addSummaryItem(maskAddress(state.appData.sendMessage.toAddress), 'To address', 'md-mail');
-  addSummaryItem(state.appData.sendMessage.message, 'Message', 'md-mail');
+  addSummaryItem(maskAddress(route.params?.address), 'To address', 'md-mail');
+  addSummaryItem(route.params?.message, 'Message', 'md-mail');
   addSummaryItem(`${appSettings.defaultFee} CCX`, 'Transaction Fee', 'md-cash');
 
   const renderItem = ({ item }) =>
@@ -42,8 +43,8 @@ const SendMessageConfirm = ({ navigation: { goBack } }) => {
 
   const sendMessage = (password) => {
     actions.sendMessage(
-      state.appData.sendMessage.message,
-      state.appData.sendMessage.toAddress,
+      route.params?.message,
+      route.params?.address,
       currWallet.addr,
       password
     );

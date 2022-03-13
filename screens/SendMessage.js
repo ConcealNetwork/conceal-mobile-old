@@ -1,5 +1,4 @@
-import * as Clipboard from 'expo-clipboard';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { Header, Icon } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -11,59 +10,33 @@ import { AppColors } from '../constants/Colors';
 import { getAspectRatio, maskAddress } from '../helpers/utils';
 import SearchAddress from './SearchAddress';
 
+
 const SendMessage = ({ navigation: { goBack, navigate }, route }) => {
-  const { state, actions } = useContext(AppContext);
-  const { setAppData } = actions;
-  const { user, wallets, appData } = state;
-  const currWallet = wallets[appData.common.selectedWallet];
+  const { state } = useContext(AppContext);
+  const { user, wallets } = state;
+  const currWallet = wallets[Object.keys(wallets).find(i => wallets[i].default)];
+
+  const [addrListVisible, setAddrListVisible] = useState(false);
+  const [address, setAddress] = useState(null);
+  const [label, setLabel] = useState(null);
+  const [message, setMessage] = useState('');
+  const [paymentID, setPaymentID] = useState(null);
 
   useEffect(() => {
-    setAppData({
-      sendMessage: {
-        toAddress: route.params?.address,
-        toPaymentId: route.params?.paymentId
-      }
-    });
+    setAddress(route.params?.address);
+    setLabel(route.params?.label);
+    setPaymentID(route.params?.paymentId);
   }, [route.params?.address, route.params?.paymentId]);
 
-  const onScanAddressQRCode = () => {
-    setAppData({
-      scanCode: {
-        scanned: false
-      }
-    });
+  const onScanAddressQRCode = () => navigate('Scanner', { previousScreen: 'SendMessage' });
 
-    navigate('Scanner', { previousScreen: 'SendMessage' });
-  }
-
-  const isFormValid = () => {
-    return (state.appData.sendMessage.toAddress && state.appData.sendMessage.message);
-  }
+  const isFormValid = () => address && message && message !== '';
 
   const clearSend = () => {
-    setAppData({
-      sendMessage: {
-        toAddress: '',
-        message: ''
-      }
-    });
-  }
-
-  const readFromClipboard = async () => {
-    const clipboardContent = await Clipboard.getStringAsync();
-    setAppData({
-      sendMessage: {
-        toAddress: clipboardContent
-      }
-    });
-  };
-
-  const setAddress = (label, address, paymentID, entryID) => {
-    setAppData({
-      sendMessage: {
-        toAddress: address
-      }
-    });
+    setAddress(null);
+    setLabel(null);
+    setMessage(null);
+    setPaymentID(null);
   }
 
   return (
@@ -89,25 +62,19 @@ const SendMessage = ({ navigation: { goBack, navigate }, route }) => {
         />}
       />
       <ScrollView contentContainerStyle={styles.walletWrapper}>
-        <TouchableOpacity onPress={() => setAppData({ searchAddress: { addrListVisible: true } })}>
+        <TouchableOpacity onPress={() => setAddrListVisible(true)}>
           <ConcealTextInput
             editable={false}
             placeholder='Select recipient address...'
             containerStyle={styles.sendInput}
-            value={state.appData.sendMessage.toLabel ? state.appData.sendMessage.toLabel : maskAddress(state.appData.sendMessage.toAddress)}
+            value={label ? label : maskAddress(address)}
             rightIcon={
               <Icon
                 onPress={() => {
-                  setAppData({
-                    addressEntry: {
-                      headerText: "Create Address",
-                      label: '',
-                      address: '',
-                      paymentId: '',
-                      entryId: null
-                    }
-                  });
-                  navigate('EditAddress', { callback: setAddress });
+                  // setLabel(null);
+                  // setAddress(null);
+                  // setPaymentID(null);
+                  navigate('EditAddress', { previousScreen: 'SendMessage' });
                 }}
                 name='md-add'
                 type='ionicon'
@@ -125,21 +92,20 @@ const SendMessage = ({ navigation: { goBack, navigate }, route }) => {
             style={styles.messageText}
             placeholder="Write your message here..."
             placeholderTextColor={AppColors.placeholderTextColor}
-            onChangeText={text => {
-              setAppData({
-                sendMessage: {
-                  message: text
-                }
-              });
-            }}
-            value={state.appData.sendMessage.message}
+            onChangeText={text => setMessage(text)}
+            value={message}
           />
         </View>
-        <Text style={styles.messageCharsLeft}>{state.appData.sendMessage.message ? 280 - state.appData.sendMessage.message.length : 280} chars of 280 left</Text>
+        <Text style={styles.messageCharsLeft}>{message ? 280 - message.length : 280} chars of 280 left</Text>
       </ScrollView>
       <SearchAddress
-        selectAddress={(item) => setAppData({ searchAddress: { addrListVisible: false }, sendMessage: { toAddress: item.address, toLabel: item.label } })}
-        closeOverlay={() => setAppData({ searchAddress: { addrListVisible: false } })}
+        addrListVisible={addrListVisible}
+        selectAddress={i => {
+          setAddrListVisible(false);
+          setAddress(i.address)
+          setLabel(i.label)
+        }}
+        closeOverlay={() => setAddrListVisible(false)}
         addressData={user.addressBook}
         currWallet={currWallet}
       />
@@ -147,7 +113,7 @@ const SendMessage = ({ navigation: { goBack, navigate }, route }) => {
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnLeft]}
           disabled={!isFormValid()}
-          onPress={() => navigate('SendMessageConfirm')}
+          onPress={() => navigate('SendMessageConfirm', { address, message, paymentID })}
           text="SEND"
         />
         <ConcealButton

@@ -14,7 +14,7 @@ import { format4Decimals, format8Decimals, formatOptions, getAspectRatio, maskAd
 
 const Wallet = ({ navigation: { navigate } }) => {
   const { state, actions } = useContext(AppContext);
-  const { setAppData, createWallet } = actions;
+  const { createWallet } = actions;
   const { layout, prices, wallets, appSettings } = state;
   const currWallet = wallets[Object.keys(wallets).find(i => wallets[i].default)];
   let transactions = [];
@@ -258,17 +258,7 @@ const Wallet = ({ navigation: { navigate } }) => {
                   >
                     <ConcealButton
                       style={styles.footerBtnInner}
-                      onPress={() => {
-                        setAppData({
-                          sendScreen: {
-                            toAmount: '',
-                            toAddress: '',
-                            toPaymentId: '',
-                            toLabel: ''
-                          }
-                        });
-                        navigate('SendPayment')
-                      }}
+                      onPress={() => { navigate('SendPayment') }}
                       disabled={currWallet.balance < appSettings}
                       text="SEND"
                     />
@@ -480,7 +470,7 @@ const styles = EStyleSheet.create({
   },
   menuIcon: {
     paddingTop: '5rem',
-  },  
+  },
   txsList: {
     height: '0rem'
   },

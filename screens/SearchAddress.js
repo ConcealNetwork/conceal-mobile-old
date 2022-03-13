@@ -12,7 +12,7 @@ import { getAspectRatio, maskAddress } from '../helpers/utils';
 
 
 const SearchAddress = props => {
-  const { closeOverlay, selectAddress, currWallet } = props;
+  const { addrListVisible, closeOverlay, selectAddress, currWallet } = props;
   const { state } = useContext(AppContext);
   const { user } = state;
 
@@ -22,7 +22,7 @@ const SearchAddress = props => {
 
   return (
     <Overlay
-      isVisible={state.appData.searchAddress.addrListVisible}
+      isVisible={addrListVisible}
       overlayBackgroundColor={AppColors.concealBackground}
       fullScreen={true}
     >

@@ -412,11 +412,6 @@ const AppContextProvider = props => {
       });
   };
 
-  const setAppData = (appData) => {
-    logger.log('SETTING APP DATA...');
-    dispatch({ type: 'SET_APP_DATA', appData });
-  };
-
   const actions = {
     getUser,
     addContact,
@@ -434,7 +429,6 @@ const AppContextProvider = props => {
     getDeposits,
     createDeposit,
     unlockDeposit,
-    setAppData
   };
 
 

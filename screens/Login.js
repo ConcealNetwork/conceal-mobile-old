@@ -21,13 +21,15 @@ import SignUp from './SignUp';
 
 
 const Login = () => {
-  const { actions, state } = useContext(AppContext);
+  const { state } = useContext(AppContext);
   const { authActions } = useContext(AuthContext);
   const { loginUser } = authActions;
   const { layout, userSettings } = state;
   const { formSubmitted } = layout;
-  const { setAppData } = actions;
   const Auth = new AuthHelper(state.appSettings.apiURL);
+
+  const [signUpVisible, setSignUpVisible] = useState(false);
+  const [resetPasswordVisible, setResetPasswordVisible] = useState(false);
 
   // captcha related fields and hooks
   const [hCode, setHCode] = React.useState("");
@@ -149,7 +151,7 @@ const Login = () => {
               />
 
               <ConcealButton
-                onPress={() => setAppData({ login: { signUpVisible: true } })}
+                onPress={() => setSignUpVisible(true)}
                 text="Sign Up"
                 style={[styles.footerBtn, styles.footerBtnRight]}
                 accessibilityLabel="Sign Up Button"
@@ -157,7 +159,7 @@ const Login = () => {
               />
             </View>
 
-            <TouchableOpacity style={styles.forgotContainer} onPress={() => setAppData({ login: { resetPasswordVisible: true } })}>
+            <TouchableOpacity style={styles.forgotContainer} onPress={() => setResetPasswordVisible(true)}>
               <Text style={styles.forgotText}>Forgot your password?</Text>
               <Text style={styles.forgotText}>Click here</Text>
             </TouchableOpacity>
@@ -165,24 +167,24 @@ const Login = () => {
         </TouchableWithoutFeedback>
       }
       <Overlay
-        isVisible={state.appData.login.signUpVisible ? state.appData.login.signUpVisible : false}
+        isVisible={signUpVisible}
         overlayBackgroundColor={AppColors.concealBackground}
         overlayStyle={styles.overlayStyle}
         fullScreen={true}
       >
         <SignUp
-          hidePanel={() => setAppData({ login: { signUpVisible: false } })}
+          hidePanel={() => setSignUpVisible(false)}
         />
       </Overlay>
 
       <Overlay
-        isVisible={state.appData.login.resetPasswordVisible ? state.appData.login.resetPasswordVisible : false}
+        isVisible={resetPasswordVisible}
         overlayBackgroundColor={AppColors.concealBlack}
         overlayStyle={styles.overlayStyle}
         fullScreen={true}
       >
         <ResetPassword
-          hidePanel={() => setAppData({ login: { resetPasswordVisible: false } })}
+          hidePanel={() => setResetPasswordVisible(false)}
         />
       </Overlay>
 

@@ -9,7 +9,7 @@ import { useFormInput } from '../helpers/hooks';
 
 const EditAddress = ({ navigation: { goBack, navigate }, route }) => {
   const { actions } = useContext(AppContext);
-  const { addContact, setAppData } = actions;
+  const { addContact } = actions;
   const { params } = route;
   const { entryID } = params;
 
@@ -26,11 +26,6 @@ const EditAddress = ({ navigation: { goBack, navigate }, route }) => {
   }, [params])
 
   const onScanAddressQRCode = () => {
-    setAppData({
-      scanCode: {
-        scanned: false
-      }
-    });
     navigate('Scanner', { previousScreen: 'EditAddress' });
   }
 
