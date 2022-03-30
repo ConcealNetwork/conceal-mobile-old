@@ -12,8 +12,8 @@ import { getAspectRatio, shareContent, showSuccessMessage } from '../helpers/uti
 
 const Receive = ({ navigation: { goBack } }) => {
   const { state } = useContext(AppContext);
-  const { wallets, appData } = state;
-  const currWallet = wallets[appData.common.selectedWallet];
+  const { wallets } = state;
+  const currWallet = wallets[Object.keys(wallets).find(i => wallets[i].default)];
 
   this.onCopyAddress = async (text) => {
     Clipboard.setString(text);
@@ -34,13 +34,13 @@ const Receive = ({ navigation: { goBack } }) => {
           color='white'
           size={32 * getAspectRatio()}
         />}
-        centerComponent={          
+        centerComponent={
           <View style={AppStyles.appHeaderWrapper}>
             <Text style={AppStyles.appHeaderText}>
               Receive CCX
             </Text>
           </View>
-        }        
+        }
       />
       <View style={styles.receiveContainer}>
         <ScrollView contentContainerStyle={AppStyles.contentContainer}>

@@ -69,13 +69,13 @@ const AppMenu = ({ navigation: { goBack, navigate } }) => {
           color='white'
           size={32 * getAspectRatio()}
         />}
-        centerComponent={          
+        centerComponent={
           <View style={AppStyles.appHeaderWrapper}>
             <Text style={AppStyles.appHeaderText}>
             Navigation
             </Text>
           </View>
-        }        
+        }
         rightComponent={< Icon
           onPress={logoutUser}
           name='md-log-out'

@@ -61,47 +61,6 @@ const useAppState = () => {
       updateMessagesInterval: 60,  // seconds
     },
     wallets: {},
-    appData: {
-      sendScreen: {
-        sendConfirmVisible: false,
-        securePasswordEntry: true
-      },
-      createDeposit: {
-        duration: 1,
-        durationText: "Deposit duration: 1 month",
-        ConfirmVisible: false,
-        securePasswordEntry: true
-      },
-      messages: {
-        filterText: null,
-        filterState: 0
-      },
-      sendMessage: {
-        securePasswordEntry: true
-      },
-      addressEntry: {
-        label: null,
-        address: null,
-        paymentId: null,
-        entryId: null,
-        headerText: null
-      },
-      addressBook: {
-        filterText: null
-      },
-      searchAddress: {
-        addrListVisible: false,
-        filterText: null
-      },
-      login: {
-        userName: '',
-        signUpVisible: false,
-        resetPasswordVisible: false
-      },
-      common: {
-        selectedWallet: null
-      }
-    }
   };
   const updatedState = useRef(initialState);
 
@@ -365,15 +324,6 @@ const useAppState = () => {
         result = {
           ...state,
           intervals,
-        };
-        break;
-      case 'SET_APP_DATA':
-        result = {
-          ...state,
-          appData: {
-            ...state.appData,
-            ...action.appData,
-          },
         };
         break;
       case 'BARCODE_SCANNED':

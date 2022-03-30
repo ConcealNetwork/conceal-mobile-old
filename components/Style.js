@@ -36,7 +36,7 @@ export default EStyleSheet.create({
   appHeaderWrapper: {
     flexDirection: 'row',
     paddingTop: '7rem'
-  },  
+  },
   appHeaderText: {
     color: '#fff',
     fontSize: '20rem',

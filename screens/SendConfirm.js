@@ -9,9 +9,10 @@ import { AppColors } from '../constants/Colors';
 import { format6Decimals, getAspectRatio, maskAddress, parseLocaleNumber } from '../helpers/utils';
 import AuthCheck from './AuthCheck';
 
+
 const SendConfirm = ({ navigation: { goBack }, route }) => {
   const { state, actions } = useContext(AppContext);
-  const { wallets, appData, appSettings } = state;
+  const { wallets, appSettings } = state;
   const { params } = route;
   const currWallet = wallets[Object.keys(wallets).find(i => wallets[i].default)];
 

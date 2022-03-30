@@ -26,9 +26,9 @@ const Deposits = ({ navigation: { goBack, navigate } }) => {
   const { actions, state } = useContext(AppContext);
   const { layout, network, deposits } = state;
   const { userLoaded, walletsLoaded, depositsLoaded } = layout;
-  const { setAppData, unlockDeposit } = actions;
+  const { unlockDeposit } = actions;
 
-  let viableDeposits = deposits.filter(item => !item.spendingTransactionHash);
+  let viableDeposits = deposits?.filter(item => !item.spendingTransactionHash);
   let sortedDeposits = viableDeposits.slice().sort(function (a, b) {
     return parseFloat(a.unlockHeight) - parseFloat(b.unlockHeight);
   });
@@ -105,16 +105,7 @@ const Deposits = ({ navigation: { goBack, navigate } }) => {
           onRequestClose={() => setGuideState(guideNavigation.next())}
         >
           <Icon
-            onPress={() => {
-              setAppData({
-                createDeposit: {
-                  amount: '',
-                  duration: 1,
-                  durationText: `Deposit duration: 1 month`,
-                }
-              });
-              navigate('CreateDeposit');
-            }}
+            onPress={() => { navigate('CreateDeposit') }}
             name='md-add-circle-outline'
             type='ionicon'
             color='white'
