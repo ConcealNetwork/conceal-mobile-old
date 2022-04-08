@@ -13,7 +13,7 @@ const AppContextProvider = props => {
   const { state, dispatch, updatedState } = props;
   const Auth = new AuthHelper(state.appSettings.apiURL);
   const Api = new ApiHelper({ Auth, state });
-  const { appData } = state;
+  const { wallet } = state;
 
   const getUser = () => {
     logger.log('GETTING USER...');
@@ -186,19 +186,15 @@ const AppContextProvider = props => {
           const wallets = res.message.wallets;
 
           if (Object.keys(wallets).length > 0) {
-            let defaultAddress = null;
-
-            Object.keys(wallets).forEach(function (key) {
-              if (wallets[key].default) { defaultAddress = key; }
+            Object.keys(wallets).forEach(function (key) {                            
               wallets[key].addr = key;
+              if (wallets[key].default) { 
+                dispatch({ type: 'SELECT_WALLET', key });
+              }
             });
-
-            if (!appData.common.selectedWallet && defaultAddress) {
-              appData.common.selectedWallet = defaultAddress;
-            } else if (!appData.common.selectedWallet) {
-              appData.common.selectedWallet = Object.keys(wallets)[0];
-            }
           }
+          console.log("SELECT_WALLET", wallet);
+
           Object.keys(oldWallets).map(address =>
             !wallets[address] && dispatch({ type: 'DELETE_WALLET', address })
           );
@@ -243,7 +239,7 @@ const AppContextProvider = props => {
 
   const switchWallet = address => {
     logger.log(`SWITCHING WALLET ${address}...`);
-    appData.common.selectedWallet = address;
+    setDefaultWallet(address);
     dispatch({ type: 'SWITCH_WALLET', address });
     navigation.navigate('Wallet');
   };
@@ -256,7 +252,6 @@ const AppContextProvider = props => {
     Api.deleteWallet(address)
       .then(res => {
         if (res.result === 'success') {
-          if (appData.common.selectedWallet === address) { appData.common.selectedWallet = null; }
           dispatch({ type: 'DELETE_WALLET', address });
           message = 'Wallet was succesfully deleted';
           msgType = 'info';

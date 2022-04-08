@@ -13,7 +13,7 @@ import { getAspectRatio, maskAddress, } from '../helpers/utils';
 
 const Messages = ({ navigation: { goBack, navigate } }) => {
   const { state } = useContext(AppContext);
-  const { layout, messages, appData } = state;
+  const { layout, messages, wallet } = state;
   const filterButtons = ['All', 'Inbound', 'Outbound'];
   const { messagesLoaded } = layout;
   let isValidItem = false;
@@ -168,7 +168,7 @@ const Messages = ({ navigation: { goBack, navigate } }) => {
               showsVerticalScrollIndicator={false}
               keyExtractor={item => item.id}
               renderItem={({ item, index }) =>
-                <View style={(item.addr === appData.common.selectedWallet) ? [styles.flatview, styles.walletSelected] : styles.flatview}>
+                <View style={(item.addr === wallet.selected) ? [styles.flatview, styles.walletSelected] : styles.flatview}>
                   <TouchableOpacity>
                     <View>
                       <Text style={item.type === 'in' ? [styles.type, styles.typein] : [styles.type, styles.typeout]}>{item.type === 'in' ? "Inbound" : "Outbound"}</Text>

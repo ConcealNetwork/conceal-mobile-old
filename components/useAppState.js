@@ -60,6 +60,9 @@ const useAppState = () => {
       updateWalletsInterval: 60,  // seconds
       updateMessagesInterval: 60,  // seconds
     },
+    wallet: {
+      selected: null
+    },
     wallets: {},
   };
   const updatedState = useRef(initialState);
@@ -182,6 +185,15 @@ const useAppState = () => {
           ...state
         };
         break;
+        case 'SELECT_WALLET':
+          result = {
+            ...state,
+            wallet: {
+              selected: action.key
+            }
+          };
+          break;
+  
       case 'SET_WALLET_KEYS':
         result = {
           ...state,
