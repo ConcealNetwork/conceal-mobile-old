@@ -11,9 +11,9 @@ const ConcealLoader = () => {
 
   // set the flag if the content is loading or if we are waiting for form submission
   useEffect(() => {
-    console.log(`setting to ${formSubmitted || !userLoaded || !walletsLoaded}`)
-    setIsLoading(formSubmitted || !userLoaded || !walletsLoaded);
-  }, [formSubmitted, user.loggedIn, userLoaded, walletsLoaded]);
+    console.log(`setting to formSubmitted: ${formSubmitted}, userLoaded: ${userLoaded}, walletsLoaded: ${walletsLoaded}`)
+    setIsLoading(formSubmitted);
+  }, [formSubmitted]);
 
   return (
     <Modal

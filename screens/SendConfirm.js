@@ -59,6 +59,7 @@ const SendConfirm = ({ navigation: { goBack }, route }) => {
     <View style={styles.pageWrapper}>
       <Header
         placement='left'
+        statusBarProps={{ translucent: false, backgroundColor: "#212529" }}
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
           onPress={() => goBack()}

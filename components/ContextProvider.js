@@ -193,7 +193,6 @@ const AppContextProvider = props => {
               }
             });
           }
-          console.log("SELECT_WALLET", wallet);
 
           Object.keys(oldWallets).map(address =>
             !wallets[address] && dispatch({ type: 'DELETE_WALLET', address })
@@ -437,6 +436,8 @@ const AppContextProvider = props => {
       getBlockchainHeight();
       getMarketPrices();
       getPrices();
+    } else {
+      navigation.navigate('Login');
     }
   }, [state.user.loggedIn]);
 

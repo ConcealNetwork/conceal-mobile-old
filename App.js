@@ -11,6 +11,7 @@ import FlashMessage from 'react-native-flash-message';
 import { WalkthroughProvider } from 'react-native-walkthrough';
 import AppContextProvider, { AuthContext } from './components/ContextProvider';
 import AppStyles from './components/Style';
+import ConcealLoader from './components/ccxLoader';
 import useAppState from './components/useAppState';
 import ApiHelper from './helpers/ApiHelper';
 import AuthHelper from './helpers/AuthHelper';
@@ -192,7 +193,7 @@ const App = props => {
           <NavigationContainer>
             <WalkthroughProvider>
               <AppContextProvider state={state} dispatch={dispatch} updatedState={updatedState}>
-                {/*<ConcealLoader />*/}
+                <ConcealLoader />
                 <View style={AppStyles.appContainer}>
                   {Platform.OS === 'ios' && <StatusBar barStyle="light-content" />}
                   <Stack.Navigator screenOptions={{ header: () => {} }}>

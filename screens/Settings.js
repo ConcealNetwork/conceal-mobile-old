@@ -77,6 +77,7 @@ const Settings = ({ navigation: { goBack } }) => {
       title: 'Visit: "https://conceal.cloud" to change',
       icon: 'md-lock-closed'
     },
+    /*
     {
       value: 'password',
       title: `Authentication method: "${localStorage.get('auth_method', 'password')}"`,
@@ -119,6 +120,7 @@ const Settings = ({ navigation: { goBack } }) => {
         />
       </Tips>
     },
+    */
     {
       value: AppConf.expo.version,
       title: 'Conceal Mobile version',
@@ -199,6 +201,7 @@ const Settings = ({ navigation: { goBack } }) => {
       <Overlay
         isVisible={showPinModal}
         overlayBackgroundColor={AppColors.concealBackground}
+        overlayStyle={styles.overlayStyle}
         fullScreen={true}
       >
         <View style={styles.overlayWrapper}>
@@ -216,6 +219,7 @@ const Settings = ({ navigation: { goBack } }) => {
       <Overlay
         isVisible={showFgpModal}
         overlayBackgroundColor={AppColors.concealBackground}
+        overlayStyle={styles.overlayStyle}
         fullScreen={true}
       >
         <View style={styles.overlayWrapper}>
@@ -245,6 +249,10 @@ const styles = EStyleSheet.create({
     right: 0,
     bottom: 0,
     position: 'absolute'
+  },
+  overlayStyle: {
+    flex: 1,
+    backgroundColor: AppColors.concealBlack,
   },
   appHeader: {
     borderBottomWidth: 1,

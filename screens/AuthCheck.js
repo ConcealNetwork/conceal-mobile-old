@@ -9,7 +9,9 @@ import PassCheck from './PassCheck';
 import PinCheck from './PinCheck';
 
 function getAuthMethod() {
-  return localStorage.get('auth_method') || 'password';
+  //return localStorage.get('auth_method') || 'password';
+  // dissabled alternative methods for now
+  return 'password';
 }
 
 const AuthCheck = props => {
