@@ -1,19 +1,19 @@
-import { Icon, Header, ListItem } from 'react-native-elements';
-import { maskAddress, getAspectRatio } from '../helpers/utils';
-import NavigationService from '../helpers/NavigationService';
+import React, { useContext, useState } from 'react';
+import { FlatList, View } from 'react-native';
+import { Header, Icon, ListItem } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { AppContext } from '../components/ContextProvider';
-import React, { useContext, useState } from "react";
 import ConcealButton from '../components/ccxButton';
-import { AppColors } from '../constants/Colors';
-import { View, FlatList } from "react-native";
+import { AppContext } from '../components/ContextProvider';
 import AppStyles from '../components/Style';
+import { AppColors } from '../constants/Colors';
+import { getAspectRatio, maskAddress } from '../helpers/utils';
 import AuthCheck from './AuthCheck';
 
-const SendMessageConfirm = () => {
+
+const SendMessageConfirm = ({ navigation: { goBack }, route }) => {
   const { state, actions } = useContext(AppContext);
-  const { wallets, appData, appSettings } = state;
-  const currWallet = wallets[appData.common.selectedWallet];
+  const { wallets, appSettings } = state;
+  const currWallet = wallets[Object.keys(wallets).find(i => wallets[i].default)];
 
   const [showAuthCheck, setShowAuthCheck] = useState(false);
   const sendSummaryList = [];
@@ -23,38 +23,28 @@ const SendMessageConfirm = () => {
       value: value,
       title: title,
       icon: icon
-
     });
   }
 
   addSummaryItem(maskAddress(currWallet.addr), 'From address', 'md-mail');
-  addSummaryItem(maskAddress(state.appData.sendMessage.toAddress), 'To address', 'md-mail');
+  addSummaryItem(maskAddress(route.params?.address), 'To address', 'md-mail');
+  addSummaryItem(route.params?.message, 'Message', 'md-mail');
   addSummaryItem(`${appSettings.defaultFee} CCX`, 'Transaction Fee', 'md-cash');
-  addSummaryItem(state.appData.sendMessage.message, 'Message', 'md-mail');
 
-  // key extractor for the list
-  const keyExtractor = (item, index) => index.toString();
-
-  const renderItem = ({ item }) => (
-    <ListItem
-      title={item.value}
-      subtitle={item.title}
-      titleStyle={styles.summaryText}
-      subtitleStyle={styles.summaryLabel}
-      containerStyle={styles.summaryItem}
-      leftIcon={<Icon
-        name={item.icon}
-        type='ionicon'
-        color='white'
-        size={32 * getAspectRatio()}
-      />}
-    />
-  );
+  const renderItem = ({ item }) =>
+    <ListItem containerStyle={styles.summaryItem} key={item.value} onPress={item.onPress}>
+      <Icon name={item.icon} type='ionicon' color='white' size={32 * getAspectRatio()} />
+      <ListItem.Content>
+        <ListItem.Title style={styles.summaryText}>{item.value}</ListItem.Title>
+        <ListItem.Subtitle style={styles.summaryLabel}>{item.title}</ListItem.Subtitle>
+      </ListItem.Content>
+      {item.rightElement}
+    </ListItem>
 
   const sendMessage = (password) => {
     actions.sendMessage(
-      state.appData.sendMessage.message,
-      state.appData.sendMessage.toAddress,
+      route.params?.message,
+      route.params?.address,
       currWallet.addr,
       password
     );
@@ -63,10 +53,11 @@ const SendMessageConfirm = () => {
   return (
     <View style={styles.pageWrapper}>
       <Header
-        placement="left"
+        placement='left'
+        statusBarProps={{ translucent: false, backgroundColor: "#212529" }}
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
-          onPress={() => NavigationService.goBack()}
+          onPress={() => goBack()}
           name='arrow-back-outline'
           type='ionicon'
           color='white'
@@ -78,7 +69,7 @@ const SendMessageConfirm = () => {
         data={sendSummaryList}
         style={styles.summaryList}
         renderItem={renderItem}
-        keyExtractor={keyExtractor}
+        keyExtractor={item => item.title}
       />
       <View style={styles.footer}>
         <ConcealButton
@@ -88,7 +79,7 @@ const SendMessageConfirm = () => {
         />
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnRight]}
-          onPress={() => NavigationService.goBack()}
+          onPress={() => goBack()}
           text="CANCEL"
         />
       </View>

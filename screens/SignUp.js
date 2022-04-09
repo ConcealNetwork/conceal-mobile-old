@@ -1,28 +1,21 @@
-import React, { useContext, useRef } from 'react';
+import React, { useContext } from 'react';
+import { ScrollView, Text, TextInput, View } from 'react-native';
 import { Image } from 'react-native-elements';
-import ConcealButton from '../components/ccxButton';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import ConcealButton from '../components/ccxButton';
+import { AuthContext } from '../components/ContextProvider';
 import ConcealCaptcha from '../components/hCaptcha';
-import { AppContext } from '../components/ContextProvider';
+import AppStyles from '../components/Style';
+import { AppColors } from '../constants/Colors';
 import { useFormInput, useFormValidation } from '../helpers/hooks';
 import { getAspectRatio } from '../helpers/utils';
-import { AppColors } from '../constants/Colors';
-import AppStyles from '../components/Style';
-import {
-  Text,
-  View,
-  TextInput,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity 
-} from 'react-native';
 
 
 const SignUp = props => {
-  const { actions, state } = useContext(AppContext);
+  const { authActions, state } = useContext(AuthContext);
   const { layout, userSettings } = state;
   const { formSubmitted, message } = layout;
-  const { signUpUser } = actions;
+  const { signUpUser } = authActions;
   const { hidePanel } = props;
 
   // captcha related fields and hooks
@@ -34,7 +27,7 @@ const SignUp = props => {
 
   const formValidation = (
     hCode !== '' &&
-    userName !== '' && userName.length >= 3 &&    
+    userName !== '' && userName.length >= 3 &&
     email !== '' && /\S+@\S+\.\S+/.test(email) &&
     password !== '' && password.length >= userSettings.minimumPasswordLength
   );

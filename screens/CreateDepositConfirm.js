@@ -1,67 +1,50 @@
-import React, { useContext, useState, useEffect } from "react";
-import { Icon, Header, ListItem } from 'react-native-elements';
-import NavigationService from '../helpers/NavigationService';
+import React, { useContext, useEffect, useState } from 'react';
+import { FlatList, View, } from 'react-native';
+import { Header, Icon, ListItem } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import ConcealButton from '../components/ccxButton';
 import { AppContext } from '../components/ContextProvider';
 import InterestTable from '../components/InterestTable';
-import ConcealButton from '../components/ccxButton';
-import GuideNavigation from '../helpers/GuideNav';
-import { AppColors } from '../constants/Colors';
 import AppStyles from '../components/Style';
+import { AppColors } from '../constants/Colors';
+import GuideNavigation from '../helpers/GuideNav';
+import { format6Decimals, getAspectRatio, getDepositInterest, parseLocaleNumber } from '../helpers/utils';
 import AuthCheck from './AuthCheck';
-import {
-  getAspectRatio,
-  format6Decimals,
-  parseLocaleNumber,
-  getDepositInterest
-} from '../helpers/utils';
-import {
-  View,
-  FlatList,
-} from "react-native";
 
-const CreateDepositConfirm = () => {
+
+const CreateDepositConfirm = ({ navigation: { goBack }, route }) => {
   const { state, actions } = useContext(AppContext);
-  const { wallets, appData, appSettings } = state;
-  const currWallet = wallets[appData.common.selectedWallet];
+  const { wallets, appSettings } = state;
+  const currWallet = wallets[Object.keys(wallets).find(i => wallets[i].default)];
 
   const [showAuthCheck, setShowAuthCheck] = useState(false);
   const sendSummaryList = [];
 
-  function addSummaryItem(value, title, icon) {
+  const addSummaryItem = (value, title, icon) => {
     sendSummaryList.push({
       value: value,
       title: title,
       icon: icon
     });
-  }
+  };
 
   // calculate the interest class from the data
-  let interestClass = ((appData.createDeposit.duration - 1) * 3) + Math.min(Math.floor(parseLocaleNumber(appData.createDeposit.amount, true) / 10000) + 1, 3)
+  const interestClass = ((route.params?.duration - 1) * 3) + Math.min(Math.floor(parseLocaleNumber(route.params?.amount, true) / 10000) + 1, 3)
 
-  addSummaryItem(`${parseLocaleNumber(state.appData.createDeposit.amount, true).toLocaleString(undefined, format6Decimals)} CCX`, 'You are depositing', 'md-cash');
-  addSummaryItem(`${getDepositInterest(parseLocaleNumber(appData.createDeposit.amount, true), appData.createDeposit.duration).toLocaleString(undefined, format6Decimals)} CCX`, 'Interest you will earn', 'md-cash');
-  addSummaryItem(`${appData.createDeposit.duration} month${state.appData.createDeposit.duration > 1 ? 's' : ''}`, 'For a duration of', 'md-clock');
+  addSummaryItem(`${parseLocaleNumber(route.params?.amount, true).toLocaleString(undefined, format6Decimals)} CCX`, 'You are depositing', 'md-cash');
+  addSummaryItem(`${getDepositInterest(parseLocaleNumber(route.params?.amount, true), route.params?.duration).toLocaleString(undefined, format6Decimals)} CCX`, 'Interest you will earn', 'md-cash');
+  addSummaryItem(`${route.params?.duration} month${route.params?.duration > 1 ? 's' : ''}`, 'For a duration of', 'md-time');
   addSummaryItem(`${appSettings.defaultFee} CCX`, 'Transaction Fee', 'md-cash');
 
-  // key extractor for the list
-  const keyExtractor = (item, index) => index.toString();
-
-  const renderListItem = ({ item }) => (
-    <ListItem
-      title={item.value}
-      subtitle={item.title}
-      titleStyle={styles.summaryText}
-      subtitleStyle={styles.summaryLabel}
-      containerStyle={styles.summaryItem}
-      leftIcon={<Icon
-        name={item.icon}
-        type='ionicon'
-        color='white'
-        size={32 * getAspectRatio()}
-      />}
-    />
-  );
+  const renderListItem = ({ item }) =>
+    <ListItem containerStyle={styles.summaryItem} key={item.value} onPress={item.onPress}>
+      <Icon name={item.icon} type='ionicon' color='white' size={32 * getAspectRatio()} />
+      <ListItem.Content>
+        <ListItem.Title style={styles.summaryText}>{item.value}</ListItem.Title>
+        <ListItem.Subtitle style={styles.summaryLabel}>{item.title}</ListItem.Subtitle>
+      </ListItem.Content>
+      {item.rightElement}
+    </ListItem>
 
   // guide navigation state values
   const [guideState, setGuideState] = useState(null);
@@ -70,9 +53,9 @@ const CreateDepositConfirm = () => {
   ]));
 
   const createDeposit = (password) => {
-    let durationBlocks = appSettings.blocksPerMonth * state.appData.createDeposit.duration;
+    let durationBlocks = appSettings.blocksPerMonth * route.params?.duration;
     // call the API with the correct parameters (duration is in number of blocks, each block being 2 min)
-    actions.createDeposit(parseLocaleNumber(state.appData.createDeposit.amount, true), durationBlocks, currWallet.addr, password);
+    actions.createDeposit(parseLocaleNumber(route.params?.amount, true), durationBlocks, currWallet.addr, password);
   }
 
   // fire on mount
@@ -85,11 +68,11 @@ const CreateDepositConfirm = () => {
   return (
     <View style={styles.pageWrapper}>
       <Header
-        placement="left"
+        placement='left'
         statusBarProps={{ translucent: false, backgroundColor: "#212529" }}
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
-          onPress={() => NavigationService.goBack()}
+          onPress={() => goBack()}
           name='arrow-back-outline'
           type='ionicon'
           color='white'
@@ -102,7 +85,7 @@ const CreateDepositConfirm = () => {
           data={sendSummaryList}
           style={styles.summaryList}
           renderItem={renderListItem}
-          keyExtractor={keyExtractor}
+          keyExtractor={item => item.title}
         />
         <InterestTable
           interestClass={interestClass}
@@ -115,7 +98,7 @@ const CreateDepositConfirm = () => {
           />
           <ConcealButton
             style={[styles.footerBtn, styles.footerBtnRight]}
-            onPress={() => NavigationService.goBack()}
+            onPress={() => goBack()}
             text="CANCEL"
           />
         </View>

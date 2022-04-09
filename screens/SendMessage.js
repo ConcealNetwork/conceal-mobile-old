@@ -1,88 +1,52 @@
-import { Icon, Header } from 'react-native-elements';
-import NavigationService from '../helpers/NavigationService';
-import { AppContext } from '../components/ContextProvider';
+import React, { useContext, useEffect, useState } from 'react';
+import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Header, Icon } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import ConcealTextInput from '../components/ccxTextInput';
 import ConcealButton from '../components/ccxButton';
-import { AppColors } from '../constants/Colors';
-import SearchAddress from './SearchAddress';
+import ConcealTextInput from '../components/ccxTextInput';
+import { AppContext } from '../components/ContextProvider';
 import AppStyles from '../components/Style';
-import React, { useContext } from "react";
-import {
-  maskAddress,
-  getAspectRatio
-} from '../helpers/utils';
-import {
-  Text,
-  View,
-  TextInput,
-  Clipboard,
-  ScrollView,
-  TouchableOpacity
-} from "react-native";
+import { AppColors } from '../constants/Colors';
+import { getAspectRatio, maskAddress } from '../helpers/utils';
+import SearchAddress from './SearchAddress';
 
-const SendMessage = () => {
-  const { state, actions } = useContext(AppContext);
-  const { setAppData } = actions;
-  const { user, wallets, appData } = state;
-  const currWallet = wallets[appData.common.selectedWallet];
 
-  this.onScanSuccess = (data) => {
-    setAppData({
-      sendMessage: {
-        toAddress: data.address
-      }
-    });
-  }
+const SendMessage = ({ navigation: { goBack, navigate }, route }) => {
+  const { state } = useContext(AppContext);
+  const { user, wallets } = state;
+  const currWallet = wallets[Object.keys(wallets).find(i => wallets[i].default)];
 
-  this.onScanAddressQRCode = () => {
-    setAppData({
-      scanCode: {
-        scanned: false
-      }
-    });
+  const [addrListVisible, setAddrListVisible] = useState(false);
+  const [address, setAddress] = useState(null);
+  const [label, setLabel] = useState(null);
+  const [message, setMessage] = useState('');
+  const [paymentID, setPaymentID] = useState(null);
 
-    NavigationService.navigate('Scanner', { onSuccess: this.onScanSuccess });
-  }
+  useEffect(() => {
+    setAddress(route.params?.address);
+    setLabel(route.params?.label);
+    setPaymentID(route.params?.paymentId);
+  }, [route.params?.address, route.params?.paymentId]);
 
-  this.isFormValid = () => {
-    return (state.appData.sendMessage.toAddress && state.appData.sendMessage.message);
-  }
+  const onScanAddressQRCode = () => navigate('Scanner', { previousScreen: 'SendMessage' });
 
-  this.clearSend = () => {
-    setAppData({
-      sendMessage: {
-        toAddress: '',
-        message: ''
-      }
-    });
-  }
+  const isFormValid = () => address && message && message !== '';
 
-  this.readFromClipboard = async () => {
-    const clipboardContent = await Clipboard.getString();
-    setAppData({
-      sendMessage: {
-        toAddress: clipboardContent
-      }
-    });
-  };
-
-  this.setAddress = (label, address, paymentID, entryID) => {
-    setAppData({
-      sendMessage: {
-        toAddress: address
-      }
-    });
+  const clearSend = () => {
+    setAddress(null);
+    setLabel(null);
+    setMessage(null);
+    setPaymentID(null);
   }
 
   return (
     <View style={styles.pageWrapper}>
       <Header
-        placement="left"
+        placement='left'
         statusBarProps={{ translucent: false, backgroundColor: "#212529" }}
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
-          onPress={() => NavigationService.goBack()}
+          onPress={() => goBack()}
           name='arrow-back-outline'
           type='ionicon'
           color='white'
@@ -90,7 +54,7 @@ const SendMessage = () => {
         />}
         centerComponent={{ text: 'Send Message', style: AppStyles.appHeaderText }}
         rightComponent={<Icon
-          onPress={() => this.clearSend()}
+          onPress={() => clearSend()}
           name='md-trash'
           type='ionicon'
           color='white'
@@ -98,25 +62,19 @@ const SendMessage = () => {
         />}
       />
       <ScrollView contentContainerStyle={styles.walletWrapper}>
-        <TouchableOpacity onPress={() => setAppData({ searchAddress: { addrListVisible: true } })}>
+        <TouchableOpacity onPress={() => setAddrListVisible(true)}>
           <ConcealTextInput
             editable={false}
             placeholder='Select recipient address...'
             containerStyle={styles.sendInput}
-            value={state.appData.sendMessage.toLabel ? state.appData.sendMessage.toLabel : maskAddress(state.appData.sendMessage.toAddress)}
+            value={label ? label : maskAddress(address)}
             rightIcon={
               <Icon
                 onPress={() => {
-                  setAppData({
-                    addressEntry: {
-                      headerText: "Create Address",
-                      label: '',
-                      address: '',
-                      paymentId: '',
-                      entryId: null
-                    }
-                  });
-                  NavigationService.navigate('EditAddress', { callback: this.setAddress });
+                  // setLabel(null);
+                  // setAddress(null);
+                  // setPaymentID(null);
+                  navigate('EditAddress', { previousScreen: 'SendMessage' });
                 }}
                 name='md-add'
                 type='ionicon'
@@ -134,29 +92,28 @@ const SendMessage = () => {
             style={styles.messageText}
             placeholder="Write your message here..."
             placeholderTextColor={AppColors.placeholderTextColor}
-            onChangeText={text => {
-              setAppData({
-                sendMessage: {
-                  message: text
-                }
-              });
-            }}
-            value={state.appData.sendMessage.message}
+            onChangeText={text => setMessage(text)}
+            value={message}
           />
         </View>
-        <Text style={styles.messageCharsLeft}>{state.appData.sendMessage.message ? 280 - state.appData.sendMessage.message.length : 280} chars of 280 left</Text>
+        <Text style={styles.messageCharsLeft}>{message ? 280 - message.length : 280} chars of 280 left</Text>
       </ScrollView>
       <SearchAddress
-        selectAddress={(item) => setAppData({ searchAddress: { addrListVisible: false }, sendMessage: { toAddress: item.address, toLabel: item.label } })}
-        closeOverlay={() => setAppData({ searchAddress: { addrListVisible: false } })}
+        addrListVisible={addrListVisible}
+        selectAddress={i => {
+          setAddrListVisible(false);
+          setAddress(i.address)
+          setLabel(i.label)
+        }}
+        closeOverlay={() => setAddrListVisible(false)}
         addressData={user.addressBook}
         currWallet={currWallet}
       />
       <View style={styles.footer}>
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnLeft]}
-          disabled={!this.isFormValid()}
-          onPress={() => NavigationService.navigate('SendMessageConfirm')}
+          disabled={!isFormValid()}
+          onPress={() => navigate('SendMessageConfirm', { address, message, paymentID })}
           text="SEND"
         />
         <ConcealButton

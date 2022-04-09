@@ -1,5 +1,5 @@
-import { AppColors } from '../constants/Colors';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { AppColors } from '../constants/Colors';
 
 export default EStyleSheet.create({
   appContainer: {
@@ -17,8 +17,8 @@ export default EStyleSheet.create({
   },
   '@media (max-width: 499)': {
     appHeader: {
-      height: '60rem',
-      paddingTop: '0rem',
+      height: '70rem',
+      paddingTop: '10rem',
       borderBottomWidth: 1,
       backgroundColor: '#212529',
       borderBottomColor: '#343a40',
@@ -34,12 +34,16 @@ export default EStyleSheet.create({
     }
   },
   appHeaderWrapper: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    paddingTop: '7rem'
   },
   appHeaderText: {
     color: '#fff',
     fontSize: '20rem',
     marginRight: '10rem'
+  },
+  leftHeaderIcon: {
+    paddingTop: '5rem'
   },
   horizontal: {
     flexDirection: 'row',

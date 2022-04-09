@@ -1,15 +1,17 @@
 import React from 'react';
+import { View } from 'react-native';
 import { Overlay } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import localStorage from '../helpers/LocalStorage';
 import { AppColors } from '../constants/Colors';
-import { View } from 'react-native';
-import PassCheck from './PassCheck';
+import localStorage from '../helpers/LocalStorage';
 import FgpCheck from './FgpCheck';
+import PassCheck from './PassCheck';
 import PinCheck from './PinCheck';
 
 function getAuthMethod() {
-  return localStorage.get('auth_method') || "password";
+  //return localStorage.get('auth_method') || 'password';
+  // dissabled alternative methods for now
+  return 'password';
 }
 
 const AuthCheck = props => {
@@ -18,7 +20,7 @@ const AuthCheck = props => {
   return (
     <View style={styles.AuthWrapper}>
       <Overlay
-        isVisible={showCheck && getAuthMethod() == "biometric"}
+        isVisible={showCheck && getAuthMethod() === 'biometric'}
         overlayBackgroundColor={AppColors.concealBackground}
         fullScreen={true}
       >
@@ -34,7 +36,7 @@ const AuthCheck = props => {
         </View>
       </Overlay>
       <Overlay
-        isVisible={showCheck && getAuthMethod() == "pin"}
+        isVisible={showCheck && getAuthMethod() === 'pin'}
         overlayBackgroundColor={AppColors.concealBackground}
         fullScreen={true}
       >
@@ -50,10 +52,9 @@ const AuthCheck = props => {
         </View>
       </Overlay>
       <Overlay
-        isVisible={showCheck && getAuthMethod() == "password"}
+        isVisible={showCheck && getAuthMethod() === 'password'}
         overlayBackgroundColor={AppColors.concealBackground}
-        width="100%"
-        height="100%"
+        fullScreen={true}
       >
         <View style={styles.overlayWrapper}>
           <PassCheck
@@ -68,6 +69,7 @@ const AuthCheck = props => {
 
 const styles = EStyleSheet.create({
   overlayWrapper: {
+    backgroundColor: AppColors.concealBackground,
     top: 0,
     left: 0,
     right: 0,

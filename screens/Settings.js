@@ -1,27 +1,21 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { getAspectRatio, hasBiometricCapabilites } from '../helpers/utils';
-import { Icon, Header, ListItem, Overlay } from 'react-native-elements';
-import NavigationService from '../helpers/NavigationService';
+import React, { useContext, useEffect, useState } from 'react';
+import { FlatList, Text, View, } from 'react-native';
+import { Header, Icon, ListItem, Overlay } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { AppContext } from '../components/ContextProvider';
-import ModalSelector from 'react-native-modal-selector';
-import { showMessageDialog } from '../helpers/utils';
-import localStorage from '../helpers/LocalStorage';
-import GuideNavigation from '../helpers/GuideNav';
-import { AppColors } from '../constants/Colors';
-import AppStyles from '../components/Style';
 import Tips from 'react-native-guide-tips';
+import ModalSelector from 'react-native-modal-selector';
 import AppConf from '../app.json';
-import PinSetup from './PinSetup';
+import { AppContext } from '../components/ContextProvider';
+import AppStyles from '../components/Style';
+import { AppColors } from '../constants/Colors';
+import GuideNavigation from '../helpers/GuideNav';
+import localStorage from '../helpers/LocalStorage';
+import { getAspectRatio, hasBiometricCapabilites, showMessageDialog } from '../helpers/utils';
 import FgpSetup from './FgpSetup';
-import {
-  Text,
-  View,
-  FlatList,
-} from 'react-native';
+import PinSetup from './PinSetup';
 
 
-const Settings = () => {
+const Settings = ({ navigation: { goBack } }) => {
   const { actions, state } = useContext(AppContext);
   const { logoutUser, check2FA } = actions;
   const { network, user, userSettings } = state;
@@ -50,15 +44,15 @@ const Settings = () => {
   if (hasBiometric) {
     loginData = [
       { key: 1, section: true, label: 'Available options' },
-      { key: 2, value: "password", label: 'Password' },
-      { key: 3, value: "biometric", label: 'Biometric' },
-      { key: 4, value: "pin", label: 'PIN' }
+      { key: 2, value: 'password', label: 'Password' },
+      { key: 3, value: 'biometric', label: 'Biometric' },
+      { key: 4, value: 'pin', label: 'PIN' }
     ];
   } else {
     loginData = [
       { key: 1, section: true, label: 'Available options' },
-      { key: 2, value: "password", label: 'Password' },
-      { key: 3, value: "pin", label: 'PIN' }
+      { key: 2, value: 'password', label: 'Password' },
+      { key: 3, value: 'pin', label: 'PIN' }
     ];
   }
 
@@ -67,89 +61,82 @@ const Settings = () => {
       value: user.name,
       title: 'User Name',
       icon: 'md-person'
-    }, {
+    },
+    {
       value: user.email,
       title: 'Email',
       icon: 'md-mail'
-    }, {
+    },
+    {
       value: network.blockchainHeight.toLocaleString(),
       title: 'Height',
       icon: 'md-pulse'
-    }, {
+    },
+    {
       value: userSettings.twoFAEnabled ? 'Two Factor Authentication is ON' : 'Two Factor Authentication is OFF',
       title: 'Visit: "https://conceal.cloud" to change',
-      icon: 'md-lock'
-    }, {
+      icon: 'md-lock-closed'
+    },
+    /*
+    {
       value: 'password',
       title: `Authentication method: "${localStorage.get('auth_method', 'password')}"`,
-      icon: 'md-lock',
-      rightElement: function () {
-        return (
-          <Tips
-            position={'left'}
-            visible={guideState == 'changeAuth'}
-            textStyle={AppStyles.guideTipText}
-            tooltipArrowStyle={AppStyles.guideTipArrowRight}
-            style={[AppStyles.guideTipContainer, styles.guideTipChangeAuth]}
-            text="You can change authentication type to a more friendly one"
-            onRequestClose={() => setGuideState(guideNavigation.next())}
-          >
-            <ModalSelector
-              data={loginData}
-              ref={selector => { pickerRef = selector; }}
-              cancelStyle={styles.pickerCancelButton}
-              cancelTextStyle={styles.pickerCancelButtonText}
-              optionContainerStyle={styles.pickerContainer}
-              sectionTextStyle={styles.pickerSectionText}
-              optionTextStyle={styles.pickerOptionText}
-              onChange={(option) => {
-                localStorage.set('auth_method', option.value);
-                setAuthMode(option.value);
+      icon: 'md-lock-closed',
+      rightElement: <Tips
+        position={'left'}
+        visible={guideState === 'changeAuth'}
+        textStyle={AppStyles.guideTipText}
+        tooltipArrowStyle={AppStyles.guideTipArrowRight}
+        style={[AppStyles.guideTipContainer, styles.guideTipChangeAuth]}
+        text="You can change authentication type to a more friendly one"
+        onRequestClose={() => setGuideState(guideNavigation.next())}
+      >
+        <ModalSelector
+          data={loginData}
+          ref={selector => { pickerRef = selector; }}
+          cancelStyle={styles.pickerCancelButton}
+          cancelTextStyle={styles.pickerCancelButtonText}
+          optionContainerStyle={styles.pickerContainer}
+          sectionTextStyle={styles.pickerSectionText}
+          optionTextStyle={styles.pickerOptionText}
+          onChange={(option) => {
+            localStorage.set('auth_method', option.value);
+            setAuthMode(option.value);
 
-                if (option.value == "pin") {
-                  setShowPinModal(true);
-                } else if (option.value == "biometric") {
-                  setShowFgpModal(true);
-                }
-              }}
-              customSelector={
-                < Icon
-                  name='md-menu'
-                  type='ionicon'
-                  color='white'
-                  size={32 * getAspectRatio()}
-                  onPress={() => pickerRef.open()}
-                />}
-            />
-          </Tips>);
-      }
-    }, {
+            if (option.value === 'pin') {
+              setShowPinModal(true);
+            } else if (option.value === 'biometric') {
+              setShowFgpModal(true);
+            }
+          }}
+          customSelector={
+            < Icon
+              name='md-menu'
+              type='ionicon'
+              color='white'
+              size={32 * getAspectRatio()}
+              onPress={() => pickerRef.open()}
+            />}
+        />
+      </Tips>
+    },
+    */
+    {
       value: AppConf.expo.version,
       title: 'Conceal Mobile version',
       icon: 'md-information'
     }
   ];
 
-  // key extractor for the list
-  const keyExtractor = (item, index) => index.toString();
-
-  const renderItem = ({ item }) => (
-    <ListItem
-      title={item.value}
-      subtitle={item.title}
-      rightElement={item.rightElement}
-      titleStyle={styles.settingsText}
-      subtitleStyle={styles.settingsLabel}
-      containerStyle={styles.settingsItem}
-      onPress={item.onPress}
-      leftIcon={<Icon
-        name={item.icon}
-        type='ionicon'
-        color='white'
-        size={32 * getAspectRatio()}
-      />}
-    />
-  );
+  const renderItem = ({ item }) =>
+    <ListItem containerStyle={styles.settingsItem} key={item.value} onPress={item.onPress}>
+      <Icon name={item.icon} type='ionicon' color='white' size={32 * getAspectRatio()} />
+      <ListItem.Content>
+        <ListItem.Title style={styles.settingsText}>{item.value}</ListItem.Title>
+        <ListItem.Subtitle style={styles.settingsLabel}>{item.title}</ListItem.Subtitle>
+      </ListItem.Content>
+      {item.rightElement}
+    </ListItem>
 
   if (userSettings.twoFAEnabled === null) {
     check2FA();
@@ -158,11 +145,12 @@ const Settings = () => {
   return (
     <View style={AppStyles.pageWrapper}>
       <Header
-        placement="left"
+        placement='left'
         statusBarProps={{ translucent: false, backgroundColor: "#212529" }}
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
-          onPress={() => NavigationService.goBack()}
+          containerStyle={AppStyles.leftHeaderIcon}
+          onPress={() => goBack()}
           name='arrow-back-outline'
           type='ionicon'
           color='white'
@@ -188,7 +176,7 @@ const Settings = () => {
         rightComponent={
           <Tips
             position={'bottom'}
-            visible={guideState == 'logoutUser'}
+            visible={guideState === 'logoutUser'}
             textStyle={AppStyles.guideTipText}
             style={[AppStyles.guideTipContainer, styles.guideTipLogout]}
             tooltipArrowStyle={[AppStyles.guideTipArrowTop, styles.guideTipArrowLogout]}
@@ -208,11 +196,12 @@ const Settings = () => {
         data={settingsList}
         style={styles.settingsList}
         renderItem={renderItem}
-        keyExtractor={keyExtractor}
+        keyExtractor={item => item.title}
       />
       <Overlay
         isVisible={showPinModal}
         overlayBackgroundColor={AppColors.concealBackground}
+        overlayStyle={styles.overlayStyle}
         fullScreen={true}
       >
         <View style={styles.overlayWrapper}>
@@ -230,6 +219,7 @@ const Settings = () => {
       <Overlay
         isVisible={showFgpModal}
         overlayBackgroundColor={AppColors.concealBackground}
+        overlayStyle={styles.overlayStyle}
         fullScreen={true}
       >
         <View style={styles.overlayWrapper}>
@@ -259,6 +249,10 @@ const styles = EStyleSheet.create({
     right: 0,
     bottom: 0,
     position: 'absolute'
+  },
+  overlayStyle: {
+    flex: 1,
+    backgroundColor: AppColors.concealBlack,
   },
   appHeader: {
     borderBottomWidth: 1,

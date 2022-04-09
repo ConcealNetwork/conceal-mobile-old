@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'react-native-elements';
-import { AppColors } from '../constants/Colors';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { AppColors } from '../constants/Colors';
 
 export default function ConcealButton({
   disabledTitleStyle,
@@ -17,10 +17,10 @@ export default function ConcealButton({
   icon,
   text
 }) {
-  var disabledTitleStyles = [styles.btnDisabledText];
-  var disabledStyles = [styles.btnDisabled];
-  var titleStyles = [styles.btnText];
-  var btnStyles = [styles.button];
+  let disabledTitleStyles = [styles.btnDisabledText];
+  let disabledStyles = [styles.btnDisabled];
+  let titleStyles = [styles.btnText];
+  let btnStyles = [styles.button];
 
   if (buttonStyle) {
     if (Array.isArray(buttonStyle)) {

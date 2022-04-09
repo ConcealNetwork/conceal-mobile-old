@@ -1,30 +1,19 @@
+import * as Clipboard from 'expo-clipboard';
 import React, { useContext } from 'react';
+import { ScrollView, Text, View } from 'react-native';
 import { Header, Icon } from 'react-native-elements';
-import { AppContext } from '../components/ContextProvider';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import NavigationService from '../helpers/NavigationService';
-import ConcealButton from '../components/ccxButton';
 import QRCode from 'react-native-qrcode-svg';
-import { AppColors } from '../constants/Colors';
+import ConcealButton from '../components/ccxButton';
+import { AppContext } from '../components/ContextProvider';
 import AppStyles from '../components/Style';
-import {
-  shareContent,
-  getAspectRatio,
-  showSuccessMessage
-} from '../helpers/utils';
-import {
-  Text,
-  View,
-  Clipboard,
-  ScrollView,
-  StyleSheet
-} from "react-native";
+import { AppColors } from '../constants/Colors';
+import { getAspectRatio, shareContent, showSuccessMessage } from '../helpers/utils';
 
-
-const Receive = () => {
+const Receive = ({ navigation: { goBack } }) => {
   const { state } = useContext(AppContext);
-  const { wallets, appData } = state;
-  const currWallet = wallets[appData.common.selectedWallet];
+  const { wallets } = state;
+  const currWallet = wallets[Object.keys(wallets).find(i => wallets[i].default)];
 
   this.onCopyAddress = async (text) => {
     Clipboard.setString(text);
@@ -32,18 +21,26 @@ const Receive = () => {
   }
 
   return (
-    <View style={styles.pageWrapper}>
+    <View style={AppStyles.pageWrapper}>
       <Header
-        placement="left"
+        placement='left'
+        statusBarProps={{ translucent: false, backgroundColor: "#212529" }}
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
-          onPress={() => NavigationService.goBack()}
+          containerStyle={AppStyles.leftHeaderIcon}
+          onPress={() => goBack()}
           name='arrow-back-outline'
           type='ionicon'
           color='white'
           size={32 * getAspectRatio()}
         />}
-        centerComponent={{ text: 'Receive CCX', style: AppStyles.appHeaderText }}
+        centerComponent={
+          <View style={AppStyles.appHeaderWrapper}>
+            <Text style={AppStyles.appHeaderText}>
+              Receive CCX
+            </Text>
+          </View>
+        }
       />
       <View style={styles.receiveContainer}>
         <ScrollView contentContainerStyle={AppStyles.contentContainer}>

@@ -1,120 +1,19 @@
+import { useNavigation } from '@react-navigation/native';
 import React, { useEffect } from 'react';
-import Constants from 'expo-constants';
-
-import useAppState from './useAppState';
-import NavigationService from '../helpers/NavigationService';
-import { showMessageDialog } from '../helpers/utils';
-import AuthHelper from '../helpers/AuthHelper';
 import ApiHelper from '../helpers/ApiHelper';
+import AuthHelper from '../helpers/AuthHelper';
 import { logger } from '../helpers/Logger';
+import { showMessageDialog } from '../helpers/utils';
 
 export const AppContext = React.createContext();
+export const AuthContext = React.createContext();
 
 const AppContextProvider = props => {
-  const [state, dispatch, updatedState] = useAppState();
+  const navigation = useNavigation();
+  const { state, dispatch, updatedState } = props;
   const Auth = new AuthHelper(state.appSettings.apiURL);
   const Api = new ApiHelper({ Auth, state });
-  const { appData } = state;
-
-  const loginUser = options => {
-    // always set the uuid for the login user
-    options.uuid = Constants.installationId;
-    let message;
-    
-    dispatch({ type: 'USER_LOGIN_STARTED', value: true });
-    dispatch({ type: 'FORM_SUBMITTED', value: true });
-
-    Auth.setRememberme(options.rememberMe ? "TRUE" : "FALSE");
-    Auth.setUsername(options.email);
-    Auth.login(options)
-      .then(res => {
-        if (res.result === 'success') {
-          logger.log('USER_LOGGED_IN...');
-          dispatch({ type: 'USER_LOGGED_IN', password: options.password });
-        } else {
-          message = res.message;
-          dispatch({ type: 'USER_LOGIN_FAILED', password: options.password });
-          showMessageDialog(message, "error");
-        }
-      })
-      .catch(err => showMessageDialog(`ERROR ${err}`, "error"))
-      .finally(() => dispatch({ type: 'FORM_SUBMITTED', value: false }));
-  };
-
-  const signUpUser = options => {
-    const { userName, email, password } = options;
-    let message;
-    let msgType;
-    dispatch({ type: 'FORM_SUBMITTED', value: true });
-    Api.signUpUser(userName, email, password)
-      .then(res => {
-        message = res.message;
-        if (res.result === 'success') {
-          Auth.setUsername(email);
-          message = 'Please check your email and follow the instructions to activate your account.';
-          msgType = "info";
-        } else {
-          message = res.message;
-        }
-      })
-      .catch(err => { message = `ERROR ${err}`; })
-      .finally(() => {
-        dispatch({ type: 'FORM_SUBMITTED', value: false });
-        showMessageDialog(message, msgType);
-      });
-  };
-
-  const resetPassword = options => {
-    const { email } = options;
-    let message;
-    let msgType;
-    Api.resetPassword(email)
-      .then(res => {
-        message = res.message;
-        if (res.result === 'success') {
-          message = 'Please check your email and follow instructions to reset password.';
-          msgType = 'info';
-          Auth.logout();
-          dispatch({ type: 'CLEAR_APP' });
-          NavigationService.navigate('Login');
-        } else {
-          message = res.message;
-        }
-      })
-      .catch(err => { message = `ERROR ${err}`; })
-      .finally(() => {
-        showMessageDialog(message, msgType);
-      });
-  };
-
-  const resetPasswordConfirm = options => {
-    const { password, token } = options;
-    let message;
-    let msgType;
-    dispatch({ type: 'FORM_SUBMITTED', value: true });
-    Api.resetPasswordConfirm(password, token)
-      .then(res => {
-
-        if (res.result === 'success') {
-          message = (<>Password successfully changed.<br />Please log in.</>);
-          msgType = 'info';
-        } else {
-          message = res.message;
-        }
-      })
-      .catch(err => { message = `ERROR ${err}` })
-      .finally(() => {
-        dispatch({ type: 'FORM_SUBMITTED', value: false });
-        showMessageDialog(message, msgType);
-      });
-  };
-
-  const logoutUser = () => {
-    logger.log('LOGGING OUT...');
-    Auth.logout();
-    dispatch({ type: 'CLEAR_APP' });
-    NavigationService.navigate('Login');
-  };
+  const { wallet } = state;
 
   const getUser = () => {
     logger.log('GETTING USER...');
@@ -151,7 +50,7 @@ const AppContextProvider = props => {
           dispatch({ type: 'MESSAGE_SENT', res });
           getWallets();
           getMessages();
-          NavigationService.goBack(2);
+          navigation.goBack(2);
           message = 'Message was successfully sent to the recipient';
           msgType = 'info';
         } else {
@@ -164,18 +63,17 @@ const AppContextProvider = props => {
       });
   };
 
-  const addContact = (contact, extras, callback) => {
-    const { label, address, paymentID, entryID, edit } = contact;
+  const addContact = (contact, extras) => {
+    const { label, address, paymentID, entryID } = contact;
     let message;
     let msgType;
     dispatch({ type: 'FORM_SUBMITTED', value: true });
-    Api.addContact(label, address, paymentID, entryID, edit)
+    Api.addContact(label, address, paymentID, entryID)
       .then(res => {
         if (res.result === 'success') {
           getUser();
           if (extras) extras.forEach(fn => fn());
-          if (callback) callback(label, address, paymentID, entryID);
-          message = 'Contact was added / edited successfully';
+          message = `Contact ${entryID ? 'edited' : 'added'} successfully`;
           msgType = 'info';
         } else {
           message = res.message;
@@ -288,19 +186,14 @@ const AppContextProvider = props => {
           const wallets = res.message.wallets;
 
           if (Object.keys(wallets).length > 0) {
-            let defaultAddress = null;
-
-            Object.keys(wallets).forEach(function (key) {
-              if (wallets[key].default) { defaultAddress = key; }
+            Object.keys(wallets).forEach(function (key) {                            
               wallets[key].addr = key;
+              if (wallets[key].default) { 
+                dispatch({ type: 'SELECT_WALLET', key });
+              }
             });
-
-            if (!appData.common.selectedWallet && defaultAddress) {
-              appData.common.selectedWallet = defaultAddress;
-            } else if (!appData.common.selectedWallet) {
-              appData.common.selectedWallet = Object.keys(wallets)[0];
-            }
           }
+
           Object.keys(oldWallets).map(address =>
             !wallets[address] && dispatch({ type: 'DELETE_WALLET', address })
           );
@@ -345,9 +238,9 @@ const AppContextProvider = props => {
 
   const switchWallet = address => {
     logger.log(`SWITCHING WALLET ${address}...`);
-    appData.common.selectedWallet = address;
+    setDefaultWallet(address);
     dispatch({ type: 'SWITCH_WALLET', address });
-    NavigationService.navigate('Wallet');
+    navigation.navigate('Wallet');
   };
 
   const deleteWallet = address => {
@@ -358,7 +251,6 @@ const AppContextProvider = props => {
     Api.deleteWallet(address)
       .then(res => {
         if (res.result === 'success') {
-          if (appData.common.selectedWallet === address) { appData.common.selectedWallet = null; }
           dispatch({ type: 'DELETE_WALLET', address });
           message = 'Wallet was succesfully deleted';
           msgType = 'info';
@@ -442,7 +334,7 @@ const AppContextProvider = props => {
         if (res.result === 'success') {
           dispatch({ type: 'PAYMENT_SENT', res });
           getWallets();
-          NavigationService.goBack(2);
+          navigation.goBack(2);
           message = 'Payment was successfully sent to the recipient';
           msgType = 'info';
         } else {
@@ -476,7 +368,7 @@ const AppContextProvider = props => {
       .then(res => {
         if (res.result === 'success') {
           getDeposits();
-          NavigationService.goBack(2);
+          navigation.goBack(2);
           dispatch({ type: 'DEPOSIT_CREATED', res });
           message = 'Your deposit was successfully created. It may take a while for deposit to be shown in the list, since it needs to be confirmed first!';
           msgType = 'info';
@@ -514,17 +406,7 @@ const AppContextProvider = props => {
       });
   };
 
-  const setAppData = (appData) => {
-    logger.log('SETTING APP DATA...');
-    dispatch({ type: 'SET_APP_DATA', appData });
-  };
-
   const actions = {
-    loginUser,
-    signUpUser,
-    resetPassword,
-    resetPasswordConfirm,
-    logoutUser,
     getUser,
     addContact,
     deleteContact,
@@ -541,23 +423,11 @@ const AppContextProvider = props => {
     getDeposits,
     createDeposit,
     unlockDeposit,
-    setAppData
   };
 
-  useEffect(() => {
-    if (Auth.loggedIn()) {
-      if (!state.user.loggedIn) {
-        dispatch({ type: 'USER_LOGGED_IN' });
-      }
-
-      let token = Auth.getToken();
-      // dispatch the Aauthentication token
-      dispatch({ type: 'SET_TOKEN', token });
-    }
-  }, [state.user.loggedIn]);
 
   useEffect(() => {
-    if (state.user.loggedIn && state.user.token) {
+    if (state.user.loggedIn) {
       getUser();
       check2FA();
       getWallets();
@@ -566,8 +436,10 @@ const AppContextProvider = props => {
       getBlockchainHeight();
       getMarketPrices();
       getPrices();
+    } else {
+      navigation.navigate('Login');
     }
-  }, [state.user.token]);
+  }, [state.user.loggedIn]);
 
   useEffect(() => {
     const { appSettings, intervals, user, userSettings } = state;
@@ -582,15 +454,6 @@ const AppContextProvider = props => {
       dispatch({ type: 'SET_INTERVALS', intervals: appIntervals });
     }
   }, [state.user.loggedIn, state.intervals]);
-
-  useEffect(() => {
-    if (state.layout.userLoaded && state.layout.walletsLoaded && state.layout.messagesLoaded && state.layout.depositsLoaded) {
-      if (!state.layout.loginFinished) {
-        NavigationService.navigate('Wallet');
-        state.layout.loginFinished = true;
-      }
-    }
-  }, [state.layout]);
 
   return (
     <AppContext.Provider value={{ actions, dispatch, state }}>

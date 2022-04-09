@@ -1,48 +1,43 @@
-import React, { useContext, useState, useRef, useEffect } from 'react';
-import ConcealTextInput from '../components/ccxTextInput';
-import ConcealCaptcha from '../components/hCaptcha';
-import ConcealButton from '../components/ccxButton';
+import * as Clipboard from 'expo-clipboard';
+import React, { useContext, useEffect, useState } from 'react';
+import { Keyboard, ScrollView, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
+import { CheckBox, Icon, Image, Overlay } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import localStorage from '../helpers/LocalStorage';
-
-import { Image, CheckBox, Overlay, Icon } from 'react-native-elements';
+import ConcealButton from '../components/ccxButton';
 import ConcealPassword from '../components/ccxPassword';
-
+import ConcealTextInput from '../components/ccxTextInput';
+import { AuthContext } from '../components/ContextProvider';
 import { AppContext } from '../components/ContextProvider';
-import { useFormInput, useFormValidation, useCheckbox } from '../helpers/hooks';
-import SignUp from './SignUp';
+import ConcealCaptcha from '../components/hCaptcha';
+import AppStyles from '../components/Style';
+import { AppColors } from '../constants/Colors';
+import AuthHelper from '../helpers/AuthHelper';
+import { useCheckbox, useFormInput, useFormValidation } from '../helpers/hooks';
+import localStorage from '../helpers/LocalStorage';
+import { getAspectRatio } from '../helpers/utils';
 import AuthCheck from './AuthCheck';
 import ResetPassword from './ResetPassword';
-import AuthHelper from '../helpers/AuthHelper';
-import { AppColors } from '../constants/Colors';
-import AppStyles from '../components/Style';
-import { getAspectRatio } from '../helpers/utils';
-import {
-  View,
-  Text,
-  Keyboard,
-  Clipboard,
-  ScrollView,
-  TouchableOpacity,
-  TouchableWithoutFeedback
-} from 'react-native';
+import SignUp from './SignUp';
 
 
 const Login = () => {
-  const { actions, state } = useContext(AppContext);
-  const { loginUser } = actions;
+  const { state } = useContext(AppContext);
+  const { authActions } = useContext(AuthContext);
+  const { loginUser } = authActions;
   const { layout, userSettings } = state;
   const { formSubmitted } = layout;
-  const { setAppData } = actions;
   const Auth = new AuthHelper(state.appSettings.apiURL);
+
+  const [signUpVisible, setSignUpVisible] = useState(false);
+  const [resetPasswordVisible, setResetPasswordVisible] = useState(false);
 
   // captcha related fields and hooks
   const [hCode, setHCode] = React.useState("");
 
-  const { value: email, bind: bindEmail, setValue: setEmailValue } = useFormInput((localStorage.get('id_rememberme') == "TRUE") ? localStorage.get('id_username') : '');
+  const { value: email, bind: bindEmail, setValue: setEmailValue } = useFormInput((localStorage.get('id_rememberme') === 'TRUE') ? localStorage.get('id_username') : '');
   const { value: password, bind: bindPassword, setValue: setPassword } = useFormInput('');
   const { value: twoFACode, bind: bindTwoFACode, setValue: setTwoFACode } = useFormInput('');
-  const { checked: rememberMe, bind: bindRememberMe } = useCheckbox(localStorage.get('id_rememberme') == "TRUE");
+  const { checked: rememberMe, bind: bindRememberMe } = useCheckbox(localStorage.get('id_rememberme') === 'TRUE');
 
   // alternative auth check state
   const [showLoginForm, setShowLoginForm] = useState(!Auth.getIsAltAuth());
@@ -99,7 +94,7 @@ const Login = () => {
                 <Icon
                   onPress={() => {
                     (async () => {
-                      setEmailValue(await Clipboard.getString());
+                      setEmailValue(await Clipboard.getStringAsync());
                     })().catch(e => console.log(e));
                   }}
                   name='md-copy'
@@ -125,7 +120,7 @@ const Login = () => {
                 <Icon
                   onPress={() => {
                     (async () => {
-                      setTwoFACode(await Clipboard.getString());
+                      setTwoFACode(await Clipboard.getStringAsync());
                     })().catch(e => console.log(e));
                   }}
                   name='md-copy'
@@ -156,7 +151,7 @@ const Login = () => {
               />
 
               <ConcealButton
-                onPress={() => setAppData({ login: { signUpVisible: true } })}
+                onPress={() => setSignUpVisible(true)}
                 text="Sign Up"
                 style={[styles.footerBtn, styles.footerBtnRight]}
                 accessibilityLabel="Sign Up Button"
@@ -164,7 +159,7 @@ const Login = () => {
               />
             </View>
 
-            <TouchableOpacity style={styles.forgotContainer} onPress={() => setAppData({ login: { resetPasswordVisible: true } })}>
+            <TouchableOpacity style={styles.forgotContainer} onPress={() => setResetPasswordVisible(true)}>
               <Text style={styles.forgotText}>Forgot your password?</Text>
               <Text style={styles.forgotText}>Click here</Text>
             </TouchableOpacity>
@@ -172,24 +167,24 @@ const Login = () => {
         </TouchableWithoutFeedback>
       }
       <Overlay
-        isVisible={state.appData.login.signUpVisible}
+        isVisible={signUpVisible}
         overlayBackgroundColor={AppColors.concealBackground}
         overlayStyle={styles.overlayStyle}
         fullScreen={true}
       >
         <SignUp
-          hidePanel={() => setAppData({ login: { signUpVisible: false } })}
+          hidePanel={() => setSignUpVisible(false)}
         />
       </Overlay>
 
       <Overlay
-        isVisible={state.appData.login.resetPasswordVisible}
+        isVisible={resetPasswordVisible}
         overlayBackgroundColor={AppColors.concealBlack}
         overlayStyle={styles.overlayStyle}
         fullScreen={true}
       >
         <ResetPassword
-          hidePanel={() => setAppData({ login: { resetPasswordVisible: false } })}
+          hidePanel={() => setResetPasswordVisible(false)}
         />
       </Overlay>
 

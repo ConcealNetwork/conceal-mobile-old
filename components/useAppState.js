@@ -1,8 +1,7 @@
 import { useReducer, useRef } from 'react';
-import mergeJSON from 'merge-json';
-import { shareContent } from '../helpers/utils';
 import { appSettings } from '../constants/appSettings';
 import { logger } from '../helpers/Logger';
+import { shareContent } from '../helpers/utils';
 
 const useAppState = () => {
   const initialState = {
@@ -61,48 +60,10 @@ const useAppState = () => {
       updateWalletsInterval: 60,  // seconds
       updateMessagesInterval: 60,  // seconds
     },
+    wallet: {
+      selected: null
+    },
     wallets: {},
-    appData: {
-      sendScreen: {
-        sendConfirmVisible: false,
-        securePasswordEntry: true
-      },
-      createDeposit: {
-        duration: 1,
-        durationText: "Deposit duration: 1 month",
-        ConfirmVisible: false,
-        securePasswordEntry: true
-      },
-      messages: {
-        filterText: null,
-        filterState: 0
-      },
-      sendMessage: {
-        securePasswordEntry: true
-      },
-      addressEntry: {
-        label: null,
-        address: null,
-        paymentId: null,
-        entryId: null,
-        headerText: null
-      },
-      addressBook: {
-        filterText: null
-      },
-      searchAddress: {
-        addrListVisible: false,
-        filterText: null
-      },
-      login: {
-        userName: '',
-        signUpVisible: false,
-        resetPasswordVisible: false
-      },
-      common: {
-        selectedWallet: null
-      }
-    }
   };
   const updatedState = useRef(initialState);
 
@@ -124,7 +85,7 @@ const useAppState = () => {
         };
         break;
       case 'USER_LOGGED_IN':
-        if (!state.user.loggedIn) logger.log('LOGGING IN USER...');
+        logger.log('LOGGING IN USER...');
         result = {
           ...state,
           user: {
@@ -224,6 +185,15 @@ const useAppState = () => {
           ...state
         };
         break;
+        case 'SELECT_WALLET':
+          result = {
+            ...state,
+            wallet: {
+              selected: action.key
+            }
+          };
+          break;
+  
       case 'SET_WALLET_KEYS':
         result = {
           ...state,
@@ -366,12 +336,6 @@ const useAppState = () => {
         result = {
           ...state,
           intervals,
-        };
-        break;
-      case 'SET_APP_DATA':
-        result = {
-          ...state,
-          appData: mergeJSON.merge(state.appData, action.appData)
         };
         break;
       case 'BARCODE_SCANNED':

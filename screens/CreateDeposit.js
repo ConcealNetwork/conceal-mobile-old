@@ -1,48 +1,44 @@
-import React, { useContext, useState, useEffect } from "react";
-import { Icon, Header, ListItem } from 'react-native-elements';
-import NavigationService from '../helpers/NavigationService';
-import { AppContext } from '../components/ContextProvider';
+import Slider from '@react-native-community/slider';
+import React, { useContext, useEffect, useState } from 'react';
+import { FlatList, Text, View } from 'react-native';
+import { Header, Icon, ListItem } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import ConcealTextInput from '../components/ccxTextInput';
-import ConcealButton from '../components/ccxButton';
-import GuideNavigation from '../helpers/GuideNav';
-import { AppColors } from '../constants/Colors';
-import AppStyles from '../components/Style';
 import Tips from 'react-native-guide-tips';
-import { Slider } from 'react-native';
+import ConcealButton from '../components/ccxButton';
+import ConcealTextInput from '../components/ccxTextInput';
+import { AppContext } from '../components/ContextProvider';
+import AppStyles from '../components/Style';
+import { AppColors } from '../constants/Colors';
+import GuideNavigation from '../helpers/GuideNav';
 import {
-  maskAddress,
-  getAspectRatio,
   format4Decimals,
   format6Decimals,
-  parseLocaleNumber,
-  getDepositInterest
+  getAspectRatio,
+  getDepositInterest,
+  maskAddress,
+  parseLocaleNumber
 } from '../helpers/utils';
-import {
-  Text,
-  View,
-  FlatList,
-} from "react-native";
 
-const CreateDepositScreen = () => {
-  const { state, actions } = useContext(AppContext);
-  const { setAppData } = actions;
-  const { appSettings, wallets, appData } = state;
-  const currWallet = wallets[appData.common.selectedWallet];
+const CreateDepositScreen = ({ navigation: { goBack, navigate } }) => {
+  const { state } = useContext(AppContext);
+  const { appSettings, wallets } = state;
+  const currWallet = wallets[Object.keys(wallets).find(i => wallets[i].default)];
 
+  const [amount, setAmount] = useState(null)
+  const [duration, setDuration] = useState(1)
   const sendSummaryList = [];
 
-  if (state.appData.createDeposit.duration) {
+  if (duration) {
     sendSummaryList.push({
-      value: `${state.appData.createDeposit.duration} month${state.appData.createDeposit.duration > 1 ? 's' : ''}`,
+      value: `${duration} month${duration > 1 ? 's' : ''}`,
       title: 'Deposit Duration',
-      icon: 'md-clock'
+      icon: 'timer-outline'
     });
   }
 
-  if (state.appData.createDeposit.amount) {
+  if (amount) {
     sendSummaryList.push({
-      value: `${parseLocaleNumber(state.appData.createDeposit.amount, true).toLocaleString(undefined, format6Decimals)} CCX`,
+      value: `${parseLocaleNumber(amount, true).toLocaleString(undefined, format6Decimals)} CCX`,
       title: 'Deposit Amount',
       icon: 'md-cash'
     });
@@ -54,36 +50,26 @@ const CreateDepositScreen = () => {
     });
   }
 
-  if (state.appData.createDeposit.duration && state.appData.createDeposit.amount) {
+  if (duration && amount) {
     sendSummaryList.push({
-      value: `${getDepositInterest(parseLocaleNumber(state.appData.createDeposit.amount, true), state.appData.createDeposit.duration).toLocaleString(undefined, format6Decimals)} CCX`,
+      value: `${getDepositInterest(parseLocaleNumber(amount, true), duration).toLocaleString(undefined, format6Decimals)} CCX`,
       title: 'Interest earned',
       icon: 'md-cash'
     });
   }
 
-  // key extractor for the list
-  const keyExtractor = (item, index) => index.toString();
-
-  const renderItem = ({ item }) => (
-    <ListItem
-      title={item.value}
-      subtitle={item.title}
-      titleStyle={styles.summaryText}
-      subtitleStyle={styles.summaryLabel}
-      containerStyle={styles.summaryItem}
-      leftIcon={<Icon
-        name={item.icon}
-        type='ionicon'
-        color='white'
-        size={32 * getAspectRatio()}
-      />}
-    />
-  );
+  const renderItem = ({ item }) =>
+    <ListItem containerStyle={styles.summaryItem} key={item.value} onPress={item.onPress}>
+      <Icon name={item.icon} type='ionicon' color='white' size={32 * getAspectRatio()} />
+      <ListItem.Content>
+        <ListItem.Title style={styles.summaryText}>{item.value}</ListItem.Title>
+        <ListItem.Subtitle style={styles.summaryLabel}>{item.title}</ListItem.Subtitle>
+      </ListItem.Content>
+    </ListItem>
 
   const isFormValid = () => {
-    if (state.appData.createDeposit.duration && state.appData.createDeposit.amount) {
-      let amountAsFloat = parseLocaleNumber(state.appData.createDeposit.amount, true);
+    if (duration && amount) {
+      let amountAsFloat = parseLocaleNumber(amount, true);
       return ((amountAsFloat >= 1) && (amountAsFloat <= (currWallet.balance - appSettings.defaultFee)));
     } else {
       return false;
@@ -91,18 +77,13 @@ const CreateDepositScreen = () => {
   }
 
   const clearSend = () => {
-    setAppData({
-      createDeposit: {
-        amount: '',
-        duration: 1,
-        durationText: `Deposit duration: 1 month`,
-      }
-    });
+    setAmount(null);
+    setDuration(1);
   }
 
   const getAmountError = () => {
-    var amountAsFloat = parseLocaleNumber(state.appData.createDeposit.amount, true);
-    if ((amountAsFloat < 1) && (state.appData.createDeposit.amount)) {
+    let amountAsFloat = parseLocaleNumber(amount, true);
+    if ((amountAsFloat < 1) && (amount)) {
       return "Amount must be at least 1 CCX"
     } else if (amountAsFloat > (currWallet.balance - state.appSettings.defaultFee)) {
       return "The amount exceeds wallet balance"
@@ -127,11 +108,11 @@ const CreateDepositScreen = () => {
   return (
     <View style={styles.pageWrapper}>
       <Header
-        placement="left"
+        placement='left'
         statusBarProps={{ translucent: false, backgroundColor: "#212529" }}
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
-          onPress={() => NavigationService.goBack()}
+          onPress={() => goBack()}
           name='arrow-back-outline'
           type='ionicon'
           color='white'
@@ -156,7 +137,7 @@ const CreateDepositScreen = () => {
         }
         rightComponent={<Tips
           position={'bottom'}
-          visible={guideState == 'clear'}
+          visible={guideState === 'clear'}
           textStyle={AppStyles.guideTipText}
           style={[AppStyles.guideTipContainer, styles.guideTipClearDeposit]}
           tooltipArrowStyle={[AppStyles.guideTipArrowTop, styles.guideTipArrowClearDeposit]}
@@ -174,7 +155,7 @@ const CreateDepositScreen = () => {
       <View style={styles.walletWrapper}>
         <Tips
           position={'top'}
-          visible={guideState == 'balance'}
+          visible={guideState === 'balance'}
           textStyle={AppStyles.guideTipText}
           tooltipArrowStyle={AppStyles.guideTipArrowBottom}
           style={[AppStyles.guideTipContainer, styles.guideTipBalance]}
@@ -188,7 +169,7 @@ const CreateDepositScreen = () => {
               ? (<View style={styles.lockedWrapper}>
                 <Icon
                   containerStyle={styles.lockedIcon}
-                  name='md-lock'
+                  name='md-lock-closed'
                   type='ionicon'
                   color='#FF0000'
                   size={16 * getAspectRatio()}
@@ -203,7 +184,7 @@ const CreateDepositScreen = () => {
 
         <Tips
           position={'top'}
-          visible={guideState == 'amount'}
+          visible={guideState === 'amount'}
           textStyle={AppStyles.guideTipText}
           tooltipArrowStyle={AppStyles.guideTipArrowBottom}
           style={[AppStyles.guideTipContainer, styles.guideTipAmount]}
@@ -216,9 +197,9 @@ const CreateDepositScreen = () => {
               keyboardType='numeric'
               placeholder='Select amount to deposit...'
               containerStyle={styles.sendInput}
-              value={state.appData.createDeposit.amount}
+              value={amount}
               onChangeText={(text) => {
-                setAppData({ createDeposit: { amount: text.replace(/[^0-9,.]/g, '') } });
+                setAmount(text.replace(/[^0-9,.]/g, ''));
               }}
               rightIcon={
                 <Text style={styles.ccxUnit}>CCX</Text>
@@ -229,28 +210,28 @@ const CreateDepositScreen = () => {
         <View style={styles.amountPercentWrapper}>
           <ConcealButton
             style={styles.btnDepositPercent}
-            onPress={() => setAppData({ createDeposit: { amount: ((currWallet.balance - appSettings.defaultFee) * 0.25).toLocaleString(undefined, format6Decimals) } })}
+            onPress={() => setAmount(((currWallet.balance - appSettings.defaultFee) * 0.25).toLocaleString(undefined, format6Decimals)) }
             text="25%"
           />
           <ConcealButton
             style={styles.btnDepositPercent}
-            onPress={() => setAppData({ createDeposit: { amount: ((currWallet.balance - appSettings.defaultFee) * 0.50).toLocaleString(undefined, format6Decimals) } })}
+            onPress={() => setAmount(((currWallet.balance - appSettings.defaultFee) * 0.50).toLocaleString(undefined, format6Decimals)) }
             text="50%"
           />
           <ConcealButton
             style={styles.btnDepositPercent}
-            onPress={() => setAppData({ createDeposit: { amount: ((currWallet.balance - appSettings.defaultFee) * 0.75).toLocaleString(undefined, format6Decimals) } })}
+            onPress={() => setAmount(((currWallet.balance - appSettings.defaultFee) * 0.75).toLocaleString(undefined, format6Decimals)) }
             text="75%"
           />
           <ConcealButton
             style={styles.btnDepositPercent}
-            onPress={() => setAppData({ createDeposit: { amount: (currWallet.balance - appSettings.defaultFee - appSettings.minValue).toLocaleString(undefined, format6Decimals) } })}
+            onPress={() => setAmount((currWallet.balance - appSettings.defaultFee - appSettings.minValue).toLocaleString(undefined, format6Decimals)) }
             text="100%"
           />
         </View>
         <Tips
           position={'top'}
-          visible={guideState == 'duration'}
+          visible={guideState === 'duration'}
           textStyle={AppStyles.guideTipText}
           style={AppStyles.guideTipContainer}
           tooltipArrowStyle={AppStyles.guideTipArrowBottom}
@@ -258,8 +239,9 @@ const CreateDepositScreen = () => {
           onRequestClose={() => setGuideState(guideNavigation.next())}
         >
           <View style={styles.durationWrapper}>
-            <Text style={styles.durationLabel}>{state.appData.createDeposit.durationText}</Text>
+            <Text style={styles.durationLabel}>Deposit duration: {duration} month{duration > 1 ? 's' : ''}</Text>
             <Slider
+              value={duration}
               style={styles.durationSlider}
               step={1}
               minimumValue={1}
@@ -267,14 +249,7 @@ const CreateDepositScreen = () => {
               minimumTrackTintColor={AppColors.concealOrange}
               thumbTintColor={AppColors.concealOrange}
               maximumTrackTintColor="#FFFFFF"
-              onValueChange={(value) => {
-                setAppData({
-                  createDeposit: {
-                    duration: value,
-                    durationText: `Deposit duration: ${value.toString()} month${value > 1 ? 's' : ''}`,
-                  }
-                });
-              }}
+              onSlidingComplete={value => { setDuration(value) }}
             />
           </View>
         </Tips>
@@ -282,14 +257,14 @@ const CreateDepositScreen = () => {
           data={sendSummaryList}
           style={styles.summaryList}
           renderItem={renderItem}
-          keyExtractor={keyExtractor}
+          keyExtractor={item => item.title}
         />
       </View>
       <View style={styles.footer}>
         <View style={[styles.footerBtn, styles.footerBtnLeft]}>
           <Tips
             position={'top'}
-            visible={guideState == 'create'}
+            visible={guideState === 'create'}
             textStyle={AppStyles.guideTipText}
             text="Click here to create the deposit"
             style={[AppStyles.guideTipContainer, styles.guideTipCreate]}
@@ -299,7 +274,7 @@ const CreateDepositScreen = () => {
             <ConcealButton
               style={[styles.footerBtn, styles.footerBtnLeft]}
               disabled={!isFormValid()}
-              onPress={() => NavigationService.navigate('CreateDepositConfirm')}
+              onPress={() => navigate('CreateDepositConfirm', { amount, duration })}
               text="CREATE"
             />
           </Tips>
@@ -307,7 +282,7 @@ const CreateDepositScreen = () => {
         <View style={[styles.footerBtn, styles.footerBtnLeft]}>
           <Tips
             position={'top'}
-            visible={guideState == 'cancel'}
+            visible={guideState === 'cancel'}
             textStyle={AppStyles.guideTipText}
             text="Click here to cancel the deposit creation"
             style={[AppStyles.guideTipContainer, styles.guideTipCancel]}
@@ -316,7 +291,7 @@ const CreateDepositScreen = () => {
           >
             <ConcealButton
               style={[styles.footerBtn, styles.footerBtnRight]}
-              onPress={() => NavigationService.goBack()}
+              onPress={() => goBack()}
               text="CANCEL"
             />
           </Tips>

@@ -1,8 +1,8 @@
-import { Share, Dimensions } from "react-native";
-import { appSettings } from '../constants/appSettings';
-import { showMessage } from "react-native-flash-message";
 import * as LocalAuthentication from 'expo-local-authentication';
+import { Dimensions, Share } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
+import { showMessage } from 'react-native-flash-message';
+import { appSettings } from '../constants/appSettings';
 
 export const shareContent = async (content) => {
   try {
@@ -43,9 +43,9 @@ export const showMessageDialog = (message, msgType) => {
     }
 
     if (toastMessage !== '') {
-      if ((msgType || "error") === "error") {
+      if ((msgType || 'error') === 'error') {
         showErrorMessage(toastMessage);
-      } else if (msgType === "info") {
+      } else if (msgType === 'info') {
         showSuccessMessage(toastMessage);
       }
     }
@@ -55,9 +55,9 @@ export const showMessageDialog = (message, msgType) => {
 export const showErrorMessage = (message) => {
   showMessage({
     duration: 5000,
-    message: "Error",
+    message: 'Error',
     description: message,
-    type: "danger",
+    type: 'danger',
     titleStyle: styles.errorText,
   });
 };
@@ -65,9 +65,9 @@ export const showErrorMessage = (message) => {
 export const showSuccessMessage = (message) => {
   showMessage({
     duration: 5000,
-    message: "Success",
+    message: 'Success',
     description: message,
-    type: "success",
+    type: 'success',
     titleStyle: styles.errorText,
   });
 };
@@ -117,8 +117,8 @@ export const round = (number, decimalPlaces) => {
 
 export const parseLocaleNumber = (stringNumber, truncate) => {
   if (stringNumber) {
-    var decimalSeparator = (1.1).toLocaleString().replace(/1/g, '');
-    var thousandSeparator = (1111).toLocaleString().replace(/1/g, '');
+    let decimalSeparator = (1.1).toLocaleString().replace(/1/g, '');
+    let thousandSeparator = (1111).toLocaleString().replace(/1/g, '');
     let parsedNumber = parseFloat(stringNumber.replace(new RegExp('\\' + thousandSeparator, 'g'), '').replace(new RegExp('\\' + decimalSeparator), '.'));
 
     if (truncate) {

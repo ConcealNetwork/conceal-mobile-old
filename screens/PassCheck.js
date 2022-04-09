@@ -1,14 +1,14 @@
-import React, { useContext } from "react";
+import React, { useContext } from 'react';
+import { Text, View } from 'react-native';
 import { Icon } from 'react-native-elements';
-import { useFormInput, useFormValidation } from '../helpers/hooks';
-import { AppContext } from '../components/ContextProvider';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import ConcealPassword from '../components/ccxPassword';
 import ConcealButton from '../components/ccxButton';
+import ConcealPassword from '../components/ccxPassword';
+import { AppContext } from '../components/ContextProvider';
+import { AppColors } from '../constants/Colors';
+import { useFormInput, useFormValidation } from '../helpers/hooks';
 import localStorage from '../helpers/LocalStorage';
 import { getAspectRatio } from '../helpers/utils';
-import { AppColors } from '../constants/Colors';
-import { View, Text } from 'react-native';
 
 
 const PassCheck = props => {
@@ -38,7 +38,7 @@ const PassCheck = props => {
         </View>
         <View style={styles.passIconWrapper}>
           <Icon
-            name='md-lock'
+            name='md-lock-closed'
             type='ionicon'
             color={'white'}
             style={styles.lockIcon}

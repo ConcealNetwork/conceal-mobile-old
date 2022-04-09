@@ -1,32 +1,25 @@
-import { Icon, Header, ListItem } from 'react-native-elements';
-import React, { useContext, useState } from "react";
-import NavigationService from '../helpers/NavigationService';
+import React, { useContext, useState } from 'react';
+import { FlatList, View, } from 'react-native';
+import { Header, Icon, ListItem } from 'react-native-elements';
 import EStyleSheet from 'react-native-extended-stylesheet';
-import { AppContext } from '../components/ContextProvider';
 import ConcealButton from '../components/ccxButton';
-import { AppColors } from '../constants/Colors';
+import { AppContext } from '../components/ContextProvider';
 import AppStyles from '../components/Style';
+import { AppColors } from '../constants/Colors';
+import { format6Decimals, getAspectRatio, maskAddress, parseLocaleNumber } from '../helpers/utils';
 import AuthCheck from './AuthCheck';
-import {
-  maskAddress,
-  getAspectRatio,
-  format6Decimals,
-  parseLocaleNumber
-} from '../helpers/utils';
-import {
-  View,
-  FlatList,
-} from "react-native";
 
-const SendConfirm = () => {
+
+const SendConfirm = ({ navigation: { goBack }, route }) => {
   const { state, actions } = useContext(AppContext);
-  const { wallets, appData, appSettings } = state;
-  const currWallet = wallets[appData.common.selectedWallet];
+  const { wallets, appSettings } = state;
+  const { params } = route;
+  const currWallet = wallets[Object.keys(wallets).find(i => wallets[i].default)];
 
   const [showAuthCheck, setShowAuthCheck] = useState(false);
   const sendSummaryList = [];
 
-  function addSummaryItem(value, title, icon) {
+  const addSummaryItem = (value, title, icon) => {
     sendSummaryList.push({
       value: value,
       title: title,
@@ -34,45 +27,30 @@ const SendConfirm = () => {
     });
   }
 
-  let totalAmount = parseLocaleNumber(appData.sendScreen.toAmount);
-  totalAmount = totalAmount + appSettings.defaultFee;
+  const totalAmount = parseLocaleNumber(params?.amount) + appSettings.defaultFee;
 
   addSummaryItem(`${totalAmount.toLocaleString(undefined, format6Decimals)} CCX`, 'You are sending', 'md-cash');
   addSummaryItem(maskAddress(currWallet.addr), 'From address', 'md-mail');
-  addSummaryItem(maskAddress(appData.sendScreen.toAddress), 'To address', 'md-mail');
-  if (appData.sendScreen.toPaymendId) {
-    addSummaryItem(maskAddress(appData.sendScreen.toPaymendId), 'Payment ID', 'md-key');
-  }
-  if (appData.sendScreen.toLabel) {
-    addSummaryItem(appData.sendScreen.toLabel, 'Label', 'md-eye');
-  }
+  addSummaryItem(maskAddress(params.address), 'To address', 'md-mail');
+  if (params?.paymentID) addSummaryItem(maskAddress(params.paymentID), 'Payment ID', 'md-key');
+  if (params?.label) addSummaryItem(params.label, 'Label', 'md-eye');
   addSummaryItem(`${appSettings.defaultFee} CCX`, 'Transaction Fee', 'md-cash');
 
-  // key extractor for the list
-  const keyExtractor = (item, index) => index.toString();
-
-  const renderItem = ({ item }) => (
-    <ListItem
-      title={item.value}
-      subtitle={item.title}
-      titleStyle={styles.summaryText}
-      subtitleStyle={styles.summaryLabel}
-      containerStyle={styles.summaryItem}
-      leftIcon={<Icon
-        name={item.icon}
-        type='ionicon'
-        color='white'
-        size={32 * getAspectRatio()}
-      />}
-    />
-  );
+  const renderItem = ({ item }) =>
+    <ListItem containerStyle={styles.summaryItem} key={item.value} onPress={item.onPress}>
+      <Icon name={item.icon} type='ionicon' color='white' size={32 * getAspectRatio()} />
+      <ListItem.Content>
+        <ListItem.Title style={styles.summaryText}>{item.value}</ListItem.Title>
+        <ListItem.Subtitle style={styles.summaryLabel}>{item.title}</ListItem.Subtitle>
+      </ListItem.Content>
+    </ListItem>
 
   const sendPayment = (password) => {
     actions.sendPayment(
       currWallet.addr,
-      appData.sendScreen.toAddress,
-      appData.sendScreen.toPaymendId,
-      parseLocaleNumber(appData.sendScreen.toAmount),
+      params.address,
+      params.paymentID,
+      parseLocaleNumber(params.amount),
       '', password
     );
   }
@@ -80,10 +58,11 @@ const SendConfirm = () => {
   return (
     <View style={styles.pageWrapper}>
       <Header
-        placement="left"
+        placement='left'
+        statusBarProps={{ translucent: false, backgroundColor: "#212529" }}
         containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
-          onPress={() => NavigationService.goBack()}
+          onPress={() => goBack()}
           name='arrow-back-outline'
           type='ionicon'
           color='white'
@@ -95,7 +74,7 @@ const SendConfirm = () => {
         data={sendSummaryList}
         style={styles.summaryList}
         renderItem={renderItem}
-        keyExtractor={keyExtractor}
+        keyExtractor={item => item.title}
       />
       <View style={styles.footer}>
         <ConcealButton
@@ -105,7 +84,7 @@ const SendConfirm = () => {
         />
         <ConcealButton
           style={[styles.footerBtn, styles.footerBtnRight]}
-          onPress={() => NavigationService.goBack()}
+          onPress={() => goBack()}
           text="CANCEL"
         />
       </View>
