@@ -185,13 +185,24 @@ const AppContextProvider = props => {
           const oldWallets = updatedState.current.wallets;
           const wallets = res.message.wallets;
 
+          // fallback def wallet vars
+          let firstWallet = null;
+          let defWallet = null;
+
           if (Object.keys(wallets).length > 0) {
             Object.keys(wallets).forEach(function (key) {                            
+              if (!firstWallet) { firstWallet = key; }
               wallets[key].addr = key;
               if (wallets[key].default) { 
+                defWallet = key;
                 dispatch({ type: 'SELECT_WALLET', key });
               }
             });
+          }
+
+          // if none selected then select first
+          if (!defWallet && firstWallet) {
+            wallets[firstWallet].default = true;
           }
 
           Object.keys(oldWallets).map(address =>
