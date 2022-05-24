@@ -23,7 +23,7 @@
     "expo-barcode-scanner": "~11.3.0",
     "expo-clipboard": "~2.1.0",
     "expo-constants": "~13.0.1",
-    "expo-font": "~10.0.4",
+    "expo-font": "~10.1.0",
     "expo-local-authentication": "~12.1.0",
     "expo-secure-store": "~11.2.0",
     "expo-updates": "~0.11.6",
