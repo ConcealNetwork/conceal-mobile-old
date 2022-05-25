@@ -24,7 +24,7 @@
     "expo-clipboard": "~3.0.1",
     "expo-constants": "~13.1.1",
     "expo-font": "~10.1.0",
-    "expo-local-authentication": "~12.1.0",
+    "expo-local-authentication": "~12.2.0",
     "expo-secure-store": "~11.2.0",
     "expo-updates": "~0.13.1",
     "intl": "^1.2.5",
