@@ -18,7 +18,6 @@ export default function ConcealCaptcha({ onCaptchaChange }) {
     if (event && event.nativeEvent.data) {
       if (['cancel'].includes(event.nativeEvent.data)) {
         // do not call hCaptcha.hide(); function in this condition. Otherwise app will crash.
-        console.log('Captcha was canceled');
         if (captchaVisible) {
           setTimeout(() => {
             setCaptchaVisible(false);
