@@ -21,7 +21,7 @@
     "expo-app-loading": "~2.1.0",
     "expo-barcode-scanner": "~11.4.0",
     "expo-clipboard": "~3.0.1",
-    "expo-constants": "~13.1.1",
+    "expo-constants": "~13.2.3",
     "expo-font": "~10.1.0",
     "expo-local-authentication": "~12.3.0",
     "expo-secure-store": "~11.2.0",
