@@ -24,7 +24,7 @@
     "expo-constants": "~13.2.3",
     "expo-font": "~10.2.0",
     "expo-local-authentication": "~12.3.0",
-    "expo-secure-store": "~11.2.0",
+    "expo-secure-store": "~11.3.0",
     "expo-splash-screen": "^0.16.1",
     "expo-updates": "~0.14.3",
     "ignore-warnings": "^0.2.1",
