@@ -1,9 +1,10 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import AppLoading from 'expo-app-loading';
 import Constants from 'expo-constants';
 import * as Font from 'expo-font';
+import ignoreWarnings from 'ignore-warnings';
 import * as SecureStore from 'expo-secure-store';
+import * as SplashScreen from 'expo-splash-screen';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Dimensions, LogBox, Platform, StatusBar, View, } from 'react-native';
 import EStyleSheet from 'react-native-extended-stylesheet';
@@ -44,7 +45,7 @@ if (Platform.OS === 'android') {
 }
 
 // supress the timer warnings
-LogBox.ignoreLogs(['Setting a timer']);
+LogBox.ignoreLogs(["Setting a timer"]);
 
 // build only once
 EStyleSheet.build({
@@ -169,69 +170,71 @@ const App = props => {
     },
   }), []);
 
-  const loadResourcesAsync = async () => {
-    return Promise.all([
-      Font.loadAsync({
-        'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
-        'Lato': require('./assets/fonts/Lato/Lato-Regular.ttf'),
-        'Roboto': require('./assets/fonts/Roboto/Roboto-Regular.ttf'),
-      })
-    ]);
-  };
+  useEffect(() => {
+    async function prepare() {
+      try {
+        // Keep the splash screen visible while we fetch resources
+        await SplashScreen.preventAutoHideAsync();
+        // Pre-load fonts, make any API calls you need to do here
+        await Font.loadAsync({
+          'space-mono': require('./assets/fonts/SpaceMono-Regular.ttf'),
+          'Lato': require('./assets/fonts/Lato/Lato-Regular.ttf'),
+          'Roboto': require('./assets/fonts/Roboto/Roboto-Regular.ttf'),
+        });  
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        // Tell the application to render
+        await SplashScreen.hideAsync();
+      }
+    }
 
-  const handleLoadingError = error => console.warn(error);
-  const handleFinishLoading = () => setIsLoadingComplete(true);
+    prepare();
+  }, []);
 
   return (
-    (!isLoadingComplete && !props.skipLoadingScreen)
-      ? <AppLoading
-          startAsync={loadResourcesAsync}
-          onError={handleLoadingError}
-          onFinish={handleFinishLoading}
-        />
-      : <AuthContext.Provider value={{ authActions, state }}>
-          <NavigationContainer>
-            <WalkthroughProvider>
-              <AppContextProvider state={state} dispatch={dispatch} updatedState={updatedState}>
-                <ConcealLoader />
-                <View style={AppStyles.appContainer}>
-                  {Platform.OS === 'ios' && <StatusBar barStyle="light-content" />}
-                  <Stack.Navigator screenOptions={{ header: () => {} }}>
-                    {!state.user.loggedIn
-                      ? (
-                          <Stack.Screen name="Login" component={Login} options={{ header: () => {} }} />
-                        )
-                      : (
-                          <>
-                            <Stack.Screen name="Wallet" component={Wallet} options={{ header: () => {} }} />
-                            <Stack.Screen name="Wallets" component={Wallets} options={{ header: () => {} }} />
-                            <Stack.Screen name="AddressBook" component={AddressBook} options={{ header: () => {} }} />
-                            <Stack.Screen name="SendPayment" component={SendPayment} options={{ header: () => {} }} />
-                            <Stack.Screen name="SendConfirm" component={SendConfirm} options={{ header: () => {} }} />
-                            <Stack.Screen name="Receive" component={Receive} options={{ header: () => {} }} />
-                            <Stack.Screen name="Settings" component={Settings} options={{ header: () => {} }} />
-                            <Stack.Screen name="Market" component={Market} options={{ header: () => {} }} />
-                            <Stack.Screen name="Scanner" component={Scanner} options={{ header: () => {} }} />
-                            <Stack.Screen name="EditAddress" component={EditAddress} options={{ header: () => {} }} />
-                            <Stack.Screen name="Messages" component={Messages} options={{ header: () => {} }} />
-                            <Stack.Screen name="SendMessage" component={SendMessage} options={{ header: () => {} }} />
-                            <Stack.Screen name="SendMessageConfirm" component={SendMessageConfirm} options={{ header: () => {} }} />
-                            <Stack.Screen name="AppMenu" component={AppMenu} options={{ header: () => {} }} />
-                            <Stack.Screen name="Deposits" component={Deposits} options={{ header: () => {} }} />
-                            <Stack.Screen name="CreateDeposit" component={CreateDeposit} options={{ header: () => {} }} />
-                            <Stack.Screen name="CreateDepositConfirm" component={CreateDepositConfirm} options={{ header: () => {} }} />
-                          </>
-                        )
-                    }
-                  </Stack.Navigator>
-                  <FlashMessage position="top" />
-                </View>
-              </AppContextProvider>
-            </WalkthroughProvider>
-          </NavigationContainer>
-      </AuthContext.Provider>
-
-  )
+    <AuthContext.Provider value={{ authActions, state }}>
+      <NavigationContainer>
+        <WalkthroughProvider>
+          <AppContextProvider state={state} dispatch={dispatch} updatedState={updatedState}>
+            <ConcealLoader />
+            <View style={AppStyles.appContainer}>
+              {Platform.OS === 'ios' && <StatusBar barStyle="light-content" />}
+              <Stack.Navigator screenOptions={{ header: () => {} }}>
+                {!state.user.loggedIn
+                  ? (
+                      <Stack.Screen name="Login" component={Login} options={{ header: () => {} }} />
+                    )
+                  : (
+                      <>
+                        <Stack.Screen name="Wallet" component={Wallet} options={{ header: () => {} }} />
+                        <Stack.Screen name="Wallets" component={Wallets} options={{ header: () => {} }} />
+                        <Stack.Screen name="AddressBook" component={AddressBook} options={{ header: () => {} }} />
+                        <Stack.Screen name="SendPayment" component={SendPayment} options={{ header: () => {} }} />
+                        <Stack.Screen name="SendConfirm" component={SendConfirm} options={{ header: () => {} }} />
+                        <Stack.Screen name="Receive" component={Receive} options={{ header: () => {} }} />
+                        <Stack.Screen name="Settings" component={Settings} options={{ header: () => {} }} />
+                        <Stack.Screen name="Market" component={Market} options={{ header: () => {} }} />
+                        <Stack.Screen name="Scanner" component={Scanner} options={{ header: () => {} }} />
+                        <Stack.Screen name="EditAddress" component={EditAddress} options={{ header: () => {} }} />
+                        <Stack.Screen name="Messages" component={Messages} options={{ header: () => {} }} />
+                        <Stack.Screen name="SendMessage" component={SendMessage} options={{ header: () => {} }} />
+                        <Stack.Screen name="SendMessageConfirm" component={SendMessageConfirm} options={{ header: () => {} }} />
+                        <Stack.Screen name="AppMenu" component={AppMenu} options={{ header: () => {} }} />
+                        <Stack.Screen name="Deposits" component={Deposits} options={{ header: () => {} }} />
+                        <Stack.Screen name="CreateDeposit" component={CreateDeposit} options={{ header: () => {} }} />
+                        <Stack.Screen name="CreateDepositConfirm" component={CreateDepositConfirm} options={{ header: () => {} }} />
+                      </>
+                    )
+                }
+              </Stack.Navigator>
+              <FlashMessage position="top" />
+            </View>
+          </AppContextProvider>
+        </WalkthroughProvider>
+      </NavigationContainer>
+    </AuthContext.Provider>
+  );
 };
 
 export default App;

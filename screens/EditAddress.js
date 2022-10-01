@@ -6,6 +6,7 @@ import ConcealButton from '../components/ccxButton';
 import ConcealTextInput from '../components/ccxTextInput';
 import { AppContext } from '../components/ContextProvider';
 import { useFormInput } from '../helpers/hooks';
+import AppStyles from '../components/Style';
 
 const EditAddress = ({ navigation: { goBack, navigate }, route }) => {
   const { actions } = useContext(AppContext);
@@ -33,7 +34,8 @@ const EditAddress = ({ navigation: { goBack, navigate }, route }) => {
     <View style={styles.pageWrapper}>
       <Header
         placement='left'
-        containerStyle={styles.appHeader}
+        statusBarProps={{ translucent: false, backgroundColor: "#212529" }}
+        containerStyle={AppStyles.appHeader}
         leftComponent={<Icon
           onPress={() => goBack()}
           name='arrow-back-outline'
@@ -79,28 +81,8 @@ const EditAddress = ({ navigation: { goBack, navigate }, route }) => {
 
 const styles = EStyleSheet.create({
   pageWrapper: {
-    flex: 1,
-    backgroundColor: 'rgb(40, 45, 49)'
-  },
-  appHeader: {
-    borderBottomWidth: 1,
-    backgroundColor: '#212529',
-    borderBottomColor: '#343a40'
-  },
-  buttonsWrapper: {
-    position: 'absolute',
-    right: '20rem'
-  },
-  icon: {
-    color: 'orange'
-  },
-  flatview: {
-    backgroundColor: '#212529',
-    justifyContent: 'center',
-    borderRadius: '10rem',
-    marginBottom: '5rem',
-    marginTop: '5rem',
-    padding: '20rem',
+    backgroundColor: 'rgb(40, 45, 49)',
+    flex: 1
   },
   addressLabel: {
     color: '#FFFFFF',
@@ -112,34 +94,15 @@ const styles = EStyleSheet.create({
   data: {
     color: '#AAAAAA'
   },
-  buttonContainer: {
-    margin: '5rem'
-  },
-  walletsWrapper: {
-    top: '90rem',
-    left: '10rem',
-    right: '10rem',
-    bottom: 0,
-    position: 'absolute'
-  },
   footer: {
-    bottom: '10rem',
-    left: '20rem',
-    right: '20rem',
-    position: 'absolute',
-    flex: 1,
+    margin: '10rem',
+    height: '50rem',
     alignItems: 'stretch',
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
   footerBtn: {
-    flex: 1,
-    height: '40rem',
-    marginTop: '10rem',
-    color: '#FFFFFF',
-    borderRadius: 0,
-    borderColor: '#FFA500',
-    backgroundColor: 'rgba(0, 0, 0, 0)'
+    flex: 1
   },
   footerBtnRight: {
     marginLeft: '5rem',
@@ -151,8 +114,8 @@ const styles = EStyleSheet.create({
     flex: 1
   },
   addressWrapper: {
-    flex: 1,
-    padding: '10rem'
+    flexGrow: 1,
+    padding: '10rem',
   },
   addrInput: {
     marginTop: '20rem'
