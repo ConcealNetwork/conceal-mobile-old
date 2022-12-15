@@ -1,3 +1,7 @@
+# REPOSITORY IS NOW ARCHIVED AND HAS STOPPED DEVELOPMENT.
+
+The active mobile repository is now https://github.com/ConcealNetwork/conceal-wallet-cordova
+
 # Conceal Mobile App
 
 A mobile wallet that connects to Conceal Network through Conceal Cloud. Uses the cloud features and enables the users to easily manage their funds and make and receive payments anywhere and anytime.
